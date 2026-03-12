@@ -144,62 +144,80 @@ body {
 .total-display { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; font-size: 1.2rem; padding-top: 20px; border-top: 2px solid var(--cream); }
 .total-display strong { color: var(--forest); font-size: 1.8rem; }
 
-/* --- MOBILE RESPONSIVENESS (Media Queries) --- */
+
+/* --- MOBILE RESPONSIVENESS (Screens smaller than 768px) --- */
 @media (max-width: 768px) {
-@media (max-width: 768px) {
-    /* 1. Break the side-by-side layout */
+    
+    /* 1. Change container from Flex to Block to force vertical stacking */
     .builder-container {
-        display: block; /* Changes from flex to block for vertical stacking */
-        height: auto; 
+        display: block !important; 
+        height: auto;
         overflow: visible;
     }
 
-    /* 2. Make the Sidebar (Top) full width and part of the normal scroll */
+    /* 2. Make the Sidebar act as the Top Section */
     .builder-sidebar {
-        width: 100%;
-        height: auto;
+        width: 100% !important;
         border-right: none;
-        border-bottom: 2px solid #eee;
+        border-bottom: 1px solid #eee;
         padding: 20px;
-        position: relative;
         background: white;
-        box-sizing: border-box;
+        position: relative;
+        text-align: center; /* Centers the titles like in your 2nd photo */
     }
 
-    /* 3. Make the Main Menu (Bottom) full width */
+    /* 3. Make the Main Menu act as the Middle Section */
     .builder-main {
-        width: 100%;
-        height: auto;
+        width: 100% !important;
         padding: 20px;
         background: var(--cream);
-        box-sizing: border-box;
     }
 
-    /* 4. Center the plan info text */
-    .sidebar-top {
-        text-align: center;
+    /* 4. Center the Calendar Dots */
+    .calendar-grid {
+        justify-content: center;
+        margin: 20px auto;
+        max-width: 350px;
+    }
+
+    /* 5. Center and fix the tabs so they don't squash */
+    .menu-tabs {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; /* Allows tabs to wrap to a second line if screen is tiny */
+        gap: 10px;
         margin-bottom: 20px;
     }
 
-    /* 5. Calendar dots: 6 per row looks best on small phones */
-    .calendar-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 10px;
-        max-width: 320px;
-        margin: 15px auto;
-    }
-
-    /* 6. Tabs: Make them scrollable horizontally so they don't wrap and look messy */
-    .menu-tabs {
-        display: flex;
-        overflow-x: auto;
-        gap: 10px;
-        padding-bottom: 10px;
-        -webkit-overflow-scrolling: touch;
-    }
-
     .tab-btn {
-        flex: 0 0 auto; /* Prevents buttons from shrinking */
-        white-space: nowrap;
+        margin: 0;
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+
+    /* 6. Fix the Menu Cards to stack nicely */
+    .menu-grid {
+        grid-template-columns: 1fr; /* One card per row on small phones */
+        gap: 15px;
+    }
+
+    /* 7. Summary and Confirm Button at the Bottom */
+    .day-overview {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        text-align: center;
+    }
+
+    #confirm-all-btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 20px auto;
+    }
+
+    /* Adjust the "Change Plan" link position */
+    .back-link {
+        display: block;
+        margin-bottom: 10px;
     }
 }
