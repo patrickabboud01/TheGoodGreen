@@ -1,260 +1,79 @@
-:root { --forest: #4A5D3F; --cream: #F9F7F2; --dark: #2C3528; --white: #ffffff; }
-body { font-family: 'Montserrat', sans-serif; background: var(--cream); margin: 0; }
-.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-/* Navbar */
-.navbar { background: white; padding: 20px 0; border-bottom: 1px solid #eee; }
-.navbar .container { display: flex; justify-content: space-between; align-items: center; }
-.nav-links { list-style: none; display: flex; gap: 20px; }
-.nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.8rem; }
-
-/* Hero */
-.hero-home { text-align: center; padding: 80px 20px; background: white; }
-.hero-home h1 { font-size: 2.8rem; color: var(--forest); margin: 0; }
-
-/* Cards & Modals */
-.plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-.plan-card { background: white; padding: 30px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; }
-.plan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { background: var(--cream); padding: 40px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
-.duration-options button { display: block; width: 100%; margin: 10px 0; padding: 15px; background: var(--forest); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; }
-
-/* Builder Layout */
-.builder-container { display: flex; height: 100vh; }
-.builder-sidebar { width: 320px; background: white; border-right: 1px solid #ddd; padding: 25px; display: flex; flex-direction: column; overflow-y: auto; }
-.builder-main { flex: 1; padding: 40px; overflow-y: auto; }
-
-/* Calendar & Menu */
-.calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 15px 0; }
-.day-dot { aspect-ratio: 1; border: 1px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; }
-.day-dot.active { border: 2px solid var(--forest); font-weight: bold; }
-.day-dot.complete { background: var(--forest); color: white; border-color: var(--forest); }
-
-.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-.menu-item-card { background: white; padding: 15px; border-radius: 10px; border: 1px solid #eee; }
-.tab-btn { padding: 10px 20px; margin-right: 5px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; margin-bottom: 20px; }
-.tab-btn.active { background: var(--forest); color: white; }
-
-.btn-primary, .btn-confirm { background: var(--forest); color: white; border: none; padding: 12px; border-radius: 5px; width: 100%; cursor: pointer; font-weight: 700; }
-.btn-confirm.disabled { background: #ccc; cursor: not-allowed; }
-.remove-btn { color: #cc0000; background: none; border: none; cursor: pointer; font-weight: bold; }
-.edit-btn { background: none; border: 1px solid var(--forest); color: var(--forest); font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
-.ing-label { display: block; text-align: left; background: white; padding: 10px; margin-bottom: 5px; border-radius: 5px; border: 1px solid #eee; cursor: pointer; }
-.selection-list { list-style: none; padding: 0; margin-top: 20px; }
-.selection-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; }
-.checkout-card {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+/* --- ROOT & BASE --- */
+:root { 
+    --forest: #4A5D3F; 
+    --cream: #F9F7F2; 
+    --dark: #2C3528; 
+    --white: #ffffff; 
 }
 
-.summary-box {
-    background: var(--cream);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
+body { 
+    font-family: 'Montserrat', sans-serif; 
+    background: var(--cream); 
+    margin: 0; 
+    color: var(--dark);
+    line-height: 1.5;
 }
 
-.summary-box p {
-    margin: 10px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-.input-group label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--forest);
-}
-
-.input-group input, .input-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-family: inherit;
+.container { 
+    max-width: 1100px; 
+    margin: 0 auto; 
+    padding: 0 20px; 
     box-sizing: border-box;
 }
 
-.total-display {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 30px 0;
-    font-size: 1.2rem;
-    padding-top: 20px;
-    border-top: 2px solid var(--cream);
+/* --- NAVBAR --- */
+.navbar { background: var(--white); padding: 20px 0; border-bottom: 1px solid #eee; }
+.navbar .container { display: flex; justify-content: space-between; align-items: center; }
+.logo-area { display: flex; align-items: center; }
+.main-logo { height: 50px; width: auto; display: block; }
+.nav-links { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
+.nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.8rem; }
+
+/* --- HERO --- */
+.hero-home { text-align: center; padding: 80px 20px; background: var(--white); }
+.hero-home h1 { font-size: 2.8rem; color: var(--forest); margin: 0; }
+.badge { 
+    display: inline-block; 
+    background: var(--forest); 
+    color: var(--white); 
+    padding: 6px 16px; 
+    border-radius: 20px; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
 }
 
-.total-display strong {
-    color: var(--forest);
-    font-size: 1.8rem;
-}
-/* Sidebar Edit Button */
-.edit-btn {
-    background: transparent;
-    border: 1px solid var(--forest);
-    color: var(--forest);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-family: inherit;
-    cursor: pointer;
-    margin-top: 5px;
-    transition: 0.2s;
-}
-
-.edit-btn:hover {
-    background: var(--forest);
-    color: white;
-}
-
-/* Choice & Ingredient Layout inside Modal */
-.choice-section {
-    background: #eef2eb;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.ing-label {
-    display: block;
-    text-align: left;
-    background: white;
-    padding: 10px;
-    margin-bottom: 5px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-/* Badge Styling */
-.badge {
-    display: inline-block;
-    background: var(--forest);
-    color: white;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Outline Button */
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--forest);
-    color: var(--forest);
-    padding: 12px 25px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
+/* --- BUTTONS --- */
+.btn-primary, .btn-confirm { 
+    background: var(--forest); 
+    color: var(--white); 
+    border: none; 
+    padding: 12px; 
+    border-radius: 5px; 
+    width: 100%; 
+    cursor: pointer; 
+    font-weight: 700; 
     font-family: inherit;
     transition: 0.3s;
-    text-align: center;
 }
 
-.btn-outline:hover {
-    background: var(--forest);
-    color: white;
-}
-
-/* Featured Card Adjustment */
-.plan-card.featured {
-    transform: scale(1.05);
-    box-shadow: 0 15px 35px rgba(74, 93, 63, 0.15);
-    background: white;
-    z-index: 2;
-}
-/* Duration Modal Buttons */
-.duration-options button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 18px;
-    background: var(--forest);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.duration-options button:hover {
-    background: var(--dark);
-    transform: translateY(-2px);
-}
-
-/* Badge Styling */
-.badge {
-    display: inline-block;
-    background: var(--forest);
-    color: white;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Featured Plan Card Elevation */
-.plan-card.featured {
-    transform: scale(1.05);
-    box-shadow: 0 15px 35px rgba(74, 93, 63, 0.15);
-    background: white;
-    z-index: 2;
-}
-
-/* Main Navigation outline button */
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--forest);
-    color: var(--forest);
+.btn-outline { 
+    background: transparent; 
+    border: 2px solid var(--forest); 
+    color: var(--forest); 
+    padding: 12px 25px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-family: inherit; 
+    transition: 0.3s; 
     text-decoration: none;
-    font-weight: 700;
-    border-radius: 8px;
-    transition: 0.3s;
     text-align: center;
 }
 
-.btn-outline:hover {
-    background: var(--forest);
-    color: white;
-}
-/* Logo Styling */
-.logo-area {
-    display: flex;
-    align-items: center;
-}
+.btn-outline:hover { background: var(--forest); color: var(--white); }
 
-.main-logo {
-    height: 50px; /* Adjust this height to make your logo bigger or smaller */
-    width: auto;  /* Keeps the logo from stretching */
-    display: block;
-}
-
-/* Optional: If your logo is very wide, you can set a max-width */
-@media (max-width: 600px) {
-    .main-logo {
-        height: 40px;
-    }
-}
 .btn-details {
     background: none;
     border: none;
@@ -265,9 +84,92 @@ body { font-family: 'Montserrat', sans-serif; background: var(--cream); margin: 
     cursor: pointer;
     font-family: inherit;
     display: block;
-    margin: 0 auto;
+    margin: 10px auto 0;
 }
 
-.btn-details:hover {
-    color: var(--dark);
+.btn-confirm.disabled { background: #ccc; cursor: not-allowed; }
+
+/* --- PLAN GRID & CARDS --- */
+.plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 40px 0; }
+.plan-card { background: var(--white); padding: 30px; border-radius: 12px; text-align: center; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.plan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.plan-card.featured { 
+    transform: scale(1.05); 
+    box-shadow: 0 15px 35px rgba(74, 93, 63, 0.15); 
+    border: 2px solid var(--forest);
+    z-index: 2; 
+}
+
+/* --- MODALS --- */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 3000; }
+.modal-content { background: var(--cream); padding: 40px; border-radius: 15px; text-align: center; max-width: 450px; width: 90%; box-sizing: border-box; }
+.duration-options button { display: block; width: 100%; margin: 10px 0; padding: 18px; background: var(--forest); color: var(--white); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; font-size: 1rem; transition: 0.3s; }
+.duration-options button:hover { background: var(--dark); transform: translateY(-2px); }
+
+/* --- BUILDER INTERFACE --- */
+.builder-container { display: flex; height: 100vh; overflow: hidden; }
+.builder-sidebar { width: 320px; background: var(--white); border-right: 1px solid #ddd; padding: 25px; display: flex; flex-direction: column; overflow-y: auto; box-sizing: border-box; }
+.builder-main { flex: 1; padding: 40px; overflow-y: auto; box-sizing: border-box; }
+
+/* Calendar */
+.calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 15px 0; }
+.day-dot { aspect-ratio: 1; border: 1px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+.day-dot.active { border: 2px solid var(--forest); font-weight: bold; }
+.day-dot.complete { background: var(--forest); color: var(--white); border-color: var(--forest); }
+
+/* Menu Items */
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+.menu-item-card { background: var(--white); padding: 15px; border-radius: 10px; border: 1px solid #eee; text-align: center; }
+.tab-btn { padding: 10px 20px; margin-right: 5px; border-radius: 20px; border: 1px solid #ddd; background: var(--white); cursor: pointer; margin-bottom: 20px; font-family: inherit; }
+.tab-btn.active { background: var(--forest); color: var(--white); }
+
+/* Sidebar List & Items */
+.selection-list { list-style: none; padding: 0; margin-top: 20px; }
+.selection-list li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; }
+.remove-btn { color: #cc0000; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+.edit-btn { background: transparent; border: 1px solid var(--forest); color: var(--forest); padding: 2px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-top: 5px; transition: 0.2s; }
+.edit-btn:hover { background: var(--forest); color: var(--white); }
+
+/* Customization Choices */
+.choice-section { background: #eef2eb; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; }
+.ing-label { display: block; text-align: left; background: var(--white); padding: 10px; margin-bottom: 5px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; font-size: 0.9rem; }
+
+/* --- CHECKOUT & SUMMARY --- */
+.checkout-card { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+.summary-box { background: var(--cream); padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+.summary-box p { margin: 10px 0; display: flex; justify-content: space-between; }
+.input-group { margin-bottom: 20px; text-align: left; }
+.input-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: var(--forest); }
+.input-group input, .input-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; box-sizing: border-box; }
+.total-display { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; font-size: 1.2rem; padding-top: 20px; border-top: 2px solid var(--cream); }
+.total-display strong { color: var(--forest); font-size: 1.8rem; }
+
+/* --- MOBILE RESPONSIVENESS (Media Queries) --- */
+@media (max-width: 768px) {
+    /* Layout Adjustments */
+    .navbar .container { flex-direction: column; gap: 15px; text-align: center; }
+    .hero-home { padding: 50px 20px; }
+    .hero-home h1 { font-size: 2.1rem; }
+    .hero-home div { flex-direction: column; gap: 10px; align-items: center; }
+    
+    /* Grid Adjustments */
+    .plan-grid { grid-template-columns: 1fr !important; padding: 20px; }
+    .plan-card.featured { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    /* Builder Page Mobile Shift */
+    .builder-container { flex-direction: column; height: auto; overflow: visible; }
+    .builder-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; position: relative; }
+    .builder-main { width: 100%; padding: 20px; }
+    
+    .calendar-grid { grid-template-columns: repeat(6, 1fr); gap: 5px; }
+    .menu-grid { grid-template-columns: 1fr; }
+    
+    /* Typography */
+    .total-display strong { font-size: 1.4rem; }
+}
+
+@media (max-width: 480px) {
+    .main-logo { height: 40px; }
+    .calendar-grid { grid-template-columns: repeat(4, 1fr); }
+    .hero-home h1 { font-size: 1.8rem; }
 }
