@@ -146,30 +146,58 @@ body {
 
 /* --- MOBILE RESPONSIVENESS (Media Queries) --- */
 @media (max-width: 768px) {
-    /* Layout Adjustments */
-    .navbar .container { flex-direction: column; gap: 15px; text-align: center; }
-    .hero-home { padding: 50px 20px; }
-    .hero-home h1 { font-size: 2.1rem; }
-    .hero-home div { flex-direction: column; gap: 10px; align-items: center; }
-    
-    /* Grid Adjustments */
-    .plan-grid { grid-template-columns: 1fr !important; padding: 20px; }
-    .plan-card.featured { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    
-    /* Builder Page Mobile Shift */
-    .builder-container { flex-direction: column; height: auto; overflow: visible; }
-    .builder-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; position: relative; }
-    .builder-main { width: 100%; padding: 20px; }
-    
-    .calendar-grid { grid-template-columns: repeat(6, 1fr); gap: 5px; }
-    .menu-grid { grid-template-columns: 1fr; }
-    
-    /* Typography */
-    .total-display strong { font-size: 1.4rem; }
-}
+    /* 1. Stack the builder vertically */
+    .builder-container {
+        flex-direction: column;
+        height: 100vh; /* Keep the whole app within the screen height */
+        overflow: hidden;
+    }
 
-@media (max-width: 480px) {
-    .main-logo { height: 40px; }
-    .calendar-grid { grid-template-columns: repeat(4, 1fr); }
-    .hero-home h1 { font-size: 1.8rem; }
+    /* 2. Top Section (Calendar & Summary) */
+    .builder-sidebar {
+        width: 100%;
+        height: 45vh; /* Takes up the top half of the screen */
+        border-right: none;
+        border-bottom: 2px solid #ddd;
+        padding: 15px;
+        overflow-y: auto; /* Internal scroll if summary gets long */
+        background: white;
+        z-index: 10;
+    }
+
+    /* 3. Lower Section (The Menu) */
+    .builder-main {
+        width: 100%;
+        height: 55vh; /* Takes up the bottom half */
+        padding: 15px;
+        overflow-y: auto;
+        background: var(--cream);
+    }
+
+    /* 4. Fix Calendar Grid for small screens */
+    .calendar-grid {
+        grid-template-columns: repeat(8, 1fr); /* More dots per row to save vertical space */
+        gap: 5px;
+    }
+
+    .day-dot {
+        font-size: 0.7rem;
+        height: 35px; /* Fixed height to keep it compact */
+        width: 35px;
+    }
+
+    /* 5. Compact Tabs */
+    .menu-tabs {
+        display: flex;
+        overflow-x: auto; /* Let tabs scroll sideways if they don't fit */
+        white-space: nowrap;
+        padding-bottom: 10px;
+        gap: 5px;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        padding: 8px 15px;
+        font-size: 0.75rem;
+    }
 }
