@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Good Green | Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="builder-body">
+    <div class="builder-container">
+        <aside class="builder-sidebar">
+            <div class="sidebar-top">
+                <a href="index.html" class="back-link">← Change Plan</a>
+                <h2 id="plan-name-display">Loading...</h2>
+                <p><span id="display-total-days">0</span> Days | <span id="display-items-per-day">0</span> Items/Day</p>
+            </div>
+
+            <div class="calendar-section">
+                <h3>Select Day to Edit</h3>
+                <div id="calendar-grid" class="calendar-grid"></div>
+            </div>
+
+            <div class="day-overview">
+                <h3>Day <span id="active-day-num">1</span> Summary</h3>
+                <ul id="selection-list" class="selection-list"></ul>
+                <div class="day-stats">Protein: <span id="day-protein">0</span>g</div>
+                <button id="confirm-all-btn" class="btn-confirm disabled" disabled onclick="handleFinalOrder()">Confirm Entire Plan</button>
+            </div>
+        </aside>
+
+        <main class="builder-main">
+            <div class="menu-tabs">
+                <button class="tab-btn active" onclick="renderMenu('breakfast')">Breakfast</button>
+                <button class="tab-btn" onclick="renderMenu('lunch')">Lunch</button>
+                <button class="tab-btn" onclick="renderMenu('dinner')">Dinner</button>
+                <button class="tab-btn" onclick="renderMenu('snack')">Snacks</button>
+            </div>
+            <div id="menu-grid" class="menu-grid"></div>
+        </main>
+    </div>
+
+   <div id="editModal" class="modal">
+    <div class="modal-content">
+        <div id="ingredients-list">
+            </div>
+        <button class="btn-confirm" onclick="closeEditModal()" style="margin-top:20px;">Save Changes</button>
+    </div>
+</div>
+	<script src="menu-data.js"></script>
+    <script src="builder-logic.js"></script>
+</body>
+</html>
+</body>
+</html>

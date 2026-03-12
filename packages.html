@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Packages | The Good Green</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="section-title" style="margin-top:40px;">Choose Your Package</h2>
+        <div class="plan-grid">
+            <div class="plan-card" onclick="openModal('The Full Plan', 5)">
+                <h3>THE FULL PLAN</h3>
+                <p>Breakfast, 2 Snacks, Lunch, Dinner</p>
+                <button class="btn-primary">Select</button>
+            </div>
+            <div class="plan-card" onclick="openModal('The Trio', 3)">
+                <h3>THE TRIO</h3>
+                <p>Breakfast, Lunch, Dinner</p>
+                <button class="btn-primary">Select</button>
+            </div>
+            <div class="plan-card" onclick="openModal('The Duo', 2)">
+                <h3>THE DUO</h3>
+                <p>Breakfast & Lunch</p>
+                <button class="btn-primary">Select</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="durationModal" class="modal">
+        <div class="modal-content">
+            <h3>Select Duration</h3>
+            <p id="modal-plan-name"></p>
+            <div class="duration-options">
+                <button onclick="confirmPlan(1)">1 Day Trial</button>
+                <button onclick="confirmPlan(6)">6 Days (1 Week)</button>
+                <button onclick="confirmPlan(24)">24 Days (1 Month)</button>
+            </div>
+            <button class="close-link" onclick="closeModal()">Back to Packages</button>
+        </div>
+    </div>
+
+    <script>
+        let selP = ""; let selI = 0;
+        function openModal(n, i) {
+            selP = n; selI = i;
+            document.getElementById('modal-plan-name').innerText = n;
+            document.getElementById('durationModal').style.display = "flex";
+        }
+        function closeModal() { document.getElementById('durationModal').style.display = "none"; }
+        function confirmPlan(d) {
+            window.location.href = `builder.html?plan=${encodeURIComponent(selP)}&items=${selI}&days=${d}`;
+        }
+    </script>
+</body>
+</html>

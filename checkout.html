@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout | The Good Green</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container"><strong class="brand-name">THE GOOD GREEN</strong></div>
+    </nav>
+
+    <div class="container" style="max-width: 600px; margin-top: 50px;">
+        <div class="checkout-card">
+            <h2 class="section-title">Order Summary</h2>
+            
+            <div id="summary-box" class="summary-box">
+                </div>
+
+            <hr>
+
+            <form id="checkout-form" class="checkout-form">
+                <h3>Contact Information</h3>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="client-name" placeholder="John Doe" required>
+                </div>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="client-phone" placeholder="+1 234 567 890" required>
+                </div>
+                <div class="input-group">
+                    <label>Delivery Address</label>
+                    <textarea id="client-address" rows="3" required></textarea>
+                </div>
+
+                <div class="total-display">
+                    <span>Total Amount:</span>
+                    <strong id="final-price">$0.00</strong>
+                </div>
+
+                <button type="submit" class="btn-primary">Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load data from LocalStorage
+        const order = JSON.parse(localStorage.getItem('finalOrder'));
+
+        if (!order) {
+            window.location.href = "index.html";
+        }
+
+        function initCheckout() {
+            const summaryBox = document.getElementById('summary-box');
+            
+            // Calculate Price (Example: $15 per item)
+            const pricePerItem = 15;
+            const totalPrice = order.totalDays * order.itemsPerDay * pricePerItem;
+
+            summaryBox.innerHTML = `
+                <p><strong>Plan:</strong> ${order.planName}</p>
+                <p><strong>Duration:</strong> ${order.totalDays} Days</p>
+                <p><strong>Total Meals:</strong> ${order.totalDays * order.itemsPerDay}</p>
+            `;
+
+            document.getElementById('final-price').innerText = `$${totalPrice.toFixed(2)}`;
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('client-name').value;
+            alert(`Thank you ${name}! Your order has been placed successfully.`);
+            localStorage.clear();
+            window.location.href = "index.html";
+        });
+
+        initCheckout();
+    </script>
+</body>
+</html>
