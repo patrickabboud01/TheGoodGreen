@@ -146,58 +146,60 @@ body {
 
 /* --- MOBILE RESPONSIVENESS (Media Queries) --- */
 @media (max-width: 768px) {
-    /* 1. Stack the builder vertically */
+@media (max-width: 768px) {
+    /* 1. Break the side-by-side layout */
     .builder-container {
-        flex-direction: column;
-        height: 100vh; /* Keep the whole app within the screen height */
-        overflow: hidden;
+        display: block; /* Changes from flex to block for vertical stacking */
+        height: auto; 
+        overflow: visible;
     }
 
-    /* 2. Top Section (Calendar & Summary) */
+    /* 2. Make the Sidebar (Top) full width and part of the normal scroll */
     .builder-sidebar {
         width: 100%;
-        height: 45vh; /* Takes up the top half of the screen */
+        height: auto;
         border-right: none;
-        border-bottom: 2px solid #ddd;
-        padding: 15px;
-        overflow-y: auto; /* Internal scroll if summary gets long */
+        border-bottom: 2px solid #eee;
+        padding: 20px;
+        position: relative;
         background: white;
-        z-index: 10;
+        box-sizing: border-box;
     }
 
-    /* 3. Lower Section (The Menu) */
+    /* 3. Make the Main Menu (Bottom) full width */
     .builder-main {
         width: 100%;
-        height: 55vh; /* Takes up the bottom half */
-        padding: 15px;
-        overflow-y: auto;
+        height: auto;
+        padding: 20px;
         background: var(--cream);
+        box-sizing: border-box;
     }
 
-    /* 4. Fix Calendar Grid for small screens */
+    /* 4. Center the plan info text */
+    .sidebar-top {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* 5. Calendar dots: 6 per row looks best on small phones */
     .calendar-grid {
-        grid-template-columns: repeat(8, 1fr); /* More dots per row to save vertical space */
-        gap: 5px;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        max-width: 320px;
+        margin: 15px auto;
     }
 
-    .day-dot {
-        font-size: 0.7rem;
-        height: 35px; /* Fixed height to keep it compact */
-        width: 35px;
-    }
-
-    /* 5. Compact Tabs */
+    /* 6. Tabs: Make them scrollable horizontally so they don't wrap and look messy */
     .menu-tabs {
         display: flex;
-        overflow-x: auto; /* Let tabs scroll sideways if they don't fit */
-        white-space: nowrap;
+        overflow-x: auto;
+        gap: 10px;
         padding-bottom: 10px;
-        gap: 5px;
+        -webkit-overflow-scrolling: touch;
     }
 
     .tab-btn {
-        flex: 0 0 auto;
-        padding: 8px 15px;
-        font-size: 0.75rem;
+        flex: 0 0 auto; /* Prevents buttons from shrinking */
+        white-space: nowrap;
     }
 }
