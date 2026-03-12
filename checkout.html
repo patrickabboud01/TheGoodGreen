@@ -2,82 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Checkout | The Good Green</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Good Green | Checkout</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="container"><strong class="brand-name">THE GOOD GREEN</strong></div>
-    </nav>
+<body class="builder-body">
+    <div class="builder-container" style="display: block; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <header style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: var(--forest);">Complete Your Order</h2>
+            <p>Review your plan and price below.</p>
+        </header>
 
-    <div class="container" style="max-width: 600px; margin-top: 50px;">
-        <div class="checkout-card">
-            <h2 class="section-title">Order Summary</h2>
-            
-            <div id="summary-box" class="summary-box">
-                </div>
+        <section class="order-summary" id="order-details" style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee;">
+        </section>
 
-            <hr>
-
-            <form id="checkout-form" class="checkout-form">
-                <h3>Contact Information</h3>
-                <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" id="client-name" placeholder="John Doe" required>
-                </div>
-                <div class="input-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="client-phone" placeholder="+1 234 567 890" required>
-                </div>
-                <div class="input-group">
-                    <label>Delivery Address</label>
-                    <textarea id="client-address" rows="3" required></textarea>
-                </div>
-
-                <div class="total-display">
-                    <span>Total Amount:</span>
-                    <strong id="final-price">$0.00</strong>
-                </div>
-
-                <button type="submit" class="btn-primary">Place Order</button>
-            </form>
-        </div>
+        <form id="checkout-form" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 15px;"><label>Full Name</label><input type="text" id="user_name" required style="width: 100%; padding: 10px; margin-top: 5px;"></div>
+            <div style="margin-bottom: 15px;"><label>Phone Number</label><input type="tel" id="user_phone" required style="width: 100%; padding: 10px; margin-top: 5px;"></div>
+            <div style="margin-bottom: 15px;"><label>Delivery Address</label><textarea id="user_address" required style="width: 100%; padding: 10px; margin-top: 5px;"></textarea></div>
+            <button type="submit" class="btn-confirm" style="width: 100%; padding: 15px;">Send Order via Email</button>
+        </form>
     </div>
 
     <script>
-        // Load data from LocalStorage
-        const order = JSON.parse(localStorage.getItem('finalOrder'));
+        (function() { emailjs.init("YOUR_PUBLIC_KEY"); })();
 
-        if (!order) {
-            window.location.href = "index.html";
-        }
+        const orderData = JSON.parse(localStorage.getItem('finalOrder'));
 
-        function initCheckout() {
-            const summaryBox = document.getElementById('summary-box');
-            
-            // Calculate Price (Example: $15 per item)
-            const pricePerItem = 15;
-            const totalPrice = order.totalDays * order.itemsPerDay * pricePerItem;
-
-            summaryBox.innerHTML = `
-                <p><strong>Plan:</strong> ${order.planName}</p>
-                <p><strong>Duration:</strong> ${order.totalDays} Days</p>
-                <p><strong>Total Meals:</strong> ${order.totalDays * order.itemsPerDay}</p>
+        if (orderData) {
+            document.getElementById('order-details').innerHTML = `
+                <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                    <p><strong>Plan:</strong> ${orderData.plan}</p>
+                    <p><strong>Duration:</strong> ${orderData.days} Days</p>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:bold; font-size:1.1rem;">Total Price:</span>
+                    <span style="font-weight:bold; font-size:1.4rem; color:var(--forest);">$${orderData.price}</span>
+                </div>
             `;
-
-            document.getElementById('final-price').innerText = `$${totalPrice.toFixed(2)}`;
         }
 
-        document.getElementById('checkout-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('client-name').value;
-            alert(`Thank you ${name}! Your order has been placed successfully.`);
-            localStorage.clear();
-            window.location.href = "index.html";
-        });
+        document.getElementById('checkout-form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        initCheckout();
+            let mealList = "";
+            for (let day in orderData.selections) {
+                const dayMeals = orderData.selections[day].map(m => {
+                    let details = m.name;
+                    if(m.selectedChoice) details += ` (${m.selectedChoice})`;
+                    if(m.removedIngredients.length > 0) details += ` [No: ${m.removedIngredients.join(',')}]`;
+                    return details;
+                }).join(", ");
+                if (dayMeals) mealList += `Day ${day}: ${dayMeals}\n`;
+            }
+
+            const templateParams = {
+                user_name: document.getElementById('user_name').value,
+                user_phone: document.getElementById('user_phone').value,
+                user_address: document.getElementById('user_address').value,
+                plan_name: orderData.plan,
+                total_price: "$" + orderData.price,
+                order_summary: mealList
+            };
+
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                .then(function() {
+                    alert('Order Sent Successfully!');
+                    localStorage.clear();
+                    window.location.href = "thanks.html";
+                }, function(error) {
+                    alert('Failed to send order.');
+                });
+        });
     </script>
 </body>
 </html>

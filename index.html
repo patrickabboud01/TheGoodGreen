@@ -34,7 +34,6 @@
             <div style="display: flex; gap: 15px; justify-content: center;">
                 <a href="#how-it-works" class="btn-outline" style="padding: 15px 40px; text-decoration: none;">How It Works</a>
                 <a href="#plans" class="btn-primary" style="width: auto; padding: 15px 40px; text-decoration: none;">Explore Plans</a>
-                
             </div>
         </div>
     </header>
@@ -51,7 +50,7 @@
                 <div style="text-align: center; padding: 20px;">
                     <div style="font-size: 2rem; margin-bottom: 15px;">⏱️</div>
                     <h4>2. Choose Your Duration</h4>
-                    <p style="font-size: 0.9rem; color: #777;">Select a 1 day, 6 days or a full 24-day commitment.</p>
+                    <p style="font-size: 0.9rem; color: #777;">Select a 1 day, 5 days or a full 24-day commitment.</p>
                 </div>
                 <div style="text-align: center; padding: 20px;">
                     <div style="font-size: 2rem; margin-bottom: 15px;">🗓️</div>
@@ -115,18 +114,18 @@
             <h3 id="selected-plan-title" style="color: var(--forest); margin-bottom: 10px;"></h3>
             <p style="margin-bottom: 25px;">How long would you like your plan to last?</p>
             <div class="duration-options">
-                <button onclick="goToBuilder(1)">1 Day </button>
-                <button onclick="goToBuilder(6)">1 Week (6 Days)</button>
+                <button onclick="goToBuilder(1)">1 Day</button>
+                <button onclick="goToBuilder(5)">1 Week (5 Days)</button>
                 <button onclick="goToBuilder(24)">Full Month (24 Days)</button>
             </div>
-            <button onclick="closeModal('durationModal')" style="background:none; border:none; color:gray; cursor:pointer; margin-top:20px; font-family:inherit;">Cancel</button>
+            <button onclick="closeModal('durationModal')" style="background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Cancel</button>
         </div>
     </div>
 
-    <div id="pricingModal" class="modal" onclick="closeModal('pricingModal')">
+    <div id="pricingModal" class="modal">
         <div class="modal-content" style="max-width: 600px; padding: 10px; background: none; box-shadow: none;">
             <div style="text-align: right;">
-                <span onclick="closeModal('pricingModal')" style="color: white; font-size: 40px; cursor: pointer; line-height: 1;">&times;</span>
+                <span onclick="closeModal('pricingModal')" style="color: white; font-size: 40px; cursor: pointer;">&times;</span>
             </div>
             <img src="images/planprices.jpeg" alt="Pricing Details" style="width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
         </div>
@@ -139,6 +138,15 @@
     <script>
         let currentSelectedPlan = "";
         let currentItemsPerDay = 0;
+
+        // Pricing Configuration
+        const priceList = {
+            "THE SOLO": { 1: 12, 5: 50, 24: 200 },
+            "THE DUO": { 1: 17, 5: 85, 24: 300 },
+            "THE TRIO": { 1: 22, 5: 100, 24: 340 },
+            "THE FULL PLAN": { 1: 25, 5: 110, 24: 400 },
+            "PROTEIN BOOSTER": { 1: 10, 5: 40, 24: 150 }
+        };
 
         function openDurationModal(planName, items) {
             currentSelectedPlan = planName;
@@ -156,17 +164,17 @@
         }
 
         function goToBuilder(days) {
-            const url = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}`;
+            const price = priceList[currentSelectedPlan][days] || 0;
+            // Passes Plan, Items, Days, and Price to the builder
+            const url = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
             window.location.href = url;
         }
 
-        // Close modal if user clicks outside content
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = "none";
             }
         }
     </script>
-
 </body>
 </html>
