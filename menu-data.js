@@ -18,9 +18,13 @@ const rawMenuData = [
     { category: "dinner", name: "Tabbouleh & Grilled Potatoes", protein: 6, ingredients: "Tabbouleh;Grilled Potatoes", choice_title: "", choice_options: "" },
     { category: "dinner", name: "Pasta Salad & Grilled Potatoes", protein: 11, ingredients: "Pasta;Black Beans;Olives;Vegetables;Grilled Potatoes", choice_title: "Dressing", choice_options: "Lemon-Mayo;Olive Oil" },
 
-    // --- SNACKS & PROTEIN ---
+    // --- SNACKS  ---
     { category: "snack", name: "Oat Cookie", protein: 5, ingredients: "Banana;Oats;Peanut Butter;Chocolate Flakes", choice_title: "", choice_options: "" },
     { category: "snack", name: "Fruit Salad", protein: 2, ingredients: "Mixed Fresh Seasonal Fruits", choice_title: "", choice_options: "" },
-    { category: "snack", name: "Protein Shake", protein: 40, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond" },
-    { category: "snack", name: "Protein Cookie", protein: 10, ingredients: "Oat;Banana;Pea Protein;Peanut Butter", choice_title: "", choice_options: "" }
+   
+     // --- PROTEIN ---
+    { category: "protein", name: "Protein Shake", protein: 40, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond" },
+    { category: "protein", name: "Protein Cookie", protein: 10, ingredients: "Oat;Banana;Pea Protein;Peanut Butter", choice_title: "", choice_options: "" }
+
+
 ];

@@ -181,13 +181,13 @@ body {
     }
 
     /* 5. Center and fix the tabs so they don't squash */
-    .menu-tabs {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap; /* Allows tabs to wrap to a second line if screen is tiny */
-        gap: 10px;
-        margin-bottom: 20px;
-    }
+.menu-tabs {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap; /* Prevents text from breaking into two lines */
+    gap: 10px;
+    padding-bottom: 5px;
+}
 
     .tab-btn {
         margin: 0;
@@ -220,4 +220,12 @@ body {
         display: block;
         margin-bottom: 10px;
     }
+    
+}
+/* Styling for restricted tabs */
+.tab-btn.restricted {
+    background: #e0e0e0 !important;
+    color: #a0a0a0 !important;
+    border-color: #ccc !important;
+    cursor: not-allowed !important;
 }

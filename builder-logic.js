@@ -42,17 +42,119 @@ function loadMenu() {
     init();
 }
 
+/**
+ * INITIALIZATION: Grammar, Default Tabs, and Initial Renders
+ */
 function init() {
+    const cleanPlan = planName.toLowerCase().trim();
+    
+    // 1. Singular/Plural Grammar Logic
+    const dayLabel = totalDays === 1 ? "Day" : "Days";
     document.getElementById('plan-name-display').innerText = planName;
     document.getElementById('display-total-days').innerText = totalDays;
-    document.getElementById('display-items-per-day').innerText = itemsPerDay;
+    
+    const totalDaysContainer = document.getElementById('display-total-days').parentElement;
+    totalDaysContainer.innerHTML = `<span id="display-total-days">${totalDays}</span> ${dayLabel} | <span id="display-items-per-day">${itemsPerDay}</span> Items/Day`;
+
     renderCalendar();
-    renderMenu('breakfast');
+
+    // 2. Smart Start: Don't land on a restricted category
+    if (cleanPlan.includes("solo") || cleanPlan.includes("protein")) {
+        renderMenu('lunch/dinner');
+    } else {
+        renderMenu('breakfast');
+    }
+    
+    updateUI();
+    if (cleanPlan.includes("duo") || cleanPlan.includes("protein")) {
+        renderMenu('lunch/dinner');
+    } else {
+        renderMenu('lunch/dinner');
+    }
+    
     updateUI();
 }
 
 /**
- * ADDING A MEAL: Handles the initial click and mandatory popups
+ * MENU RENDERING: Handles merged categories and plan-based restrictions
+ */
+function renderMenu(cat) {
+    const grid = document.getElementById('menu-grid');
+    grid.innerHTML = "";
+    
+    const cleanPlanName = planName.toLowerCase().trim();
+    const cleanCat = cat.toLowerCase().trim();
+
+    // Restriction Map
+    const restrictions = {
+        "solo": ["breakfast", "snack", "snacks", "protein"],
+        "duo": ["snack", "snacks", "breakfast", "protein"],
+        "trio": ["snack", "snacks", "protein"],
+        "protein": ["breakfast", "lunch", "dinner", "snack", "snacks", "lunch & dinner"]
+    };
+
+    // Check if category is blocked for current plan
+    let isRestricted = false;
+    for (const plan in restrictions) {
+        if (cleanPlanName.includes(plan) && restrictions[plan].includes(cleanCat)) {
+            isRestricted = true;
+            break;
+        }
+    }
+
+    // Update Tab Buttons UI
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        const btnText = b.innerText.toLowerCase().trim();
+        b.classList.toggle('active', btnText === cleanCat);
+        
+        let tabDisabled = false;
+        for (const plan in restrictions) {
+            if (cleanPlanName.includes(plan) && restrictions[plan].includes(btnText)) {
+                tabDisabled = true;
+                break;
+            }
+        }
+
+        if (tabDisabled) {
+            b.style.opacity = "0.3";
+            b.style.pointerEvents = "none";
+            b.style.backgroundColor = "#eee";
+            b.style.textDecoration = "line-through";
+        } else {
+            b.style.opacity = "1";
+            b.style.pointerEvents = "auto";
+            b.style.textDecoration = "none";
+            b.style.backgroundColor = b.classList.contains('active') ? "" : "white";
+        }
+    });
+
+    if (isRestricted) {
+        grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align:center; padding: 50px 20px; background: #f9f9f9; border-radius: 15px; border: 1px dashed #ccc;">
+                <p style="font-size: 1.5rem;">🔒</p>
+                <p style="color: #444; font-weight: 700;">${cat.toUpperCase()} UNAVAILABLE</p>
+                <p style="color: #777; font-size: 0.9rem;">This category is not included in the ${planName}.</p>
+            </div>`;
+        return; 
+    }
+
+    // Render Menu Items
+    menuData.filter(m => {
+        if (cat === 'lunch/dinner') {
+            return m.category === 'lunch' || m.category === 'dinner';
+        }
+        return m.category === cat;
+    }).forEach(item => {
+        grid.innerHTML += `
+            <div class="menu-item-card" style="background:white; padding:15px; border-radius:12px; border:1px solid #eee; text-align:center;">
+                <h4 style="margin-bottom:10px;">${item.name}</h4>
+                <button class="btn-confirm" style="padding:8px; font-size:12px;" onclick="addItem(${item.id})">Add to Day ${currentDay}</button>
+            </div>`;
+    });
+}
+
+/**
+ * ADDING A MEAL
  */
 function addItem(id) {
     if (fullState[currentDay].length >= itemsPerDay) {
@@ -101,7 +203,7 @@ function confirmAdd() {
 }
 
 /**
- * EDITING A MEAL: Handles removing ingredients from existing selections
+ * EDITING & CUSTOMIZING
  */
 function openEditModal(instanceId) {
     editingItem = fullState[currentDay].find(i => i.instanceId === instanceId);
@@ -110,7 +212,6 @@ function openEditModal(instanceId) {
     
     container.innerHTML = `<h3>Customize ${editingItem.name}</h3>`;
 
-    // Edit Choice (Milk/Dressing)
     if (editingItem.choices) {
         container.innerHTML += `
             <div class="choice-section">
@@ -125,7 +226,6 @@ function openEditModal(instanceId) {
             </div>`;
     }
 
-    // Edit Ingredients
     container.innerHTML += `<p><strong>Remove Ingredients:</strong></p>`;
     editingItem.ingredients.forEach(ing => {
         const isRemoved = editingItem.removedIngredients.includes(ing);
@@ -153,14 +253,14 @@ function closeEditModal() {
 }
 
 /**
- * UI UPDATES: Syncs the sidebar, Macros, and the Confirm Button
+ * UI SYNC: Macros, Sidebar, and Button State
  */
 function updateUI() {
     const list = document.getElementById('selection-list');
+    const proteinSection = document.querySelector('.day-stats');
     list.innerHTML = "";
     let prot = 0;
 
-    // 1. Render Current Day Selections
     fullState[currentDay].forEach(item => {
         prot += item.protein;
         const choiceText = item.selectedChoice ? `<br><small style="color:var(--forest)"><b>Choice:</b> ${item.selectedChoice}</small>` : '';
@@ -176,10 +276,19 @@ function updateUI() {
             </li>`;
     });
 
-    document.getElementById('day-protein').innerText = prot;
+    // Protein Logic: Hide for specific plans
+    if (proteinSection) {
+        const cleanPlan = planName.toLowerCase();
+        const hideProtein = ["solo", "duo", "trio", "protein"].some(p => cleanPlan.includes(p));
+        
+        if (hideProtein) {
+            proteinSection.style.display = "none";
+        } else {
+            proteinSection.style.display = "block";
+            document.getElementById('day-protein').innerText = prot;
+        }
+    }
 
-    // 2. LOGIC: Should the "Confirm" button be active?
-    // Current Logic: Active if the user has selected AT LEAST one meal in the entire plan.
     const hasAnySelections = Object.values(fullState).some(dayArray => dayArray.length > 0);
     const confirmBtn = document.getElementById('confirm-all-btn');
     
@@ -195,25 +304,8 @@ function updateUI() {
 }
 
 /**
- * MENU & CALENDAR NAVIGATION
+ * CALENDAR & UTILS
  */
-function renderMenu(cat) {
-    const grid = document.getElementById('menu-grid');
-    grid.innerHTML = "";
-    
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.toggle('active', b.innerText.toLowerCase() === cat);
-    });
-
-    menuData.filter(m => m.category === cat).forEach(item => {
-        grid.innerHTML += `
-            <div class="menu-item-card" style="background:white; padding:15px; border-radius:12px; border:1px solid #eee; text-align:center;">
-                <h4 style="margin-bottom:10px;">${item.name}</h4>
-                <button class="btn-confirm" style="padding:8px; font-size:12px;" onclick="addItem(${item.id})">Add to Day ${currentDay}</button>
-            </div>`;
-    });
-}
-
 function renderCalendar() {
     const grid = document.getElementById('calendar-grid');
     grid.innerHTML = "";
@@ -226,8 +318,20 @@ function renderCalendar() {
     }
 }
 
-function switchDay(d) { currentDay = d; document.getElementById('active-day-num').innerText = d; updateUI(); }
-function removeItem(id) { fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); updateUI(); }
+function switchDay(d) { 
+    currentDay = d; 
+    document.getElementById('active-day-num').innerText = d; 
+    updateUI(); 
+    
+    // Maintain category filter on day switch
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab) renderMenu(activeTab.innerText.toLowerCase());
+}
+
+function removeItem(id) { 
+    fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); 
+    updateUI(); 
+}
 
 function handleFinalOrder() {
     const finalOrder = {
@@ -240,5 +344,5 @@ function handleFinalOrder() {
     window.location.href = "checkout.html";
 }
 
-// Start Application
+// Kickoff
 loadMenu();

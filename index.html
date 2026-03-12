@@ -18,7 +18,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="menu.html" class="btn-outline" style="padding: 8px 15px; font-size: 0.7rem;">Menu</a></li>
+                <li><a href="menu.html">Menu</a></li>
             </ul>
         </div>
     </nav>
@@ -51,11 +51,11 @@
                 <div style="text-align: center; padding: 20px;">
                     <div style="font-size: 2rem; margin-bottom: 15px;">⏱️</div>
                     <h4>2. Choose Your Duration</h4>
-                    <p style="font-size: 0.9rem; color: #777;">Select a weekly trial or a full 24-day commitment.</p>
+                    <p style="font-size: 0.9rem; color: #777;">Select a 1 day, 6 days or a full 24-day commitment.</p>
                 </div>
                 <div style="text-align: center; padding: 20px;">
                     <div style="font-size: 2rem; margin-bottom: 15px;">🗓️</div>
-                    <h4>3. Build Your Month</h4>
+                    <h4>3. Build Your Plan</h4>
                     <p style="font-size: 0.9rem; color: #777;">Select every meal and customize the ingredients.</p>
                 </div>
             </div>
@@ -115,6 +115,7 @@
             <h3 id="selected-plan-title" style="color: var(--forest); margin-bottom: 10px;"></h3>
             <p style="margin-bottom: 25px;">How long would you like your plan to last?</p>
             <div class="duration-options">
+                <button onclick="goToBuilder(1)">1 Day </button>
                 <button onclick="goToBuilder(6)">1 Week (6 Days)</button>
                 <button onclick="goToBuilder(24)">Full Month (24 Days)</button>
             </div>
