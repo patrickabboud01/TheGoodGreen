@@ -243,15 +243,42 @@ function removeItem(id) {
     updateUI(); 
 }
 
-function handleFinalOrder() {
-    const finalOrder = {
-        plan: planName,
-        days: totalDays,
-        itemsPerDay: itemsPerDay,
-        price: planPrice,
-        selections: fullState
+async function handleFinalOrder() {
+    // 1. Validation check
+    for (let i = 1; i <= totalDays; i++) {
+        if (fullState[i].length < itemsPerDay) {
+            alert(`Day ${i} is not complete yet!`);
+            switchDay(i);
+            return;
+        }
+    }
+
+    // 2. Prepare a "Database-Friendly" list of meals
+    const flattenedMeals = [];
+    for (let day in fullState) {
+        fullState[day].forEach(item => {
+            flattenedMeals.push({
+                day_number: parseInt(day),
+                meal_name: item.name,
+                choice: item.selectedChoice || null,
+                removals: item.removedIngredients.join(', ')
+            });
+        });
+    }
+
+    // 3. Save to LocalStorage first (as a backup)
+    const orderSummary = {
+        plan_details: {
+            name: planName,
+            days: totalDays,
+            price: planPrice
+        },
+        meals: flattenedMeals
     };
-    localStorage.setItem('finalOrder', JSON.stringify(finalOrder));
+
+    localStorage.setItem('finalOrder', JSON.stringify(orderSummary));
+    
+    // 4. Move to Checkout
     window.location.href = "checkout.html";
 }
 

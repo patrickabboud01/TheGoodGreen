@@ -5,76 +5,177 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Good Green | Checkout</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body class="builder-body">
-    <div class="builder-container" style="display: block; max-width: 600px; margin: 0 auto; padding: 20px;">
+
+    <div class="builder-container" style="display: block; max-width: 600px; margin: 40px auto; padding: 20px;">
         <header style="text-align: center; margin-bottom: 30px;">
             <h2 style="color: var(--forest);">Complete Your Order</h2>
-            <p>Review your plan and price below.</p>
+            <p>Review your plan and price before confirming.</p>
         </header>
 
-        <section class="order-summary" id="order-details" style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee;">
-        </section>
+        <section id="order-details" style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"></section>
 
-        <form id="checkout-form" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <div style="margin-bottom: 15px;"><label>Full Name</label><input type="text" id="user_name" required style="width: 100%; padding: 10px; margin-top: 5px;"></div>
-            <div style="margin-bottom: 15px;"><label>Phone Number</label><input type="tel" id="user_phone" required style="width: 100%; padding: 10px; margin-top: 5px;"></div>
-            <div style="margin-bottom: 15px;"><label>Delivery Address</label><textarea id="user_address" required style="width: 100%; padding: 10px; margin-top: 5px;"></textarea></div>
-            <button type="submit" class="btn-confirm" style="width: 100%; padding: 15px;">Send Order via Email</button>
+        <form id="checkout-form" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Full Name</label>
+                <input type="text" id="user_name" placeholder="Enter your full name" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Phone Number</label>
+                <input type="tel" id="user_phone" placeholder="e.g. +971 50 000 0000" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Delivery Address</label>
+                <textarea id="user_address" rows="3" placeholder="Apartment, Street, Area" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn-confirm" style="width: 100%; padding: 18px; font-size: 1.1rem; cursor: pointer;">
+                Confirm & Place Order
+            </button>
+            <p id="loading-text" style="text-align: center; color: var(--forest); display: none; margin-top: 15px;">Saving your order & notifying kitchen... please wait.</p>
         </form>
     </div>
 
-    <script>
-        (function() { emailjs.init("YOUR_PUBLIC_KEY"); })();
+// ... (Keep the rest of your HTML)
 
-        const orderData = JSON.parse(localStorage.getItem('finalOrder'));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Good Green | Checkout</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body class="builder-body">
 
-        if (orderData) {
-            document.getElementById('order-details').innerHTML = `
-                <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                    <p><strong>Plan:</strong> ${orderData.plan}</p>
-                    <p><strong>Duration:</strong> ${orderData.days} Days</p>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:bold; font-size:1.1rem;">Total Price:</span>
-                    <span style="font-weight:bold; font-size:1.4rem; color:var(--forest);">$${orderData.price}</span>
-                </div>
-            `;
+    <div class="builder-container" style="display: block; max-width: 600px; margin: 40px auto; padding: 20px;">
+        <header style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: var(--forest);">Complete Your Order</h2>
+            <p>Review your plan and price before confirming.</p>
+        </header>
+
+        <section id="order-details" style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"></section>
+
+        <form id="checkout-form" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Full Name</label>
+                <input type="text" id="user_name" placeholder="Enter your full name" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Phone Number</label>
+                <input type="tel" id="user_phone" placeholder="e.g. +971 50 000 0000" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Delivery Address</label>
+                <textarea id="user_address" rows="3" placeholder="Apartment, Street, Area" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn-confirm" style="width: 100%; padding: 18px; font-size: 1.1rem; cursor: pointer;">
+                Confirm & Place Order
+            </button>
+            <p id="loading-text" style="text-align: center; color: var(--forest); display: none; margin-top: 15px;">Finalizing order... please stay on this page.</p>
+        </form>
+    </div>
+
+<script>
+    // 1. Initialize EmailJS
+    (function() {
+        emailjs.init("O38XtdcMyAkWnvsoU"); 
+    })();
+
+    window.onload = function() {
+        const lib = typeof supabaseJs !== 'undefined' ? supabaseJs : supabase;
+        const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+        const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+        const sbClient = lib.createClient(sbUrl, sbKey);
+
+        // Load order data from browser memory
+        const savedData = localStorage.getItem('finalOrder');
+        if (!savedData) {
+            alert("No order data found. Please go back to the builder.");
+            return;
         }
+        const orderInfo = JSON.parse(savedData);
 
-        document.getElementById('checkout-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        // Show Summary
+        document.getElementById('order-details').innerHTML = `
+            <p><strong>Plan:</strong> ${orderInfo.plan_details.name}</p>
+            <p><strong>Total:</strong> $${orderInfo.plan_details.price}</p>
+        `;
 
-            let mealList = "";
-            for (let day in orderData.selections) {
-                const dayMeals = orderData.selections[day].map(m => {
-                    let details = m.name;
-                    if(m.selectedChoice) details += ` (${m.selectedChoice})`;
-                    if(m.removedIngredients.length > 0) details += ` [No: ${m.removedIngredients.join(',')}]`;
-                    return details;
-                }).join(", ");
-                if (dayMeals) mealList += `Day ${day}: ${dayMeals}\n`;
-            }
+        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // DEBUG CHECK: Count the meals
+            const mealCount = orderInfo.meals ? orderInfo.meals.length : 0;
+            alert("System check: " + mealCount + " meal items found in memory. Proceeding to save...");
 
-            const templateParams = {
-                user_name: document.getElementById('user_name').value,
-                user_phone: document.getElementById('user_phone').value,
-                user_address: document.getElementById('user_address').value,
-                plan_name: orderData.plan,
-                total_price: "$" + orderData.price,
-                order_summary: mealList
-            };
+            const btn = document.getElementById('submit-btn');
+            const loading = document.getElementById('loading-text');
+            btn.disabled = true;
+            btn.innerText = "Saving Order...";
+            loading.style.display = "block";
 
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
-                .then(function() {
-                    alert('Order Sent Successfully!');
-                    localStorage.clear();
-                    window.location.href = "thanks.html";
-                }, function(error) {
-                    alert('Failed to send order.');
+            try {
+                // STEP 1: Insert Main Order
+                const { data: mainOrder, error: orderErr } = await sbClient
+                    .from('orders')
+                    .insert([{
+                        customer_name: document.getElementById('user_name').value,
+                        customer_phone: document.getElementById('user_phone').value,
+                        customer_address: document.getElementById('user_address').value,
+                        plan_name: orderInfo.plan_details.name,
+                        total_days: orderInfo.plan_details.days,
+                        total_price: orderInfo.plan_details.price
+                    }])
+                    .select();
+
+                if (orderErr) throw new Error("Order Save Error: " + orderErr.message);
+                const orderId = mainOrder[0].id;
+
+                // STEP 2: Insert Meal Items
+                const items = orderInfo.meals.map(m => ({
+                    order_id: orderId,
+                    day_number: m.day_number,
+                    meal_name: m.meal_name,
+                    choice: m.choice,
+                    removals: m.removals || "" 
+                }));
+
+                const { error: itemErr } = await sbClient.from('order_items').insert(items);
+                if (itemErr) throw new Error("Meals Table Error: " + itemErr.message);
+
+                // STEP 3: Email Notification
+                await emailjs.send("service_rfcp52l", "template_oglmmp8", {
+                    customer_name: document.getElementById('user_name').value,
+                    plan_name: orderInfo.plan_details.name,
+                    order_id: orderId
                 });
+
+                alert("SUCCESS! Order and all meals saved.");
+                localStorage.clear();
+                window.location.href = "thanks.html";
+
+            } catch (err) {
+                console.error(err);
+                alert("Order failed: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "Confirm & Place Order";
+                loading.style.display = "none";
+            }
         });
-    </script>
+    };
+</script>
+</body>
+</html>
 </body>
 </html>

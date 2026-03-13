@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Green | Admin Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --forest: #2d5a27; --sand: #f4f1ea; }
+        body { background: var(--sand); padding: 20px; font-family: sans-serif; }
+        .admin-box { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: var(--forest); color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .view-btn { background: var(--forest); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); overflow-y: auto; }
+        .modal-content { background: white; margin: 5% auto; padding: 20px; width: 80%; border-radius: 10px; }
+        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" style="text-align: center; margin-top: 100px;">
+        <h2>Kitchen Access Only</h2>
+        <input type="password" id="pass-code" placeholder="Enter Secret Code" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+        <button onclick="checkLogin()" class="view-btn">Unlock</button>
+    </div>
+
+    <div id="admin-content" class="admin-box" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="color: var(--forest);">Orders Feed</h1>
+            <button onclick="loadOrders()" class="view-btn">Refresh List</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Plan</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="orders-body">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="mealModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between;">
+                <h2 id="modal-title">Meal Schedule</h2>
+                <button onclick="closeModal()" style="font-size: 2rem; border: none; background: none; cursor: pointer;">&times;</button>
+            </div>
+            <div id="meal-list-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                </div>
+        </div>
+    </div>
+
+<script>
+    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(sbUrl, sbKey);
+
+    function checkLogin() {
+        const code = document.getElementById('pass-code').value;
+        if(code === "1234") { // <--- Change this to your actual secret code
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            loadOrders();
+        } else {
+            alert("Wrong code, Chef!");
+        }
+    }
+
+    async function loadOrders() {
+        const { data, error } = await sbClient
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) return console.error(error);
+
+        const tbody = document.getElementById('orders-body');
+        tbody.innerHTML = data.map(order => `
+            <tr>
+                <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                <td><strong>${order.customer_name}</strong></td>
+                <td><span class="status-badge">${order.plan_name}</span></td>
+                <td>${order.customer_phone}</td>
+                <td><button class="view-btn" onclick="viewMeals('${order.id}', '${order.customer_name}')">View Meals</button></td>
+            </tr>
+        `).join('');
+    }
+
+   async function viewMeals(orderId, name) {
+    console.log("Looking for meals for Order ID:", orderId); // Debugging line
+    document.getElementById('modal-title').innerText = "Meal Schedule for " + name;
+    
+    const { data, error } = await sbClient
+        .from('order_items') // Double check if your table name is exactly this!
+        .select('*')
+        .eq('order_id', orderId)
+        .order('day_number', { ascending: true });
+
+    if (error) {
+        console.error("Supabase Error:", error);
+        alert("Database Error: " + error.message);
+        return;
+    }
+
+    const grid = document.getElementById('meal-list-grid');
+    
+    if (!data || data.length === 0) {
+        grid.innerHTML = `<p style="color: red; padding: 20px;">No meals found in the database for this Order ID (${orderId}).</p>`;
+    } else {
+        grid.innerHTML = data.map(item => `
+            <div style="border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fafafa; margin-bottom: 10px;">
+                <p style="margin: 0; font-weight: bold; color: var(--forest);">Day ${item.day_number}</p>
+                <p style="margin: 5px 0; font-size: 0.9rem;">${item.meal_name}</p>
+                <p style="margin: 0; font-size: 0.8rem; color: #666;">Choice: ${item.choice}</p>
+                ${item.removals ? `<p style="margin: 0; font-size: 0.8rem; color: red;">No: ${item.removals}</p>` : ''}
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('mealModal').style.display = 'block';
+}
+
+    function closeModal() { document.getElementById('mealModal').style.display = 'none'; }
+</script>
+</body>
+</html>
