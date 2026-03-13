@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
+<header class="hero-home">
     <nav class="navbar">
         <div class="container">
             <div class="logo-area">
@@ -22,8 +22,8 @@
             </ul>
         </div>
     </nav>
-
-    <header class="hero-home">
+</header>
+    
         <div class="container" style="max-width: 800px;">
             <div class="badge" style="margin-bottom: 20px;">100% Dairy & Meat Free Kitchen</div>
             <h1>We got you.</h1>
@@ -36,7 +36,7 @@
                 <a href="#plans" class="btn-primary" style="width: auto; padding: 15px 40px; text-decoration: none;">Explore Plans</a>
             </div>
         </div>
-    </header>
+    
 
     <section id="how-it-works" style="background: white; padding: 80px 0; border-top: 1px solid #eee;">
         <div class="container">
@@ -175,6 +175,19 @@
                 event.target.style.display = "none";
             }
         }
+        let lastScrollY = window.scrollY;
+const header = document.querySelector('header');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > lastScrollY && window.scrollY > 100) {
+        // SCROLLING DOWN -> Hide Header
+        header.classList.add('header-hidden');
+    } else {
+        // SCROLLING UP -> Show Header
+        header.classList.remove('header-hidden');
+    }
+    lastScrollY = window.scrollY;
+});
     </script>
 </body>
 <footer class="site-footer">

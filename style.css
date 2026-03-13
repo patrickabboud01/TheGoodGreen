@@ -30,7 +30,7 @@ body {
 .nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.8rem; }
 
 /* --- HERO --- */
-.hero-home { text-align: center; padding: 80px 20px; background: var(--white); }
+.hero-home { text-align: center; padding: 0px 20px; background: var(--white); }
 .hero-home h1 { font-size: 2.8rem; color: var(--forest); margin: 0; }
 .badge { 
     display: inline-block; 
@@ -277,4 +277,21 @@ body {
         flex-direction: column;
         gap: 15px;
     }
+}
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #2d5a27;
+    transition: transform 0.3s ease-in-out; /* This makes the slide smooth */
+}
+
+/* This class will be added/removed by JavaScript */
+.header-hidden {
+    transform: translateY(-100%); /* Slides the header up out of view */
+}
+body {
+    padding-top: 200px; /* Match this to your header's height */
 }
