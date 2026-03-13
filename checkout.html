@@ -117,7 +117,7 @@
             
             // DEBUG CHECK: Count the meals
             const mealCount = orderInfo.meals ? orderInfo.meals.length : 0;
-            alert("System check: " + mealCount + " meal items found in memory. Proceeding to save...");
+           
 
             const btn = document.getElementById('submit-btn');
             const loading = document.getElementById('loading-text');
@@ -161,7 +161,7 @@
                     order_id: orderId
                 });
 
-                alert("SUCCESS! Order and all meals saved.");
+               
                 localStorage.clear();
                 window.location.href = "thanks.html";
 
