@@ -8,24 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="builder-body">
+
     <div class="builder-container">
         <aside class="builder-sidebar">
             <div class="sidebar-top">
                 <a href="index.html" class="back-link">← Change Plan</a>
-                <h2 id="plan-name-display">Loading...</h2>
-                <p><span id="display-total-days">0</span> Days | <span id="display-items-per-day">0</span> Items/Day</p>
+                <h2 id="plan-name-display" style="color: var(--forest); margin: 10px 0;">Loading...</h2>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <span id="display-total-days">0</span> Days | <span id="display-items-per-day">0</span> Items/Day
+                </p>
             </div>
 
             <div class="calendar-section">
-                <h3>Select Day to Edit</h3>
+                <h3 style="font-size: 1rem; margin-bottom: 15px;">Select Day to Edit</h3>
                 <div id="calendar-grid" class="calendar-grid"></div>
             </div>
 
             <div class="day-overview">
-                <h3>Day <span id="active-day-num">1</span> Summary</h3>
+                <h3 style="font-size: 1rem; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
+                    Day <span id="active-day-num">1</span> Summary
+                </h3>
                 <ul id="selection-list" class="selection-list"></ul>
-                <div class="day-stats">Protein: <span id="day-protein">0</span>g</div>
-                <button id="confirm-all-btn" class="btn-confirm disabled" disabled onclick="handleFinalOrder()">Confirm Entire Plan</button>
+                <div class="day-stats" style="font-weight: 700; color: var(--forest); margin-bottom: 15px;">
+                    Protein: <span id="day-protein">0</span>g
+                </div>
+                <button id="confirm-all-btn" class="btn-confirm disabled" disabled onclick="handleFinalOrder()" style="width: 100%;">
+                    Confirm Entire Plan
+                </button>
             </div>
         </aside>
 
@@ -40,31 +49,30 @@
         </main>
     </div>
 
- <div id="editModal" class="modal">
+    <div id="editModal" class="modal">
         <div class="modal-content">
             <div id="ingredients-list"></div>
             <button class="btn-confirm" onclick="closeEditModal()" style="margin-top:20px;">Save Changes</button>
         </div>
     </div>
 
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 The Good Green. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 18px;">
+                    <span>@thegoodgreen.lb</span>
+                </a>
+                <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 18px; filter: brightness(0) invert(1);">
+                    <span>+961 81 15 39 17</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
     <script src="menu-data.js"></script>
     <script src="builder-logic.js"></script>
 </body>
-<footer class="site-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 The Good Green. All rights reserved.</p>
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 18px;">
-                <span>@thegoodgreen.lb</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 18px; filter: brightness(0) invert(1);">
-                <span>+961 81 15 39 17</span>
-            </a>
-        </div>
-    </div>
-</footer>
 </html>

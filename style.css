@@ -849,3 +849,79 @@ section { padding: 60px 0; }
     font-family: inherit;
     font-size: 1rem;
 }
+/* --- BUILDER PAGE FIXES --- */
+
+/* 1. Reset Container for Mobile */
+.builder-container {
+    display: flex;
+    flex-direction: row; /* Desktop default */
+    min-height: 100vh;
+}
+
+/* 2. Sidebar Desktop vs Mobile */
+.builder-sidebar {
+    width: 350px;
+    flex-shrink: 0;
+    background: white;
+    padding: 25px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+}
+
+/* 3. Main Content Desktop vs Mobile */
+.builder-main {
+    flex-grow: 1;
+    padding: 30px;
+    background: var(--cream);
+    overflow-y: auto;
+}
+
+/* --- MOBILE SPECIFIC OVERRIDES --- */
+@media (max-width: 850px) {
+    .builder-container {
+        flex-direction: column; /* Stack vertically on phones */
+        height: auto;
+    }
+
+    .builder-sidebar {
+        width: 100%; /* Take full width */
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+        position: relative;
+        height: auto;
+        padding: 20px;
+    }
+
+    .builder-main {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+    }
+
+    /* Make the calendar grid more compact on phones */
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr); 
+        gap: 5px;
+    }
+
+    .day-dot {
+        height: 35px;
+        width: 35px;
+        font-size: 0.8rem;
+    }
+
+    /* Fix menu tabs scrolling horizontally on small screens */
+    .menu-tabs {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        gap: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto; /* Don't shrink buttons */
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+}
