@@ -1,5 +1,6 @@
 /**
  * THE GOOD GREEN - COMPLETE UNIFIED LOGIC (MOBILE OPTIMIZED)
+ * FEATURES: Multi-Choice Windows, Auto-Category Sorting, Ingredient Removals, Toast Alerts
  */
 
 let menuData = []; 
@@ -7,6 +8,7 @@ let currentDay = 1;
 let fullState = {};
 let pendingItem = null; 
 let editingItem = null; 
+let currentChoiceStep = 0; // NEW: Tracks multi-choice sequence
 
 // 1. Read Plan Settings from URL
 const params = new URLSearchParams(window.location.search);
@@ -21,7 +23,7 @@ for(let i = 1; i <= totalDays; i++) {
 }
 
 /**
- * LOAD DATA
+ * LOAD DATA & PARSE MULTI-CHOICES
  */
 function loadMenu() {
     if (typeof rawMenuData === 'undefined') {
@@ -29,34 +31,46 @@ function loadMenu() {
         return;
     }
 
-    menuData = rawMenuData.map((item, index) => ({
-        id: index,
-        category: item.category.toLowerCase(),
-        name: item.name,
-        protein: item.protein,
-        ingredients: item.ingredients ? item.ingredients.split(';') : [],
-        choices: (item.choice_options && item.choice_options.trim() !== "") ? {
-            title: item.choice_title,
-            options: item.choice_options.split(';').map(o => o.trim())
-        } : null
-    }));
+    menuData = rawMenuData.map((item, index) => {
+        let choicesArray = [];
+        
+        // Parse First Choice
+        if (item.choice_options && item.choice_options.trim() !== "") {
+            choicesArray.push({
+                title: item.choice_title || "Selection Required",
+                options: item.choice_options.split(';').map(o => o.trim())
+            });
+        }
+        
+        // Parse Second Choice (If exists in your data)
+        if (item.choice_options_2 && item.choice_options_2.trim() !== "") {
+            choicesArray.push({
+                title: item.choice_title_2 || "Second Selection",
+                options: item.choice_options_2.split(';').map(o => o.trim())
+            });
+        }
+
+        return {
+            id: index,
+            category: item.category.toLowerCase(),
+            name: item.name,
+            protein: item.protein,
+            ingredients: item.ingredients ? item.ingredients.split(';') : [],
+            multiChoices: choicesArray // Replaces single choice object
+        };
+    });
     init();
 }
 
 /**
- * INITIALIZATION
- */
-/**
- * INITIALIZATION
+ * INITIALIZATION & CATEGORY SORTING
  */
 function init() {
-    // 1. Set Header Info
     document.getElementById('plan-name-display').innerText = planName;
     document.getElementById('display-total-days').innerText = totalDays;
 
     renderCalendar();
 
-    // 2. Identify and Sort Categories
     const cleanPlanName = planName.toLowerCase().trim();
     const restrictions = {
         "solo": ["snack", "snacks", "protein", "extra pro"],
@@ -67,10 +81,8 @@ function init() {
 
     const nav = document.querySelector('.category-nav');
     const buttons = Array.from(nav.querySelectorAll('.cat-btn'));
-    
     let firstAllowedBtn = null;
 
-    // Determine which buttons stay and which are restricted
     buttons.forEach(btn => {
         const btnText = btn.innerText.toLowerCase().trim();
         let isRestricted = false;
@@ -84,79 +96,43 @@ function init() {
 
         if (isRestricted) {
             btn.classList.add('unavailable');
-            btn.style.order = "2"; // Move to back
+            btn.style.order = "2"; 
             btn.style.pointerEvents = "none";
         } else {
             btn.classList.remove('unavailable');
-            btn.style.order = "1"; // Move to front
+            btn.style.order = "1"; 
             btn.style.pointerEvents = "auto";
             if (!firstAllowedBtn) firstAllowedBtn = btn;
         }
     });
 
-    // 3. Auto-click the first valid category
-    if (firstAllowedBtn) {
-        firstAllowedBtn.click();
-    } else {
-        // Fallback if no specific plan match found
-        renderMenu('breakfast');
-    }
+    if (firstAllowedBtn) firstAllowedBtn.click();
+    else renderMenu('breakfast');
     
     updateUI();
 }
+
 /**
- * MENU RENDERING & RESTRICTIONS (GREYED OUT LOGIC)
+ * MENU RENDERING
  */
 function renderMenu(cat) {
     const grid = document.getElementById('menu-grid');
     grid.innerHTML = "";
-    
-    const cleanPlanName = planName.toLowerCase().trim();
     const cleanCat = cat.toLowerCase().trim();
 
-    // Define restrictions
-    const restrictions = {
-        "solo": ["snack", "snacks", "protein", "extra pro"],
-        "duo": ["snack", "snacks", "protein", "extra pro"],
-        "trio": ["protein", "extra pro"],
-        "protein": ["breakfast", "snack", "snacks" , "main meals"]
-    };
-
-    // Tabs UI Update - GREEN BACKGROUND FOR ACTIVE / GREY FOR UNAVAILABLE
     document.querySelectorAll('.cat-btn').forEach(b => {
         const btnText = b.innerText.toLowerCase().trim();
         const btnCategory = btnText === "main meals" ? "lunch/dinner" : (btnText === "extra pro" ? "protein" : btnText);
-        
-        // Match active state
-        const isActive = (cleanCat === btnCategory);
-        b.classList.toggle('active', isActive);
-
-        // Check if restricted
-        let tabDisabled = false;
-        for (const plan in restrictions) {
-            if (cleanPlanName.includes(plan) && restrictions[plan].includes(btnText)) {
-                tabDisabled = true;
-                break;
-            }
-        }
-
-        if (tabDisabled) {
-            b.classList.add('unavailable');
-            b.style.pointerEvents = "none";
-        } else {
-            b.classList.remove('unavailable');
-            b.style.pointerEvents = "auto";
-        }
+        b.classList.toggle('active', (cleanCat === btnCategory));
     });
 
-    // Filter and Show Items
     const itemsToShow = menuData.filter(m => {
         if (cat === 'lunch/dinner') return m.category === 'lunch' || m.category === 'dinner';
         return m.category === cat;
     });
 
     if (itemsToShow.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #999;">No items found in this category.</div>`;
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #999;">No items found.</div>`;
     }
 
     itemsToShow.forEach(item => {
@@ -169,64 +145,60 @@ function renderMenu(cat) {
     });
 }
 
+/**
+ * ADD ITEM & MULTI-STEP CHOICE LOGIC
+ */
 function addItem(id) {
     if (fullState[currentDay].length >= itemsPerDay) {
-        // Updated to use the custom toast
-        showToast("   Day " + currentDay + " 's items are full!", 'error');
+        showToast("Day " + currentDay + " is full!", 'error');
         return;
     }
     
     const item = menuData.find(i => i.id === id);
     pendingItem = JSON.parse(JSON.stringify(item)); 
-    
-    if (item.choices) {
-        showChoicePopup(item.choices); 
+    pendingItem.selectedChoices = []; // Array for multiple selections
+    currentChoiceStep = 0; 
+
+    if (pendingItem.multiChoices && pendingItem.multiChoices.length > 0) {
+        showChoicePopup(); 
     } else {
         confirmAdd();
-        // Optional: show success toast when added
         showToast("Added to Day " + currentDay, 'success');
     }
 }
 
-function showChoicePopup(choiceObj) {
+function showChoicePopup() {
     const modal = document.getElementById('editModal');
     const container = document.getElementById('ingredients-list');
-    container.innerHTML = `<h3>Selection Required</h3><div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">${choiceObj.options.map(opt => `<button class="btn-confirm-mini" style="background:var(--forest); color:white; padding:12px;" onclick="finalizeChoice('${opt}')">${opt}</button>`).join('')}</div>`;
+    const choiceObj = pendingItem.multiChoices[currentChoiceStep];
+
+    container.innerHTML = `
+        <h3 style="color:var(--forest);">${choiceObj.title}</h3>
+        <p style="font-size:0.75rem; color:#888; margin-bottom:15px;">Selection ${currentChoiceStep + 1} of ${pendingItem.multiChoices.length}</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            ${choiceObj.options.map(opt => `
+                <button class="btn-confirm-mini" style="background:var(--forest); color:white; padding:15px;" onclick="finalizeChoice('${opt}')">
+                    ${opt}
+                </button>
+            `).join('')}
+        </div>
+    `;
     modal.style.display = "flex";
 }
 
 function finalizeChoice(selection) {
-    pendingItem.selectedChoice = selection;
-    confirmAdd();
-    document.getElementById('editModal').style.display = "none";
-}
-function showToast(message, type = 'error') {
-    // Create element
-    const oldToast = document.querySelector('.toast-notice');
-    if (oldToast) oldToast.remove();
+    pendingItem.selectedChoices.push(selection);
+    currentChoiceStep++;
 
-    const toast = document.createElement('div');
-    toast.className = 'toast-notice';
-    toast.innerText = message;
-    
-    // Color Logic
-    if (type === 'success') {
-        toast.style.background = '#2e7d32'; // The Good Green Forest color
+    if (currentChoiceStep < pendingItem.multiChoices.length) {
+        showChoicePopup(); // Show next step
     } else {
-        toast.style.background = '#ce4242'; // Alert Red
+        confirmAdd();
+        document.getElementById('editModal').style.display = "none";
+        showToast("Selection complete!", 'success');
     }
-    
-    document.body.appendChild(toast);
-
-    // Small delay to trigger the CSS transition
-    setTimeout(() => toast.classList.add('show'), 10);
-
-    // Hide and remove
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 500);
-    }, 2500);
 }
+
 function confirmAdd() {
     pendingItem.instanceId = Date.now() + Math.random();
     pendingItem.removedIngredients = [];
@@ -235,24 +207,24 @@ function confirmAdd() {
     updateUI();
 }
 
+/**
+ * UI UPDATES & CALENDAR
+ */
 function updateUI() {
     const list = document.getElementById('selection-list');
-    const dayProteinDisplay = document.getElementById('day-protein');
     const itemsCountDisplay = document.getElementById('day-items-count');
-    
     list.innerHTML = "";
-    let prot = 0;
 
     fullState[currentDay].forEach(item => {
-        prot += item.protein;
+        // Handle multiple selections in the display
+        const choiceText = (item.selectedChoices && item.selectedChoices.length > 0) 
+            ? `<br><small style="color:var(--forest); font-weight:600;">Selection: ${item.selectedChoices.join(' + ')}</small>` 
+            : '';
         
-        // 1. Prepare Choice and Removed Ingredients text
-        const choiceText = item.selectedChoice ? `<br><small style="color:var(--forest); font-weight:600;">Selection: ${item.selectedChoice}</small>` : '';
         const removedText = (item.removedIngredients && item.removedIngredients.length > 0) 
             ? `<br><small style="color:#d97706;">No: ${item.removedIngredients.join(', ')}</small>` 
             : '';
         
-        // 2. Build the list item with Edit and Remove buttons
         list.innerHTML += `
             <li style="font-size: 0.85rem; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -262,21 +234,18 @@ function updateUI() {
                         ${removedText}
                         <div style="margin-top: 5px;">
                             <button class="edit-btn" onclick="openEditModal(${item.instanceId})" 
-                                    style="background: #f0f4f0; color: var(--forest); border: 1px solid var(--forest); border-radius: 4px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">
+                                    style="background: #f0f4f0; color: var(--forest); border: 1px solid var(--forest); border-radius: 4px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700;">
                                 Edit Ingredients
                             </button>
                         </div>
                     </div>
-                    <button onclick="removeItem(${item.instanceId})" style="color:#ff4d4d; border:none; background:none; font-weight:bold; font-size: 1.1rem; padding: 0 5px; cursor:pointer;">✕</button>
+                    <button onclick="removeItem(${item.instanceId})" style="color:#ff4d4d; border:none; background:none; font-weight:bold; font-size: 1.1rem;">✕</button>
                 </div>
             </li>`;
     });
 
-    // Update Totals
-    if(dayProteinDisplay) dayProteinDisplay.innerText = prot;
     if(itemsCountDisplay) itemsCountDisplay.innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items Selected`;
 
-    // Confirm Button State
     const hasAnySelections = Object.values(fullState).some(dayArray => dayArray.length > 0);
     const confirmBtn = document.getElementById('confirm-all-btn');
     if (confirmBtn) {
@@ -314,6 +283,9 @@ function removeItem(id) {
     updateUI(); 
 }
 
+/**
+ * MODALS & TOASTS
+ */
 function openEditModal(instanceId) {
     editingItem = fullState[currentDay].find(i => i.instanceId === instanceId);
     const modal = document.getElementById('editModal');
@@ -340,10 +312,28 @@ function closeEditModal() {
     updateUI();
 }
 
+function showToast(message, type = 'error') {
+    const oldToast = document.querySelector('.toast-notice');
+    if (oldToast) oldToast.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast-notice';
+    toast.innerText = message;
+    toast.style.background = (type === 'success') ? '#2e7d32' : '#ce4242';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 2500);
+}
+
+/**
+ * FINALIZATION
+ */
 async function handleFinalOrder() {
     for (let i = 1; i <= totalDays; i++) {
         if (fullState[i].length < itemsPerDay) {
-            alert(`Day ${i} is not complete yet!`);
+            showToast(`Day ${i} is not complete!`, 'error');
             switchDay(i);
             return;
         }
@@ -355,7 +345,7 @@ async function handleFinalOrder() {
             flattenedMeals.push({
                 day_number: parseInt(day),
                 meal_name: item.name,
-                choice: item.selectedChoice || null,
+                choice: item.selectedChoices ? item.selectedChoices.join(' + ') : null,
                 removals: item.removedIngredients.join(', ')
             });
         });
