@@ -1044,3 +1044,54 @@ section { padding: 60px 0; }
 
 .protein-label { font-size: 0.7rem; display: block; color: #888; text-transform: uppercase; }
 .protein-val { font-size: 1.2rem; font-weight: 700; color: var(--forest); }
+/* Normal Category Button */
+.cat-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+/* HIGHLIGHT: The menu you are currently in */
+.cat-btn.active {
+    background: var(--forest) !important;
+    color: white !important;
+    border-color: var(--forest) !important;
+}
+
+/* LOCKED: Unavailable for the specific package */
+.cat-btn.locked {
+    background: #e0e0e0 !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+    text-decoration: line-through !important; /* Lined over */
+    border-color: #ccc !important;
+    opacity: 0.6;
+}
+/* The active category button style */
+.cat-btn.active {
+    background-color: #2e7d32 !important; /* Forest Green */
+    color: white !important;
+    border-color: #2e7d32 !important;
+    font-weight: 700;
+}
+
+/* Optional: Smooth transition when switching */
+.cat-btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+/* Style for unavailable category buttons */
+.cat-btn.unavailable {
+    background-color: #e0e0e0 !important;
+    color: #a0a0a0 !important;
+    text-decoration: line-through !important; /* The line over the text */
+    border-color: #ccc !important;
+    cursor: not-allowed !important;
+    pointer-events: none; /* Makes it unclickable */
+    opacity: 0.6;
+}
