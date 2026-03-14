@@ -6,6 +6,51 @@
     <title>Packages | The Good Green</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Specific Styles for the Pricing Table Window */
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .pricing-table th {
+            background: var(--forest, #2d5a27);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        .pricing-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+        .price-tag {
+            font-weight: 700;
+            color: var(--forest, #2d5a27);
+        }
+        .plan-feature-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .plan-feature-list li {
+            margin-bottom: 5px;
+        }
+        .plan-feature-list i {
+            color: #2d5a27;
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,6 +64,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
+                <li><a href="packages.html" class="active">Packages</a></li>
                 <li><a href="menu.html">Menu</a></li>
             </ul>
         </div>
@@ -35,7 +81,7 @@
                 <p style="color: #888; font-size: 0.9rem;">One Hearty Meal</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">1 Meal <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
                 <button class="btn-outline mb-10" onclick="openDurationModal('THE SOLO', 1)">Select Package</button>
-                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+                <button class="btn-details" onclick="openPricingModal('THE SOLO')">View Details & Prices</button>
             </div>
 
             <div class="plan-card">
@@ -43,7 +89,7 @@
                 <p style="color: #888; font-size: 0.9rem;">Lunch & Dinner</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
                 <button class="btn-outline mb-10" onclick="openDurationModal('THE DUO', 2)">Select Package</button>
-                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+                <button class="btn-details" onclick="openPricingModal('THE DUO')">View Details & Prices</button>
             </div>
 
             <div class="plan-card featured">
@@ -52,7 +98,7 @@
                 <p style="color: #888; font-size: 0.9rem;">Breakfast, Lunch & Dinner</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">3 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
                 <button class="btn-primary mb-10" onclick="openDurationModal('THE TRIO', 3)">Select Package</button>
-                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+                <button class="btn-details" onclick="openPricingModal('THE TRIO')">View Details & Prices</button>
             </div>
 
             <div class="plan-card">
@@ -60,15 +106,15 @@
                 <p style="color: #888; font-size: 0.9rem;">3 Meals + 2 Snacks</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">5 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
                 <button class="btn-outline mb-10" onclick="openDurationModal('THE FULL PLAN', 5)">Select Package</button>
-                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+                <button class="btn-details" onclick="openPricingModal('THE FULL PLAN')">View Details & Prices</button>
             </div>
 
             <div class="plan-card">
                 <h3>PROTEIN BOOSTER</h3>
                 <p style="color: #888; font-size: 0.9rem;">Max Protein Focus</p>
-                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">High Pro <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
-                <button class="btn-outline mb-10" onclick="openDurationModal('PROTEIN BOOSTER', 4)">Select Package</button>
-                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <button class="btn-outline mb-10" onclick="openDurationModal('PROTEIN BOOSTER', 2)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal('PROTEIN BOOSTER')">View Details & Prices</button>
             </div>
         </div>
     </section>
@@ -88,27 +134,50 @@
 </div>
 
 <div id="pricingModal" class="modal">
-    <div class="modal-content" style="max-width: 600px; padding: 10px; background: none; box-shadow: none;">
-        <div style="text-align: right;">
-            <span onclick="closeModal('pricingModal')" style="color: white; font-size: 40px; cursor: pointer;">&times;</span>
+    <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 id="modal-plan-name" style="color: var(--forest); margin: 0;">Plan Details</h3>
+            <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
         </div>
-        <img src="images/planprices.jpeg" alt="Pricing Details" style="width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
+        
+        <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
+
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>Duration</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody id="pricing-body">
+                </tbody>
+        </table>
+
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd;">
+            <h4 style="font-size: 0.9rem; margin-bottom: 10px;">What's Included:</h4>
+            <ul id="modal-features" class="plan-feature-list">
+                </ul>
+        </div>
+
+        <button class="btn-primary" onclick="closeModal('pricingModal'); openDurationModal(currentSelectedPlan, currentItemsPerDay)" style="width: 100%; margin-top: 25px;">Choose This Plan</button>
     </div>
 </div>
 
 <footer class="site-footer">
     <div class="footer-content">
         <p>&copy; 2026 The Good Green. All rights reserved.</p>
-        
         <div class="footer-links">
             <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 18px;">
-                <span>@thegoodgreen.lb</span>
+                <i class="fa-brands fa-instagram"></i>
+                <span>thegoodgreen.lb</span>
             </a>
-
             <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 18px; filter: brightness(0) invert(1);">
+                <i class="fa-brands fa-whatsapp"></i>
                 <span>+961 81 15 39 17</span>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+                <i class="fa-brands fa-facebook-f"></i>
+                <span>The Good Green</span>
             </a>
         </div>
     </div>
@@ -118,12 +187,38 @@
     let currentSelectedPlan = "";
     let currentItemsPerDay = 0;
 
-    const priceList = {
-        "THE SOLO": { 1: 12, 5: 50, 24: 200 },
-        "THE DUO": { 1: 17, 5: 85, 24: 300 },
-        "THE TRIO": { 1: 22, 5: 100, 24: 340 },
-        "THE FULL PLAN": { 1: 25, 5: 110, 24: 400 },
-        "PROTEIN BOOSTER": { 1: 10, 5: 40, 24: 150 }
+    // Plan Data for the Designed Window
+    const planDetails = {
+        "THE SOLO": {
+            description: "Perfect for busy professionals who need one high-quality, nutritious meal daily.",
+            features: ["Choice of Lunch or Dinner", "Freshly Prepared", "Eco-friendly packaging"],
+            prices: { "1 Day": "$12", "5 Days": "$50", "24 Days": "$200" },
+            items: 1
+        },
+        "THE DUO": {
+            description: "Covers your two main meals of the day. No more worrying about lunch or dinner.",
+            features: ["Lunch & Dinner included", "High protein options", "Customizable ingredients"],
+            prices: { "1 Day": "$17", "5 Days": "$85", "24 Days": "$300" },
+            items: 2
+        },
+        "THE TRIO": {
+            description: "Total nutrition from morning to night. Our most popular comprehensive plan.",
+            features: ["Breakfast, Lunch & Dinner", "Balanced Macros", "Daily variety"],
+            prices: { "1 Day": "$22", "5 Days": "$100", "24 Days": "$340" },
+            items: 3
+        },
+        "THE FULL PLAN": {
+            description: "The complete 'The Good Green' experience. Zero cooking, zero stress.",
+            features: ["3 Meals + 2 Healthy Snacks", "Full day coverage", "Metabolism boosting snacks"],
+            prices: { "1 Day": "$25", "5 Days": "$110", "24 Days": "$400" },
+            items: 5
+        },
+        "PROTEIN BOOSTER": {
+            description: "Specifically designed for athletes and those looking to increase lean muscle mass.",
+            features: ["2 Extra Protein Portions", "Clean protein sources", "Minimal fats/carbs"],
+            prices: { "1 Day": "$10", "5 Days": "$40", "24 Days": "$150" },
+            items: 2
+        }
     };
 
     function openDurationModal(planName, items) {
@@ -133,7 +228,25 @@
         document.getElementById('durationModal').style.display = 'flex';
     }
 
-    function openPricingModal() {
+    function openPricingModal(planName) {
+        currentSelectedPlan = planName;
+        const data = planDetails[planName];
+        currentItemsPerDay = data.items;
+
+        document.getElementById('modal-plan-name').innerText = planName;
+        document.getElementById('modal-plan-description').innerText = data.description;
+
+        // Fill Table
+        const tbody = document.getElementById('pricing-body');
+        tbody.innerHTML = "";
+        for (const [days, price] of Object.entries(data.prices)) {
+            tbody.innerHTML += `<tr><td>${days}</td><td class="price-tag">${price}</td></tr>`;
+        }
+
+        // Fill Features
+        const featureList = document.getElementById('modal-features');
+        featureList.innerHTML = data.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
+
         document.getElementById('pricingModal').style.display = "flex";
     }
 
@@ -142,7 +255,10 @@
     }
 
     function goToBuilder(days) {
-        const price = priceList[currentSelectedPlan][days] || 0;
+        // Extract numeric price from string (e.g. "$12" -> 12)
+        const priceStr = planDetails[currentSelectedPlan].prices[days === 1 ? "1 Day" : (days === 5 ? "5 Days" : "24 Days")];
+        const price = priceStr.replace('$', '');
+        
         const url = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
         window.location.href = url;
     }

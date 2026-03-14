@@ -46,26 +46,64 @@ function loadMenu() {
 /**
  * INITIALIZATION
  */
+/**
+ * INITIALIZATION
+ */
 function init() {
-    const cleanPlan = planName.toLowerCase().trim();
-    
-    // Update Header Info
+    // 1. Set Header Info
     document.getElementById('plan-name-display').innerText = planName;
-    const dayLabel = totalDays === 1 ? "Day" : "Days";
     document.getElementById('display-total-days').innerText = totalDays;
 
     renderCalendar();
 
-    // SMART LANDING: Auto-select first available tab
-    if (cleanPlan.includes("solo") || cleanPlan.includes("duo") || cleanPlan.includes("protein")) {
-        renderMenu('lunch/dinner');
+    // 2. Identify and Sort Categories
+    const cleanPlanName = planName.toLowerCase().trim();
+    const restrictions = {
+        "solo": ["snack", "snacks", "protein", "extra pro"],
+        "duo": ["snack", "snacks", "protein", "extra pro"],
+        "trio": ["protein", "extra pro"],
+        "protein": ["breakfast", "snack", "snacks", "main meals"]
+    };
+
+    const nav = document.querySelector('.category-nav');
+    const buttons = Array.from(nav.querySelectorAll('.cat-btn'));
+    
+    let firstAllowedBtn = null;
+
+    // Determine which buttons stay and which are restricted
+    buttons.forEach(btn => {
+        const btnText = btn.innerText.toLowerCase().trim();
+        let isRestricted = false;
+
+        for (const plan in restrictions) {
+            if (cleanPlanName.includes(plan) && restrictions[plan].includes(btnText)) {
+                isRestricted = true;
+                break;
+            }
+        }
+
+        if (isRestricted) {
+            btn.classList.add('unavailable');
+            btn.style.order = "2"; // Move to back
+            btn.style.pointerEvents = "none";
+        } else {
+            btn.classList.remove('unavailable');
+            btn.style.order = "1"; // Move to front
+            btn.style.pointerEvents = "auto";
+            if (!firstAllowedBtn) firstAllowedBtn = btn;
+        }
+    });
+
+    // 3. Auto-click the first valid category
+    if (firstAllowedBtn) {
+        firstAllowedBtn.click();
     } else {
+        // Fallback if no specific plan match found
         renderMenu('breakfast');
     }
     
     updateUI();
 }
-
 /**
  * MENU RENDERING & RESTRICTIONS (GREYED OUT LOGIC)
  */
@@ -134,7 +172,7 @@ function renderMenu(cat) {
 function addItem(id) {
     if (fullState[currentDay].length >= itemsPerDay) {
         // Updated to use the custom toast
-        showToast("Day " + currentDay + " is full!", 'error');
+        showToast("   Day " + currentDay + " 's items are full!", 'error');
         return;
     }
     
@@ -164,23 +202,30 @@ function finalizeChoice(selection) {
 }
 function showToast(message, type = 'error') {
     // Create element
+    const oldToast = document.querySelector('.toast-notice');
+    if (oldToast) oldToast.remove();
+
     const toast = document.createElement('div');
     toast.className = 'toast-notice';
     toast.innerText = message;
     
-    // Change color if it's a success message
-    if (type === 'success') toast.style.background = 'var(--forest)';
+    // Color Logic
+    if (type === 'success') {
+        toast.style.background = '#2e7d32'; // The Good Green Forest color
+    } else {
+        toast.style.background = '#ce4242'; // Alert Red
+    }
     
     document.body.appendChild(toast);
 
-    // Trigger animation
-    setTimeout(() => toast.classList.add('show'), 100);
+    // Small delay to trigger the CSS transition
+    setTimeout(() => toast.classList.add('show'), 10);
 
-    // Remove after 3 seconds
+    // Hide and remove
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 500);
-    }, 3000);
+    }, 2500);
 }
 function confirmAdd() {
     pendingItem.instanceId = Date.now() + Math.random();

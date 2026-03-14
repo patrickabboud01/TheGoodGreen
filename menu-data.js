@@ -24,8 +24,9 @@ const rawMenuData = [
     { category: "snack", name: "Oat Cookie Chocolate", protein: 5, ingredients: "Banana;Oats;Peanut Butter;Chocolate Flakes", choice_title: "", choice_options: "" },
 
      // --- PROTEIN ---
-    { category: "protein", name: "Protein Shake", protein: 40, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond" },
-    { category: "protein", name: "Protein Cookie", protein: 10, ingredients: "Oat;Banana;Pea Protein;Peanut Butter", choice_title: "", choice_options: "" }
+    { category: "protein", name: "Protein Shake Plain + Protein Cookie", protein: 50, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond" },
+    { category: "protein", name: "Protein Shake Chocolate + Protein Cookie", protein: 50, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond" },
+    { category: "protein", name: "Protein Shake Berries + Protein Cookie", protein: 50, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond" },
 
 
 ];
