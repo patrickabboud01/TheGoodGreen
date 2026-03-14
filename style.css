@@ -126,9 +126,9 @@ section { padding: 60px 0; }
 }
 
 .btn-primary {
-    background: var(--forest);
-    color: var(--white);
-    border: none;
+    background: transparent;
+    border: 2.5px solid var(--forest);
+    color: var(--forest);
 }
 
 .btn-outline {
@@ -1094,4 +1094,24 @@ section { padding: 60px 0; }
     cursor: not-allowed !important;
     pointer-events: none; /* Makes it unclickable */
     opacity: 0.6;
+}
+/* Custom Toast Notification */
+.toast-notice {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #ce4242; /* Red for alerts, use var(--forest) for success */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    z-index: 10000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-notice.show {
+    transform: translateX(-50%) translateY(0);
 }

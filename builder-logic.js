@@ -78,10 +78,10 @@ function renderMenu(cat) {
 
     // Define restrictions
     const restrictions = {
-        "solo": ["breakfast", "snack", "snacks", "protein", "extra pro"],
-        "duo": ["snack", "snacks", "breakfast", "protein", "extra pro"],
-        "trio": ["snack", "snacks", "protein", "extra pro"],
-        "protein": ["breakfast", "snack", "snacks"]
+        "solo": ["snack", "snacks", "protein", "extra pro"],
+        "duo": ["snack", "snacks", "protein", "extra pro"],
+        "trio": ["protein", "extra pro"],
+        "protein": ["breakfast", "snack", "snacks" , "main meals"]
     };
 
     // Tabs UI Update - GREEN BACKGROUND FOR ACTIVE / GREY FOR UNAVAILABLE
@@ -133,12 +133,21 @@ function renderMenu(cat) {
 
 function addItem(id) {
     if (fullState[currentDay].length >= itemsPerDay) {
-        alert("Day " + currentDay + " is full!");
+        // Updated to use the custom toast
+        showToast("Day " + currentDay + " is full!", 'error');
         return;
     }
+    
     const item = menuData.find(i => i.id === id);
     pendingItem = JSON.parse(JSON.stringify(item)); 
-    if (item.choices) showChoicePopup(item.choices); else confirmAdd();
+    
+    if (item.choices) {
+        showChoicePopup(item.choices); 
+    } else {
+        confirmAdd();
+        // Optional: show success toast when added
+        showToast("Added to Day " + currentDay, 'success');
+    }
 }
 
 function showChoicePopup(choiceObj) {
@@ -153,7 +162,26 @@ function finalizeChoice(selection) {
     confirmAdd();
     document.getElementById('editModal').style.display = "none";
 }
+function showToast(message, type = 'error') {
+    // Create element
+    const toast = document.createElement('div');
+    toast.className = 'toast-notice';
+    toast.innerText = message;
+    
+    // Change color if it's a success message
+    if (type === 'success') toast.style.background = 'var(--forest)';
+    
+    document.body.appendChild(toast);
 
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
 function confirmAdd() {
     pendingItem.instanceId = Date.now() + Math.random();
     pendingItem.removedIngredients = [];
