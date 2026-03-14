@@ -290,3 +290,416 @@ section { padding: 60px 0; }
         gap: 40px;
     }
 }
+/* --- BUILDER PAGE SPECIFICS --- */
+
+/* Sidebar Fix for Mobile */
+@media (max-width: 768px) {
+    .builder-container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+    .builder-sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--border);
+        position: sticky;
+        top: 60px; /* Sits below the header */
+        z-index: 900;
+    }
+}
+
+/* Sidebar Elements */
+.sidebar-title {
+    font-size: 1.2rem;
+    color: var(--forest);
+    margin-bottom: 15px;
+}
+
+.selection-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.selection-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.remove-btn {
+    color: #e74c3c;
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+/* Calendar Styling */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.day-dot {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: 0.2s;
+    background: white;
+}
+
+.day-dot.active {
+    border: 2px solid var(--forest);
+    color: var(--forest);
+    font-weight: bold;
+}
+
+.day-dot.complete {
+    background: var(--forest);
+    color: white;
+    border-color: var(--forest);
+}
+
+/* Menu Tabs (The category scroll) */
+.menu-tabs {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.menu-tabs::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+.tab-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    white-space: nowrap;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: var(--forest);
+    color: white;
+    border-color: var(--forest);
+}
+
+/* Menu Grid Items */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.menu-item-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.menu-item-card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* --- THANK YOU PAGE SPECIFICS --- */
+
+.thank-you-section {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.success-check {
+    width: 80px;
+    height: 80px;
+    background: var(--forest);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 20px;
+}
+
+.order-summary-box {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin: 30px 0;
+    text-align: left;
+}
+
+.order-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.order-row.total {
+    border-top: 2px solid var(--cream);
+    border-bottom: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 20px;
+}
+/* --- BUILDER PAGE LAYOUT --- */
+.builder-body {
+    overflow: hidden; /* Prevents double scrollbars on desktop */
+    background: var(--cream);
+    padding-top: 0 !important; /* Builder doesn't need the header padding */
+}
+
+.builder-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar Styling */
+.builder-sidebar {
+    width: 350px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    overflow-y: auto;
+}
+
+.sidebar-top {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: var(--gray);
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#plan-name-display {
+    color: var(--forest);
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+/* Calendar Grid */
+.calendar-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 30px;
+}
+
+.day-dot {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.5px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: white;
+    transition: 0.2s;
+}
+
+.day-dot.active {
+    border: 2px solid var(--forest);
+    background: #f0f4ee;
+    font-weight: bold;
+}
+
+.day-dot.complete {
+    background: var(--forest);
+    color: white;
+    border-color: var(--forest);
+}
+
+/* Selection List & Stats */
+.day-overview {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.selection-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.selection-list li {
+    background: var(--cream);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.day-stats {
+    font-weight: 700;
+    color: var(--forest);
+    margin-bottom: 15px;
+}
+
+/* Main Menu Area */
+.builder-main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background: var(--cream);
+}
+
+.menu-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    padding: 10px 25px;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: var(--forest);
+    color: white;
+    border-color: var(--forest);
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.btn-confirm {
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    background: var(--forest);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-confirm.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- MOBILE BUILDER TIDY-UP --- */
+@media (max-width: 768px) {
+    .builder-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .builder-sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 20px;
+    }
+
+    .builder-main {
+        padding: 20px;
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 items per row on phones */
+    }
+}
+/* --- HOW IT WORKS SECTION --- */
+#how-it-works {
+    text-align: center; /* Centers the main heading */
+}
+
+.step-card {
+    padding: 20px;
+    text-align: center; /* Centers the content inside each card */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Ensures flex children are centered */
+}
+
+.step-card h4 {
+    margin: 10px 0;
+    color: var(--dark);
+}
+
+.step-card p {
+    max-width: 250px; /* Prevents text from spreading too wide on desktop */
+    margin: 0 auto;
+}
+
+/* Adjust the grid for this section specifically */
+#how-it-works .plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
