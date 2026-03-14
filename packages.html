@@ -2,72 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Packages | The Good Green</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h2 class="section-title" style="margin-top:40px;">Choose Your Package</h2>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="images/longlogo.png" alt="The Good Green Logo" class="main-logo">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section id="plans" class="container" style="padding: 60px 0;">
+        <h2 style="text-align: center; color: var(--forest); margin-bottom: 40px;">Choose Your Plan</h2>
         <div class="plan-grid">
-            <div class="plan-card" onclick="openModal('The Full Plan', 5)">
-                <h3>THE FULL PLAN</h3>
-                <p>Breakfast, 2 Snacks, Lunch, Dinner</p>
-                <button class="btn-primary">Select</button>
+            
+            <div class="plan-card">
+                <h3>THE SOLO</h3>
+                <p style="color: #888; font-size: 0.9rem;">One Hearty Meal</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">1 Meal <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <button class="btn-outline mb-10" onclick="openDurationModal('THE SOLO', 1)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
             </div>
-            <div class="plan-card" onclick="openModal('The Trio', 3)">
-                <h3>THE TRIO</h3>
-                <p>Breakfast, Lunch, Dinner</p>
-                <button class="btn-primary">Select</button>
-            </div>
-            <div class="plan-card" onclick="openModal('The Duo', 2)">
+
+            <div class="plan-card">
                 <h3>THE DUO</h3>
-                <p>Breakfast & Lunch</p>
-                <button class="btn-primary">Select</button>
+                <p style="color: #888; font-size: 0.9rem;">Lunch & Dinner</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <button class="btn-outline mb-10" onclick="openDurationModal('THE DUO', 2)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card featured">
+                <div class="badge" style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%);">Most Popular</div>
+                <h3>THE TRIO</h3>
+                <p style="color: #888; font-size: 0.9rem;">Breakfast, Lunch & Dinner</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">3 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <button class="btn-primary mb-10" onclick="openDurationModal('THE TRIO', 3)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card">
+                <h3>THE FULL PLAN</h3>
+                <p style="color: #888; font-size: 0.9rem;">3 Meals + 2 Snacks</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">5 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <button class="btn-outline mb-10" onclick="openDurationModal('THE FULL PLAN', 5)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card">
+                <h3>PROTEIN BOOSTER</h3>
+                <p style="color: #888; font-size: 0.9rem;">Max Protein Focus</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">High Pro <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <button class="btn-outline mb-10" onclick="openDurationModal('PROTEIN BOOSTER', 4)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal()">View Details & Prices</button>
             </div>
         </div>
-    </div>
+    </section>
+</main>
 
-    <div id="durationModal" class="modal">
-        <div class="modal-content">
-            <h3>Select Duration</h3>
-            <p id="modal-plan-name"></p>
-            <div class="duration-options">
-                <button onclick="confirmPlan(1)">1 Day Trial</button>
-                <button onclick="confirmPlan(6)">6 Days (1 Week)</button>
-                <button onclick="confirmPlan(24)">24 Days (1 Month)</button>
-            </div>
-            <button class="close-link" onclick="closeModal()">Back to Packages</button>
+<div id="durationModal" class="modal">
+    <div class="modal-content">
+        <h3 id="selected-plan-title" style="color: var(--forest); margin-bottom: 10px;"></h3>
+        <p style="margin-bottom: 25px;">How long would you like your plan to last?</p>
+        <div class="duration-options">
+            <button onclick="goToBuilder(1)">1 Day</button>
+            <button onclick="goToBuilder(5)">1 Week (5 Days)</button>
+            <button onclick="goToBuilder(24)">Full Month (24 Days)</button>
         </div>
+        <button onclick="closeModal('durationModal')" style="background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Cancel</button>
     </div>
+</div>
 
-    <script>
-        let selP = ""; let selI = 0;
-        function openModal(n, i) {
-            selP = n; selI = i;
-            document.getElementById('modal-plan-name').innerText = n;
-            document.getElementById('durationModal').style.display = "flex";
-        }
-        function closeModal() { document.getElementById('durationModal').style.display = "none"; }
-        function confirmPlan(d) {
-            window.location.href = `builder.html?plan=${encodeURIComponent(selP)}&items=${selI}&days=${d}`;
-        }
-    </script>
-</body>
+<div id="pricingModal" class="modal">
+    <div class="modal-content" style="max-width: 600px; padding: 10px; background: none; box-shadow: none;">
+        <div style="text-align: right;">
+            <span onclick="closeModal('pricingModal')" style="color: white; font-size: 40px; cursor: pointer;">&times;</span>
+        </div>
+        <img src="images/planprices.jpeg" alt="Pricing Details" style="width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
+    </div>
+</div>
+
 <footer class="site-footer">
     <div class="footer-content">
         <p>&copy; 2026 The Good Green. All rights reserved.</p>
         
         <div class="footer-links">
             <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 18px;">
                 <span>@thegoodgreen.lb</span>
             </a>
 
             <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="filter: brightness(0) invert(1);">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 18px; filter: brightness(0) invert(1);">
                 <span>+961 81 15 39 17</span>
             </a>
         </div>
     </div>
 </footer>
+
+<script>
+    let currentSelectedPlan = "";
+    let currentItemsPerDay = 0;
+
+    const priceList = {
+        "THE SOLO": { 1: 12, 5: 50, 24: 200 },
+        "THE DUO": { 1: 17, 5: 85, 24: 300 },
+        "THE TRIO": { 1: 22, 5: 100, 24: 340 },
+        "THE FULL PLAN": { 1: 25, 5: 110, 24: 400 },
+        "PROTEIN BOOSTER": { 1: 10, 5: 40, 24: 150 }
+    };
+
+    function openDurationModal(planName, items) {
+        currentSelectedPlan = planName;
+        currentItemsPerDay = items;
+        document.getElementById('selected-plan-title').innerText = planName;
+        document.getElementById('durationModal').style.display = 'flex';
+    }
+
+    function openPricingModal() {
+        document.getElementById('pricingModal').style.display = "flex";
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function goToBuilder(days) {
+        const price = priceList[currentSelectedPlan][days] || 0;
+        const url = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
+        window.location.href = url;
+    }
+
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
+    }
+</script>
+</body>
 </html>

@@ -5,120 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Good Green | Checkout</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
-<body class="builder-body">
+<body class="checkout-body">
 
-    <div class="builder-container" style="display: block; max-width: 600px; margin: 40px auto; padding: 20px;">
-        <header style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: var(--forest);">Complete Your Order</h2>
-            <p>Review your plan and price before confirming.</p>
-        </header>
-
-        <section id="order-details" style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"></section>
-
-        <form id="checkout-form" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Full Name</label>
-                <input type="text" id="user_name" placeholder="Enter your full name" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="images/longlogo.png" alt="The Good Green Logo" class="main-logo">
+                </a>
             </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Phone Number</label>
-                <input type="tel" id="user_phone" placeholder="e.g. +971 50 000 0000" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
-            </div>
-            
-            <div style="margin-bottom: 25px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Delivery Address</label>
-                <textarea id="user_address" rows="3" placeholder="Apartment, Street, Area" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
-            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="packages.html">Packages</a></li>
+                <li><a href="menu.html">Menu</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 
-            <button type="submit" id="submit-btn" class="btn-confirm" style="width: 100%; padding: 18px; font-size: 1.1rem; cursor: pointer;">
-                Confirm & Place Order
-            </button>
-            <p id="loading-text" style="text-align: center; color: var(--forest); display: none; margin-top: 15px;">Saving your order & notifying kitchen... please wait.</p>
-        </form>
+<main class="checkout-main">
+    <div class="checkout-header">
+        <h1>Complete Your Order</h1>
+        <p>Review your plan and price before confirming.</p>
     </div>
 
-// ... (Keep the rest of your HTML)
+    <section id="order-details" class="checkout-card summary-card"></section>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Good Green | Checkout</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-</head>
-<body class="builder-body">
-
-    <div class="builder-container" style="display: block; max-width: 600px; margin: 40px auto; padding: 20px;">
-        <header style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: var(--forest);">Complete Your Order</h2>
-            <p>Review your plan and price before confirming.</p>
-        </header>
-
-        <section id="order-details" style="background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"></section>
-
-        <form id="checkout-form" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Full Name</label>
-                <input type="text" id="user_name" placeholder="Enter your full name" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+    <div class="checkout-card">
+        <form id="checkout-form">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="user_name" placeholder="Enter your full name" required>
             </div>
             
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Phone Number</label>
-                <input type="tel" id="user_phone" placeholder="e.g. +971 50 000 0000" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="user_phone" placeholder="e.g. +961 81 123 456" required>
             </div>
             
-            <div style="margin-bottom: 25px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Delivery Address</label>
-                <textarea id="user_address" rows="3" placeholder="Apartment, Street, Area" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
+            <div class="form-group">
+                <label>Delivery Address</label>
+                <textarea id="user_address" rows="3" placeholder="Apartment, Street, Area" required></textarea>
             </div>
 
-            <button type="submit" id="submit-btn" class="btn-confirm" style="width: 100%; padding: 18px; font-size: 1.1rem; cursor: pointer;">
+            <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; max-width: none; padding: 18px;">
                 Confirm & Place Order
             </button>
-            <p id="loading-text" style="text-align: center; color: var(--forest); display: none; margin-top: 15px;">Finalizing order... please stay on this page.</p>
+            <p id="loading-text" style="text-align: center; color: var(--forest); display: none; margin-top: 15px; font-weight: 600;">
+                Finalizing order... please stay on this page.
+            </p>
         </form>
     </div>
+</main>
+
+<footer class="site-footer">
+    <div class="footer-content">
+        <p>&copy; 2026 The Good Green. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 18px;">
+                <span>@thegoodgreen.lb</span>
+            </a>
+            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 18px; filter: brightness(0) invert(1);">
+                <span>+961 81 15 39 17</span>
+            </a>
+        </div>
+    </div>
+</footer>
 
 <script>
-    // 1. Initialize EmailJS
     (function() {
         emailjs.init("O38XtdcMyAkWnvsoU"); 
     })();
 
     window.onload = function() {
-        const lib = typeof supabaseJs !== 'undefined' ? supabaseJs : supabase;
         const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
         const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
-        const sbClient = lib.createClient(sbUrl, sbKey);
+        const sbClient = supabase.createClient(sbUrl, sbKey);
 
-        // Load order data from browser memory
         const savedData = localStorage.getItem('finalOrder');
         if (!savedData) {
             alert("No order data found. Please go back to the builder.");
+            window.location.href = "builder.html";
             return;
         }
         const orderInfo = JSON.parse(savedData);
 
-        // Show Summary
         document.getElementById('order-details').innerHTML = `
-            <p><strong>Plan:</strong> ${orderInfo.plan_details.name}</p>
-            <p><strong>Total:</strong> $${orderInfo.plan_details.price}</p>
+            <h3 style="color: var(--forest); margin-top: 0;">Order Summary</h3>
+            <div style="border-top: 1px solid #eee; padding-top: 15px;">
+                <p><strong>Plan:</strong> ${orderInfo.plan_details.name}</p>
+                <p><strong>Days:</strong> ${orderInfo.plan_details.days}</p>
+                <p style="font-size: 1.2rem; color: var(--forest);"><strong>Total:</strong> $${orderInfo.plan_details.price}</p>
+            </div>
         `;
 
         document.getElementById('checkout-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // DEBUG CHECK: Count the meals
-            const mealCount = orderInfo.meals ? orderInfo.meals.length : 0;
-           
-
             const btn = document.getElementById('submit-btn');
             const loading = document.getElementById('loading-text');
             btn.disabled = true;
@@ -126,7 +116,6 @@
             loading.style.display = "block";
 
             try {
-                // STEP 1: Insert Main Order
                 const { data: mainOrder, error: orderErr } = await sbClient
                     .from('orders')
                     .insert([{
@@ -142,7 +131,6 @@
                 if (orderErr) throw new Error("Order Save Error: " + orderErr.message);
                 const orderId = mainOrder[0].id;
 
-                // STEP 2: Insert Meal Items
                 const items = orderInfo.meals.map(m => ({
                     order_id: orderId,
                     day_number: m.day_number,
@@ -154,16 +142,14 @@
                 const { error: itemErr } = await sbClient.from('order_items').insert(items);
                 if (itemErr) throw new Error("Meals Table Error: " + itemErr.message);
 
-                // STEP 3: Email Notification
                 await emailjs.send("service_rfcp52l", "template_oglmmp8", {
                     customer_name: document.getElementById('user_name').value,
                     plan_name: orderInfo.plan_details.name,
                     order_id: orderId
                 });
 
-               
-                localStorage.clear();
-                window.location.href = "thanks.html";
+                localStorage.removeItem('finalOrder');
+                window.location.href = "thankyou.html";
 
             } catch (err) {
                 console.error(err);
@@ -176,21 +162,4 @@
     };
 </script>
 </body>
-<footer class="site-footer">
-    <div class="footer-content">
-        <p>&copy; 2026 The Good Green. All rights reserved.</p>
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
-                <span>@thegoodgreen.lb</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="filter: brightness(0) invert(1);">
-                <span>+961 81 15 39 17</span>
-            </a>
-        </div>
-    </div>
-</footer>
 </html>
