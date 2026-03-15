@@ -1282,3 +1282,84 @@ section { padding: 60px 0; }
     filter: none !important;
     -webkit-filter: none !important;
 }
+/* Navbar adjustment to make room for dots */
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Three Dots Button */
+.menu-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+}
+
+.menu-dots span {
+    width: 6px;
+    height: 6px;
+    background-color: #2d5a27;
+    border-radius: 50%;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Start hidden off-screen */
+    width: 280px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    padding: 40px 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    right: 0; /* Slide in */
+}
+
+/* Close Button (X) */
+.close-sidebar {
+    font-size: 2.5rem;
+    color: #2d5a27;
+    cursor: pointer;
+    align-self: flex-end;
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+/* Links inside sidebar */
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.sidebar-links li {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.sidebar-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: block;
+}
+
+.sidebar-links a:hover {
+    color: #2d5a27;
+    padding-left: 5px;
+    transition: 0.2s;
+}

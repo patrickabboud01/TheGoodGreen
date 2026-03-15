@@ -221,11 +221,19 @@
         }
     };
 
-    function openDurationModal(planName, items) {
+    function openDurationModal(planName, items , duration) {
         currentSelectedPlan = planName;
         currentItemsPerDay = items;
         document.getElementById('selected-plan-title').innerText = planName;
         document.getElementById('durationModal').style.display = 'flex';
+        function selectPlan(planName, duration) {
+    // This is the "shout" that the Checkout page is listening for
+    localStorage.setItem('selectedPlanName', planName);
+    localStorage.setItem('selectedDuration', duration);
+    
+    // Then go to the builder
+    window.location.href = "builder.html";
+}
     }
 
     function openPricingModal(planName) {
