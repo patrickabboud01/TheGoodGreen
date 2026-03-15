@@ -85,10 +85,12 @@
     })();
 
     window.onload = function() {
+        // --- 1. SUPABASE CLIENT ---
         const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
         const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
         const sbClient = supabase.createClient(sbUrl, sbKey);
 
+        // --- 2. LOAD SAVED ORDER DATA ---
         const savedData = localStorage.getItem('finalOrder');
         if (!savedData) {
             alert("No order data found. Please go back to the builder.");
@@ -97,6 +99,21 @@
         }
         const orderInfo = JSON.parse(savedData);
 
+        // --- 3. AUTO-FILL USER DATA (If Logged In) ---
+        const loggedInUser = localStorage.getItem('current_user');
+        if (loggedInUser) {
+            const user = JSON.parse(loggedInUser);
+            // We match your Supabase column names to the form IDs
+            if (user.full_name) document.getElementById('user_name').value = user.full_name;
+            if (user.phone_number) document.getElementById('user_phone').value = user.phone_number;
+            if (user.address) document.getElementById('user_address').value = user.address;
+            
+            // Optional: Add a small welcome message
+            const headerP = document.querySelector('.checkout-header p');
+            headerP.innerHTML = `Welcome back, <strong>${user.full_name.split(' ')[0]}</strong>! Please confirm your details below.`;
+        }
+
+        // --- 4. RENDER SUMMARY ---
         document.getElementById('order-details').innerHTML = `
             <h3 style="color: var(--forest); margin-top: 0;">Order Summary</h3>
             <div style="border-top: 1px solid #eee; padding-top: 15px;">
@@ -106,6 +123,7 @@
             </div>
         `;
 
+        // --- 5. HANDLE SUBMISSION ---
         document.getElementById('checkout-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -116,6 +134,7 @@
             loading.style.display = "block";
 
             try {
+                // Save to 'orders' table
                 const { data: mainOrder, error: orderErr } = await sbClient
                     .from('orders')
                     .insert([{
@@ -131,6 +150,7 @@
                 if (orderErr) throw new Error("Order Save Error: " + orderErr.message);
                 const orderId = mainOrder[0].id;
 
+                // Prepare meal items
                 const items = orderInfo.meals.map(m => ({
                     order_id: orderId,
                     day_number: m.day_number,
@@ -139,15 +159,18 @@
                     removals: m.removals || "" 
                 }));
 
+                // Save to 'order_items' table
                 const { error: itemErr } = await sbClient.from('order_items').insert(items);
                 if (itemErr) throw new Error("Meals Table Error: " + itemErr.message);
 
+                // Send Email Notification via EmailJS
                 await emailjs.send("service_rfcp52l", "template_oglmmp8", {
                     customer_name: document.getElementById('user_name').value,
                     plan_name: orderInfo.plan_details.name,
                     order_id: orderId
                 });
 
+                // Success: Clear order and redirect
                 localStorage.removeItem('finalOrder');
                 window.location.href = "thanks.html";
 

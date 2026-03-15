@@ -1,6 +1,6 @@
 /**
- * THE GOOD GREEN - COMPLETE UNIFIED LOGIC (MOBILE OPTIMIZED)
- * FEATURES: Multi-Choice Windows, Auto-Category Sorting, Ingredient Removals, Toast Alerts
+ * THE GOOD GREEN - ULTIMATE BUILDER LOGIC (FIXED MODALS)
+ * Features: 6-Day Weekly Building, Signup/Login Toggle, Plan Restrictions, Ingredient Toggles
  */
 
 let menuData = []; 
@@ -8,68 +8,29 @@ let currentDay = 1;
 let fullState = {};
 let pendingItem = null; 
 let editingItem = null; 
-let currentChoiceStep = 0; // NEW: Tracks multi-choice sequence
+let currentChoiceStep = 0;
+let displayDays = 1; 
 
-// 1. Read Plan Settings from URL
+// --- 1. SUPABASE CONFIG ---
+const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
+const K = 'sb_publishable_6ktk6QMyDzhrCDDI33G9pA_hgCf8gFU';
+const sbClient = supabase.createClient(U, K);
+
+// --- 2. PLAN SETTINGS ---
 const params = new URLSearchParams(window.location.search);
 const planName = params.get('plan') || "Custom Plan";
 const itemsPerDay = parseInt(params.get('items')) || 3;
 const totalDays = parseInt(params.get('days')) || 1;
 const planPrice = params.get('price') || "0"; 
 
-// 2. Initialize the Month (State)
-for(let i = 1; i <= totalDays; i++) {
-    fullState[i] = [];
-}
-
-/**
- * LOAD DATA & PARSE MULTI-CHOICES
- */
-function loadMenu() {
-    if (typeof rawMenuData === 'undefined') {
-        console.error("Data file (menu-data.js) missing or incorrect.");
-        return;
-    }
-
-    menuData = rawMenuData.map((item, index) => {
-        let choicesArray = [];
-        
-        // Parse First Choice
-        if (item.choice_options && item.choice_options.trim() !== "") {
-            choicesArray.push({
-                title: item.choice_title || "Selection Required",
-                options: item.choice_options.split(';').map(o => o.trim())
-            });
-        }
-        
-        // Parse Second Choice (If exists in your data)
-        if (item.choice_options_2 && item.choice_options_2.trim() !== "") {
-            choicesArray.push({
-                title: item.choice_title_2 || "Second Selection",
-                options: item.choice_options_2.split(';').map(o => o.trim())
-            });
-        }
-
-        return {
-            id: index,
-            category: item.category.toLowerCase(),
-            name: item.name,
-            protein: item.protein,
-            ingredients: item.ingredients ? item.ingredients.split(';') : [],
-            multiChoices: choicesArray // Replaces single choice object
-        };
-    });
-    init();
-}
-
-/**
- * INITIALIZATION & CATEGORY SORTING
- */
+// --- 3. INITIALIZATION & 6-DAY CAP ---
 function init() {
-    document.getElementById('plan-name-display').innerText = planName;
-    document.getElementById('display-total-days').innerText = totalDays;
+    displayDays = (totalDays >= 24) ? 6 : totalDays;
+    document.getElementById('plan-name-display').innerText = (totalDays >= 24) ? `${planName} (Week 1)` : planName;
+    document.getElementById('display-total-days').innerText = displayDays;
 
-    renderCalendar();
+    fullState = {};
+    for(let i = 1; i <= displayDays; i++) { fullState[i] = []; }
 
     const cleanPlanName = planName.toLowerCase().trim();
     const restrictions = {
@@ -79,124 +40,173 @@ function init() {
         "protein": ["breakfast", "snack", "snacks", "main meals"]
     };
 
-    const nav = document.querySelector('.category-nav');
-    const buttons = Array.from(nav.querySelectorAll('.cat-btn'));
+    const navButtons = document.querySelectorAll('.cat-btn');
     let firstAllowedBtn = null;
 
-    buttons.forEach(btn => {
+    navButtons.forEach(btn => {
         const btnText = btn.innerText.toLowerCase().trim();
         let isRestricted = false;
-
         for (const plan in restrictions) {
             if (cleanPlanName.includes(plan) && restrictions[plan].includes(btnText)) {
-                isRestricted = true;
-                break;
+                isRestricted = true; break;
             }
         }
-
         if (isRestricted) {
             btn.classList.add('unavailable');
-            btn.style.order = "2"; 
+            btn.style.opacity = "0.3";
             btn.style.pointerEvents = "none";
-        } else {
-            btn.classList.remove('unavailable');
-            btn.style.order = "1"; 
-            btn.style.pointerEvents = "auto";
-            if (!firstAllowedBtn) firstAllowedBtn = btn;
+        } else if (!firstAllowedBtn) {
+            firstAllowedBtn = btn;
         }
     });
 
     if (firstAllowedBtn) firstAllowedBtn.click();
     else renderMenu('breakfast');
-    
+
     updateUI();
+    setTimeout(checkPlanAndAuth, 500);
 }
 
-/**
- * MENU RENDERING
- */
+// --- 4. AUTH MODAL LOGIC (FIXES THE WHITE WINDOW) ---
+function openEntryModal(mode = 'login') {
+    document.getElementById('entry-modal').style.display = 'flex';
+    toggleAuthMode(mode); 
+}
+
+function toggleAuthMode(mode) {
+    const loginArea = document.getElementById('login-form-area');
+    const signupArea = document.getElementById('signup-form-area');
+
+    if (mode === 'login') {
+        loginArea.style.display = 'block';
+        signupArea.style.display = 'none';
+    } else {
+        loginArea.style.display = 'none';
+        signupArea.style.display = 'block';
+    }
+}
+
+function closeEntryModal() {
+    document.getElementById('entry-modal').style.display = 'none';
+}
+
+function checkPlanAndAuth() {
+    const user = JSON.parse(localStorage.getItem('current_user'));
+    const modal = document.getElementById('auth-modal');
+    const msgArea = document.getElementById('auth-message-area');
+    const btnArea = document.getElementById('auth-buttons-area');
+
+    if (totalDays >= 24) {
+        modal.style.display = 'flex';
+        if (user) {
+            msgArea.innerHTML = `<h2 style="color:#2d5a27;">Welcome ${user.full_name}!</h2><p style="margin-top:15px; color:#444;">Building <strong>Week 1</strong> (6 Days).</p>`;
+            btnArea.innerHTML = `<button onclick="closeAuthModal()" class="btn-primary" style="width:100%">Start Week 1</button>`;
+        } else {
+            msgArea.innerHTML = `<h2 style="color:#2d5a27;">24-Day Program</h2><p style="margin-top:15px; color:#444;">Please Login/Signup to save progress.</p>`;
+            btnArea.innerHTML = `<button onclick="openEntryModal('login')" class="btn-primary" style="width:100%">Log In / Sign Up</button>`;
+        }
+    }
+}
+
+// --- 5. SUPABASE ACTIONS ---
+async function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const { data, error } = await sbClient.from('profiles').select('*').eq('email', email).eq('password', password).single();
+    
+    if (error || !data) { alert("Invalid credentials."); } 
+    else { localStorage.setItem('current_user', JSON.stringify(data)); location.reload(); }
+}
+
+async function handleSignup() {
+    const name = document.getElementById('reg-name').value;
+    const email = document.getElementById('reg-email').value;
+    const password = document.getElementById('reg-password').value;
+    const phone = document.getElementById('reg-phone').value;
+    const address = document.getElementById('reg-address').value;
+
+    if(!name || !email || !password || !phone || !address) { 
+        alert("All fields are required for delivery setup!"); 
+        return; 
+    }
+
+    // 1. Insert the user into Supabase
+    const { data, error } = await sbClient.from('profiles').insert([
+        { 
+            full_name: name, 
+            email: email, 
+            password: password,
+            phone_number: phone, 
+            address: address
+        }
+    ]).select(); // .select() is important to get the created record back
+
+    if (error) {
+        console.error("Supabase Error:", error);
+        alert("Signup failed: " + error.message);
+    } else {
+        // 2. AUTO-LOGIN: 
+        // We take the data we just sent (or the returned 'data[0]') 
+        // and save it to localStorage as if they had logged in.
+        const newUser = data[0] || { full_name: name, email: email, phone_number: phone, address: address };
+        localStorage.setItem('current_user', JSON.stringify(newUser));
+        
+        // 3. Refresh or Close Modals
+        alert("Welcome to The Good Green, " + name + "!");
+        location.reload(); // This reloads the builder with the user now "Logged In"
+    }
+}
+
+// --- 6. MENU & UI CORE ---
+function loadMenu() {
+    if (typeof rawMenuData === 'undefined') return;
+    menuData = rawMenuData.map((item, index) => {
+        let choicesArray = [];
+        if (item.choice_options?.trim()) choicesArray.push({ title: item.choice_title || "Selection", options: item.choice_options.split(';').map(o => o.trim()) });
+        if (item.choice_options_2?.trim()) choicesArray.push({ title: item.choice_title_2 || "Selection 2", options: item.choice_options_2.split(';').map(o => o.trim()) });
+        return { id: index, category: item.category.toLowerCase(), name: item.name, protein: item.protein, ingredients: item.ingredients ? item.ingredients.split(';') : [], multiChoices: choicesArray };
+    });
+    init();
+}
+
 function renderMenu(cat) {
     const grid = document.getElementById('menu-grid');
     grid.innerHTML = "";
     const cleanCat = cat.toLowerCase().trim();
-
     document.querySelectorAll('.cat-btn').forEach(b => {
         const btnText = b.innerText.toLowerCase().trim();
         const btnCategory = btnText === "main meals" ? "lunch/dinner" : (btnText === "extra pro" ? "protein" : btnText);
         b.classList.toggle('active', (cleanCat === btnCategory));
     });
-
-    const itemsToShow = menuData.filter(m => {
-        if (cat === 'lunch/dinner') return m.category === 'lunch' || m.category === 'dinner';
-        return m.category === cat;
-    });
-
-    if (itemsToShow.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #999;">No items found.</div>`;
-    }
-
+    const itemsToShow = menuData.filter(m => (cat === 'lunch/dinner') ? (m.category === 'lunch' || m.category === 'dinner') : (m.category === cat));
     itemsToShow.forEach(item => {
-        grid.innerHTML += `
-            <div class="menu-item-card">
-                <h4>${item.name}</h4>
-                <p style="font-size:0.8rem; color:#888;">${item.protein}g Protein</p>
-                <button class="btn-confirm-mini" style="width:100%; margin-top:10px;" onclick="addItem(${item.id})">Add</button>
-            </div>`;
+        grid.innerHTML += `<div class="menu-item-card"><h4>${item.name}</h4><p>${item.protein}g Protein</p><button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button></div>`;
     });
 }
 
-/**
- * ADD ITEM & MULTI-STEP CHOICE LOGIC
- */
 function addItem(id) {
-    if (fullState[currentDay].length >= itemsPerDay) {
-        showToast("Day " + currentDay + " is full!", 'error');
-        return;
-    }
-    
+    if (fullState[currentDay].length >= itemsPerDay) { showToast("Day full!"); return; }
     const item = menuData.find(i => i.id === id);
     pendingItem = JSON.parse(JSON.stringify(item)); 
-    pendingItem.selectedChoices = []; // Array for multiple selections
+    pendingItem.selectedChoices = [];
     currentChoiceStep = 0; 
-
-    if (pendingItem.multiChoices && pendingItem.multiChoices.length > 0) {
-        showChoicePopup(); 
-    } else {
-        confirmAdd();
-        showToast("Added to Day " + currentDay, 'success');
-    }
+    if (pendingItem.multiChoices?.length > 0) showChoicePopup(); 
+    else confirmAdd();
 }
 
 function showChoicePopup() {
     const modal = document.getElementById('editModal');
     const container = document.getElementById('ingredients-list');
     const choiceObj = pendingItem.multiChoices[currentChoiceStep];
-
-    container.innerHTML = `
-        <h3 style="color:var(--forest);">${choiceObj.title}</h3>
-        <p style="font-size:0.75rem; color:#888; margin-bottom:15px;">Selection ${currentChoiceStep + 1} of ${pendingItem.multiChoices.length}</p>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-            ${choiceObj.options.map(opt => `
-                <button class="btn-confirm-mini" style="background:var(--forest); color:white; padding:15px;" onclick="finalizeChoice('${opt}')">
-                    ${opt}
-                </button>
-            `).join('')}
-        </div>
-    `;
+    container.innerHTML = `<h3>${choiceObj.title}</h3><div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">${choiceObj.options.map(opt => `<button class="btn-confirm-mini" style="background:#2d5a27; color:white; padding:15px;" onclick="finalizeChoice('${opt}')">${opt}</button>`).join('')}</div>`;
     modal.style.display = "flex";
 }
 
 function finalizeChoice(selection) {
     pendingItem.selectedChoices.push(selection);
     currentChoiceStep++;
-
-    if (currentChoiceStep < pendingItem.multiChoices.length) {
-        showChoicePopup(); // Show next step
-    } else {
-        confirmAdd();
-        document.getElementById('editModal').style.display = "none";
-        showToast("Selection complete!", 'success');
-    }
+    if (currentChoiceStep < pendingItem.multiChoices.length) showChoicePopup();
+    else { confirmAdd(); document.getElementById('editModal').style.display = "none"; }
 }
 
 function confirmAdd() {
@@ -207,85 +217,6 @@ function confirmAdd() {
     updateUI();
 }
 
-/**
- * UI UPDATES & CALENDAR
- */
-function updateUI() {
-    const list = document.getElementById('selection-list');
-    const itemsCountDisplay = document.getElementById('day-items-count');
-    list.innerHTML = "";
-
-    fullState[currentDay].forEach(item => {
-        // Handle multiple selections in the display
-        const choiceText = (item.selectedChoices && item.selectedChoices.length > 0) 
-            ? `<br><small style="color:var(--forest); font-weight:600;">Selection: ${item.selectedChoices.join(' + ')}</small>` 
-            : '';
-        
-        const removedText = (item.removedIngredients && item.removedIngredients.length > 0) 
-            ? `<br><small style="color:#d97706;">No: ${item.removedIngredients.join(', ')}</small>` 
-            : '';
-        
-        list.innerHTML += `
-            <li style="font-size: 0.85rem; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div style="flex-grow: 1;">
-                        <strong style="display: block; color: #333;">${item.name}</strong>
-                        ${choiceText}
-                        ${removedText}
-                        <div style="margin-top: 5px;">
-                            <button class="edit-btn" onclick="openEditModal(${item.instanceId})" 
-                                    style="background: #f0f4f0; color: var(--forest); border: 1px solid var(--forest); border-radius: 4px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700;">
-                                Edit Ingredients
-                            </button>
-                        </div>
-                    </div>
-                    <button onclick="removeItem(${item.instanceId})" style="color:#ff4d4d; border:none; background:none; font-weight:bold; font-size: 1.1rem;">✕</button>
-                </div>
-            </li>`;
-    });
-
-    if(itemsCountDisplay) itemsCountDisplay.innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items Selected`;
-
-    const hasAnySelections = Object.values(fullState).some(dayArray => dayArray.length > 0);
-    const confirmBtn = document.getElementById('confirm-all-btn');
-    if (confirmBtn) {
-        confirmBtn.disabled = !hasAnySelections;
-        confirmBtn.style.opacity = hasAnySelections ? "1" : "0.5";
-    }
-
-    renderCalendar();
-}
-
-function renderCalendar() {
-    const grid = document.getElementById('calendar-grid');
-    grid.innerHTML = "";
-    for(let i = 1; i <= totalDays; i++) {
-        const isFull = (fullState[i] && fullState[i].length === itemsPerDay);
-        const isActive = currentDay === i;
-        grid.innerHTML += `<div class="day-dot ${isActive ? 'active' : ''} ${isFull ? 'complete' : ''}" onclick="switchDay(${i})">${i}</div>`;
-    }
-}
-
-function switchDay(d) { 
-    currentDay = d; 
-    document.getElementById('active-day-num').innerText = d; 
-    updateUI(); 
-    const activeTab = document.querySelector('.cat-btn.active');
-    if (activeTab) {
-        const btnText = activeTab.innerText.toLowerCase().trim();
-        const cat = btnText === "main meals" ? "lunch/dinner" : (btnText === "extra pro" ? "protein" : btnText);
-        renderMenu(cat);
-    }
-}
-
-function removeItem(id) { 
-    fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); 
-    updateUI(); 
-}
-
-/**
- * MODALS & TOASTS
- */
 function openEditModal(instanceId) {
     editingItem = fullState[currentDay].find(i => i.instanceId === instanceId);
     const modal = document.getElementById('editModal');
@@ -293,70 +224,61 @@ function openEditModal(instanceId) {
     container.innerHTML = `<h3>Customize ${editingItem.name}</h3>`;
     editingItem.ingredients.forEach(ing => {
         const isRemoved = editingItem.removedIngredients.includes(ing);
-        container.innerHTML += `<label style="display:block; margin: 10px 0;"><input type="checkbox" ${isRemoved ? '' : 'checked'} onchange="toggleIngredient('${ing}')"> ${ing}</label>`;
+        container.innerHTML += `<label style="display:block; padding:10px;"><input type="checkbox" ${isRemoved ? '' : 'checked'} onchange="toggleIngredient('${ing}')"> ${ing}</label>`;
     });
     modal.style.display = "flex";
 }
 
 function toggleIngredient(ing) {
-    if (editingItem.removedIngredients.includes(ing)) {
-        editingItem.removedIngredients = editingItem.removedIngredients.filter(i => i !== ing);
-    } else {
-        editingItem.removedIngredients.push(ing);
+    if (editingItem.removedIngredients.includes(ing)) editingItem.removedIngredients = editingItem.removedIngredients.filter(i => i !== ing);
+    else editingItem.removedIngredients.push(ing);
+}
+
+function closeEditModal() { document.getElementById('editModal').style.display = "none"; editingItem = null; updateUI(); }
+
+function updateUI() {
+    const list = document.getElementById('selection-list');
+    list.innerHTML = "";
+    fullState[currentDay].forEach(item => {
+        list.innerHTML += `<li style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding: 10px 0;">
+            <div style="display: flex; justify-content: space-between;">
+                <div><strong>${item.name}</strong><br><small>${item.selectedChoices.join(' + ')}</small>
+                <button onclick="openEditModal(${item.instanceId})" style="display:block; font-size:0.7rem; color:#2d5a27; background:none; border:none; text-decoration:underline;">Edit</button></div>
+                <button onclick="removeItem(${item.instanceId})" style="color:red; background:none; border:none;">&times;</button>
+            </div></li>`;
+    });
+    document.getElementById('day-items-count').innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items`;
+    if(totalDays >= 24) document.getElementById('confirm-all-btn').innerText = "Confirm Week 1";
+    renderCalendar();
+}
+
+function renderCalendar() {
+    const grid = document.getElementById('calendar-grid');
+    grid.innerHTML = "";
+    for(let i = 1; i <= displayDays; i++) {
+        const isFull = fullState[i]?.length === itemsPerDay;
+        grid.innerHTML += `<div class="day-dot ${currentDay === i ? 'active' : ''} ${isFull ? 'complete' : ''}" onclick="switchDay(${i})">${i}</div>`;
     }
 }
 
-function closeEditModal() {
-    document.getElementById('editModal').style.display = "none";
-    editingItem = null;
-    updateUI();
-}
+function switchDay(d) { currentDay = d; document.getElementById('active-day-num').innerText = d; updateUI(); }
+function removeItem(id) { fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); updateUI(); }
 
-function showToast(message, type = 'error') {
-    const oldToast = document.querySelector('.toast-notice');
-    if (oldToast) oldToast.remove();
+function showToast(message) {
     const toast = document.createElement('div');
-    toast.className = 'toast-notice';
+    toast.className = 'toast-notice show';
     toast.innerText = message;
-    toast.style.background = (type === 'success') ? '#2e7d32' : '#ce4242';
     document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 500);
-    }, 2500);
+    setTimeout(() => toast.remove(), 2500);
 }
 
-/**
- * FINALIZATION
- */
+function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+
 async function handleFinalOrder() {
-    for (let i = 1; i <= totalDays; i++) {
-        if (fullState[i].length < itemsPerDay) {
-            showToast(`Day ${i} is not complete!`, 'error');
-            switchDay(i);
-            return;
-        }
+    for(let i=1; i<=displayDays; i++) {
+        if(fullState[i].length < itemsPerDay) { showToast(`Day ${i} incomplete!`); return; }
     }
-
-    const flattenedMeals = [];
-    for (let day in fullState) {
-        fullState[day].forEach(item => {
-            flattenedMeals.push({
-                day_number: parseInt(day),
-                meal_name: item.name,
-                choice: item.selectedChoices ? item.selectedChoices.join(' + ') : null,
-                removals: item.removedIngredients.join(', ')
-            });
-        });
-    }
-
-    const orderSummary = {
-        plan_details: { name: planName, days: totalDays, price: planPrice },
-        meals: flattenedMeals
-    };
-
-    localStorage.setItem('finalOrder', JSON.stringify(orderSummary));
+    localStorage.setItem('finalOrder', JSON.stringify(fullState));
     window.location.href = "checkout.html";
 }
 

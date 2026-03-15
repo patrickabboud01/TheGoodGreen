@@ -6,6 +6,23 @@
     <title>Meal Builder | The Good Green</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Modal Styles to match Index */
+        .auth-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); z-index: 999999;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .auth-modal-box {
+            background: white; padding: 40px; border-radius: 20px;
+            width: 90%; max-width: 420px; position: relative; text-align: center;
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; background: none; 
+            border: none; font-size: 2rem; cursor: pointer; color: #888;
+        }
+    </style>
 </head>
 <body class="builder-app-ui">
 
@@ -18,7 +35,6 @@
             </div>
             <button id="confirm-all-btn" class="btn-confirm-mini" onclick="handleFinalOrder()">Confirm</button>
         </div>
-
         <div class="calendar-wrapper">
             <div id="calendar-grid" class="calendar-snap-row"></div>
         </div>
@@ -30,7 +46,6 @@
                 <h3>Day <span id="active-day-num">1</span></h3>
                 <p id="day-items-count">0 / 0 Items Selected</p>
             </div>
-            
             <div class="selection-drawer">
                 <h4>Current Selections</h4>
                 <ul id="selection-list" class="mini-selection-list"></ul>
@@ -47,9 +62,61 @@
         <div id="menu-grid" class="app-menu-grid"></div>
     </main>
 
+    <div id="auth-modal" class="auth-overlay">
+    <div class="auth-modal-box">
+        <div id="auth-message-area"></div>
+        <div id="auth-buttons-area" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;"></div>
+    </div>
+</div>
+
+<div id="entry-modal" class="auth-overlay">
+    <div class="auth-modal-box">
+        <button onclick="closeEntryModal()" class="close-btn">&times;</button>
+        
+        <div id="login-form-area" style="display: block;">
+            <h2 style="color: #2d5a27; margin-bottom: 20px;">Log In</h2>
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <input type="email" id="login-email" placeholder="Email Address" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
+                <input type="password" id="login-password" placeholder="Password" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
+                <button onclick="handleLogin()" class="btn-primary" style="width:100%;">Enter Kitchen</button>
+                <button onclick="toggleAuthMode('signup')" style="background:none; border:none; color:#2d5a27; cursor:pointer; font-weight:600;">New here? Create account</button>
+            </div>
+        </div>
+
+        <div id="signup-form-area" style="display: none;">
+            <h2 style="color: #2d5a27; margin-bottom: 15px;">Create Account</h2>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <input type="text" id="reg-name" placeholder="Full Name" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                <input type="email" id="reg-email" placeholder="Email" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                <input type="tel" id="reg-phone" placeholder="Phone Number" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                <input type="text" id="reg-address" placeholder="Delivery Address" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                <input type="password" id="reg-password" placeholder="Password" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Sign Up</button>
+                <button onclick="toggleAuthMode('login')" style="background:none; border:none; color:#2d5a27; cursor:pointer; font-weight:600;">Back to Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+      <div id="signup-form-area" style="display:none;">
+    <h2 style="color: #2d5a27; margin-bottom: 15px;">Create Account</h2>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        <input type="text" id="reg-name" placeholder="Full Name" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+        <input type="email" id="reg-email" placeholder="Email" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+        
+        <input type="tel" id="reg-phone" placeholder="Phone Number (e.g. 05x xxx xxxx)" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+        <input type="text" id="reg-address" placeholder="Delivery Address (Area, Street, Bldg)" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+        
+        <input type="password" id="reg-password" placeholder="Password" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+        
+        <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Sign Up</button>
+        <button onclick="toggleAuthMode('login')" style="background:none; border:none; color:#2d5a27; cursor:pointer; margin-top:5px;">Already have an account? Login</button>
+    </div>
+</div>
+    </div>
+</div>
+
     <div id="editModal" class="modal">
         <div class="modal-content app-modal">
-            
             <div id="ingredients-list"></div>
             <button class="btn-primary" onclick="closeEditModal()" style="margin-top:20px; width: 100%;">Save & Close</button>
         </div>
