@@ -8,22 +8,70 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        /* Essential Sidebar CSS - Ensure this is in your style.css too */
+        .menu-dots {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+        .menu-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: #2d5a27;
+            border-radius: 50%;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+            transition: 0.4s ease;
+            z-index: 2000;
+            padding: 40px 25px;
+        }
+        .sidebar.active { right: 0; }
+        .close-sidebar {
+            font-size: 2.5rem;
+            color: #2d5a27;
+            cursor: pointer;
+            text-align: right;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin-top: 20px; }
+        .sidebar-links li { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .sidebar-links a { text-decoration: none; color: #333; font-weight: 600; font-size: 1.2rem; }
+    </style>
 </head>
-<body class="checkout-body">
 
+<body class="checkout-body">
 <header>
     <nav class="navbar">
         <div class="container">
             <div class="logo-area">
                 <a href="index.html">
-                    <img src="images/longlogo.png" alt="The Good Green Logo" class="main-logo">
+                    <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="packages.html">Packages</a></li>
-                <li><a href="menu.html">Menu</a></li>
-            </ul>
+
+            <div class="menu-dots" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <ul class="sidebar-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 </header>
@@ -61,7 +109,29 @@
 <script>
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
 
-    // The Exact Price Book from your Packages.html
+    // --- SIDEBAR LOGIC ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
+
+    // --- CHECKOUT LOGIC ---
     const planPriceBook = {
         "THE SOLO": { "1": 12, "5": 50, "24": 200 },
         "THE DUO": { "1": 17, "5": 85, "24": 300 },
@@ -88,7 +158,6 @@
 
         const fullState = JSON.parse(rawOrder);
         
-        // 1. COUNT REAL DATA
         let totalMeals = 0;
         let dayKeys = Object.keys(fullState).filter(day => fullState[day].length > 0);
         let activeDaysCount = dayKeys.length;
@@ -99,22 +168,17 @@
 
         const mealsPerDay = totalMeals / (activeDaysCount || 1);
 
-        // 2. IDENTIFY THE PACKAGE NAME
         if (mealsPerDay > 3.5) finalName = "THE FULL PLAN";
         else if (mealsPerDay > 2.5) finalName = "THE TRIO";
         else if (mealsPerDay > 1.5) finalName = "THE DUO";
         else finalName = "THE SOLO";
 
-        // 3. IDENTIFY THE DURATION (1, 5, or 24)
-        // We find the closest match in your pricing tiers
         if (activeDaysCount <= 1) finalDuration = "1";
         else if (activeDaysCount <= 5) finalDuration = "5";
         else finalDuration = "24";
 
-        // 4. LOOKUP PRICE
         finalPrice = planPriceBook[finalName][finalDuration];
 
-        // 5. RENDER THE SUMMARY
         document.getElementById('order-details').innerHTML = `
             <div style="border-left: 5px solid #2d5a27; padding-left: 20px;">
                 <h2 style="color: #2d5a27; margin: 0;">${finalName}</h2>
@@ -126,7 +190,6 @@
             </div>
         `;
 
-        // 6. AUTO-FILL USER
         const user = JSON.parse(localStorage.getItem('current_user') || '{}');
         if (user.full_name) {
             document.getElementById('user_name').value = user.full_name;
@@ -134,7 +197,6 @@
             document.getElementById('user_address').value = user.address || '';
         }
 
-        // 7. SUBMIT
         document.getElementById('checkout-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');

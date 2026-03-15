@@ -8,7 +8,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Specific Styles for the Pricing Table Window */
+        /* Sidebar Styling (Add to style.css to keep it everywhere) */
+        .menu-dots {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+        .menu-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: #2d5a27;
+            border-radius: 50%;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background: #ffffff;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+            transition: 0.4s ease;
+            z-index: 2000;
+            padding: 40px 25px;
+        }
+        .sidebar.active { right: 0; }
+        .close-sidebar {
+            font-size: 2.5rem;
+            color: #2d5a27;
+            cursor: pointer;
+            text-align: right;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin-top: 20px; }
+        .sidebar-links li { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .sidebar-links a { text-decoration: none; color: #333; font-weight: 600; font-size: 1.2rem; }
+
+        /* Existing Pricing Styles */
         .pricing-table {
             width: 100%;
             border-collapse: collapse;
@@ -28,9 +66,6 @@
             padding: 15px;
             border-bottom: 1px solid #eee;
             color: #333;
-        }
-        .pricing-table tr:last-child td {
-            border-bottom: none;
         }
         .price-tag {
             font-weight: 700;
@@ -62,11 +97,19 @@
                     <img src="images/longlogo.png" alt="The Good Green Logo" class="main-logo">
                 </a>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="packages.html" class="active">Packages</a></li>
-                <li><a href="menu.html">Menu</a></li>
-            </ul>
+            
+            <div class="menu-dots" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <ul class="sidebar-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 </header>
@@ -139,26 +182,15 @@
             <h3 id="modal-plan-name" style="color: var(--forest); margin: 0;">Plan Details</h3>
             <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
         </div>
-        
         <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
-
         <table class="pricing-table">
-            <thead>
-                <tr>
-                    <th>Duration</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody id="pricing-body">
-                </tbody>
+            <thead><tr><th>Duration</th><th>Price</th></tr></thead>
+            <tbody id="pricing-body"></tbody>
         </table>
-
         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd;">
             <h4 style="font-size: 0.9rem; margin-bottom: 10px;">What's Included:</h4>
-            <ul id="modal-features" class="plan-feature-list">
-                </ul>
+            <ul id="modal-features" class="plan-feature-list"></ul>
         </div>
-
         <button class="btn-primary" onclick="closeModal('pricingModal'); openDurationModal(currentSelectedPlan, currentItemsPerDay)" style="width: 100%; margin-top: 25px;">Choose This Plan</button>
     </div>
 </div>
@@ -175,19 +207,36 @@
                 <i class="fa-brands fa-whatsapp"></i>
                 <span>+961 81 15 39 17</span>
             </a>
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>The Good Green</span>
-            </a>
         </div>
     </div>
 </footer>
 
 <script>
+    // --- SIDEBAR TOGGLE ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
+
     let currentSelectedPlan = "";
     let currentItemsPerDay = 0;
 
-    // Plan Data for the Designed Window
     const planDetails = {
         "THE SOLO": {
             description: "Perfect for busy professionals who need one high-quality, nutritious meal daily.",
@@ -221,40 +270,26 @@
         }
     };
 
-    function openDurationModal(planName, items , duration) {
+    function openDurationModal(planName, items) {
         currentSelectedPlan = planName;
         currentItemsPerDay = items;
         document.getElementById('selected-plan-title').innerText = planName;
         document.getElementById('durationModal').style.display = 'flex';
-        function selectPlan(planName, duration) {
-    // This is the "shout" that the Checkout page is listening for
-    localStorage.setItem('selectedPlanName', planName);
-    localStorage.setItem('selectedDuration', duration);
-    
-    // Then go to the builder
-    window.location.href = "builder.html";
-}
     }
 
     function openPricingModal(planName) {
         currentSelectedPlan = planName;
         const data = planDetails[planName];
         currentItemsPerDay = data.items;
-
         document.getElementById('modal-plan-name').innerText = planName;
         document.getElementById('modal-plan-description').innerText = data.description;
-
-        // Fill Table
         const tbody = document.getElementById('pricing-body');
         tbody.innerHTML = "";
         for (const [days, price] of Object.entries(data.prices)) {
             tbody.innerHTML += `<tr><td>${days}</td><td class="price-tag">${price}</td></tr>`;
         }
-
-        // Fill Features
         const featureList = document.getElementById('modal-features');
         featureList.innerHTML = data.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
-
         document.getElementById('pricingModal').style.display = "flex";
     }
 
@@ -263,9 +298,12 @@
     }
 
     function goToBuilder(days) {
-        // Extract numeric price from string (e.g. "$12" -> 12)
         const priceStr = planDetails[currentSelectedPlan].prices[days === 1 ? "1 Day" : (days === 5 ? "5 Days" : "24 Days")];
         const price = priceStr.replace('$', '');
+        
+        // CRITICAL: Save to localStorage for the Checkout "Detective"
+        localStorage.setItem('selectedPlanName', currentSelectedPlan);
+        localStorage.setItem('selectedDuration', days);
         
         const url = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
         window.location.href = url;

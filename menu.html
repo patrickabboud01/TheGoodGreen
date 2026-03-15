@@ -9,22 +9,30 @@
 </head>
 <body>
 
-<header>
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo-area">
-                <a href="index.html">
-                    <img src="images/longlogo.png" alt="The Good Green Logo" class="main-logo">
-                </a>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo-area">
+                    <a href="index.html">
+                        <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                    </a>
+                </div>
+
+                <div class="menu-dots" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </div>
+
+                <div class="sidebar" id="sidebar">
+                    <div class="close-sidebar" id="close-sidebar">&times;</div>
+                    <ul class="sidebar-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="packages.html">Packages</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                    </ul>
+                </div>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="packages.html">Packages</a></li>
-                <li><a href="menu.html">Menu</a></li>
-            </ul>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
 <main class="container" style="padding: 40px 0; text-align: center;">
     <h2 style="color: var(--forest); margin-bottom: 30px;">Our Seasonal Menu</h2>
@@ -69,6 +77,52 @@
             header.classList.remove('header-hidden');
         }
         lastScrollY = window.scrollY;
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
     });
 </script>
 
