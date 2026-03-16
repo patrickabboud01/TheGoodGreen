@@ -8,9 +8,99 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        /* --- CUSTOM ALERT MODAL STYLES --- */
+        .custom-alert-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); 
+            z-index: 10000; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .custom-alert-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .alert-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .btn-cancel {
+            background: #eee;
+            color: #444;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-confirm-discard {
+            background: #d9534f; /* Soft red for warning */
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body class="checkout-body">
-<header><nav class="navbar"><div class="container"><div class="logo-area"><a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a></div></div></nav></header>
+
+<div id="custom-alert" class="custom-alert-overlay">
+    <div class="custom-alert-box">
+        <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+        <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
+        <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave? Your meal selections will not be saved.</p>
+        <div class="alert-btns">
+            <button class="btn-cancel" onclick="closeCustomAlert()">Stay Here</button>
+            <button class="btn-confirm-discard" id="confirm-redirect-btn">Discard</button>
+        </div>
+    </div>
+</div>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="#" onclick="triggerCustomAlert('index.html')">
+                    <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                </a>
+            </div>
+
+            <div class="menu-dots" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <ul class="sidebar-links">
+                    <li><a href="#" onclick="triggerCustomAlert('index.html')">Home</a></li>
+                    <li><a href="#" onclick="triggerCustomAlert('packages.html')">Packages</a></li>
+                    <li><a href="#" onclick="triggerCustomAlert('menu.html')">Menu</a></li>
+                    <li><a href="#" onclick="triggerCustomAlert('plan-status.html')">Continue your plan</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
 
 <main class="checkout-main">
     <div class="checkout-header"><h1>Finalize Your Order</h1></div>
@@ -26,6 +116,25 @@
 </main>
 
 <script>
+    // --- CUSTOM MODAL LOGIC ---
+    let pendingUrl = "";
+    function triggerCustomAlert(url) {
+        pendingUrl = url;
+        document.getElementById('custom-alert').style.display = 'flex';
+        // Close sidebar if it's open
+        document.getElementById('sidebar').classList.remove('active');
+    }
+
+    function closeCustomAlert() {
+        document.getElementById('custom-alert').style.display = 'none';
+        pendingUrl = "";
+    }
+
+    document.getElementById('confirm-redirect-btn').onclick = function() {
+        if (pendingUrl) window.location.href = pendingUrl;
+    };
+
+    // --- EXISTING LOGIC ---
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
     const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
@@ -37,6 +146,27 @@
         "THE TRIO": { "1": 22, "6": 100, "24": 340 },
         "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
     };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+            });
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    });
 
     window.onload = async function() {
         const user = JSON.parse(localStorage.getItem('current_user') || '{}');
@@ -53,7 +183,6 @@
             profile = data;
         }
 
-        // Identify Package
         let dayKeys = Object.keys(fullState).filter(day => fullState[day].length > 0);
         let totalMeals = 0;
         dayKeys.forEach(d => totalMeals += fullState[d].length);
@@ -64,7 +193,6 @@
         let durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
         let finalPrice = planPriceBook[finalName][durationKey];
 
-        // RENDER SUMMARY
         if (isSubscriptionRefill && profile?.plan24days) {
             document.getElementById('order-details').innerHTML = `
                 <div class="checkout-badge">Subscription Refill</div>

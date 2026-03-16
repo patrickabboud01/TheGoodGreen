@@ -26,13 +26,76 @@
             border-radius: 4px; font-size: 0.7rem; font-weight: 700;
             text-transform: uppercase; margin-bottom: 4px; display: inline-block;
         }
+
+        /* --- CUSTOM ALERT MODAL STYLES --- */
+        .custom-alert-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); 
+            z-index: 10000000; /* Higher than everything else */
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .custom-alert-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .alert-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .btn-cancel {
+            background: #eee;
+            color: #444;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-confirm-discard {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="builder-app-ui">
 
+    <div id="custom-alert" class="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+            <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
+            <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave the builder? Your meal selections will not be saved.</p>
+            <div class="alert-btns">
+                <button class="btn-cancel" onclick="closeCustomAlert()">Stay Here</button>
+                <button class="btn-confirm-discard" id="confirm-redirect-btn">Discard</button>
+            </div>
+        </div>
+    </div>
+
     <header class="builder-header">
         <div class="header-top">
-            <a href="packages.html" class="back-btn">✕</a>
+            <a href="#" class="back-btn" onclick="triggerCustomAlert('packages.html')">✕</a>
             <div class="plan-info">
                 <div id="week-label" class="week-indicator" style="display:none;">Week 1</div>
                 <h2 id="plan-name-display">Loading...</h2>
@@ -110,5 +173,24 @@
 
     <script src="menu-data.js"></script>
     <script src="builder-logic.js"></script>
+
+    <script>
+        // --- CUSTOM MODAL LOGIC FOR BUILDER ---
+        let pendingUrl = "";
+        
+        function triggerCustomAlert(url) {
+            pendingUrl = url;
+            document.getElementById('custom-alert').style.display = 'flex';
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('custom-alert').style.display = 'none';
+            pendingUrl = "";
+        }
+
+        document.getElementById('confirm-redirect-btn').onclick = function() {
+            if (pendingUrl) window.location.href = pendingUrl;
+        };
+    </script>
 </body>
 </html>

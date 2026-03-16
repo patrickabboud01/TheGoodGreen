@@ -1363,3 +1363,40 @@ section { padding: 60px 0; }
     padding-left: 5px;
     transition: 0.2s;
 }
+/* --- HEADER ALIGNMENT FIX --- */
+.navbar .container {
+    display: flex;
+    /* This ensures they stay in a row and never wrap to a second line */
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px; /* Side padding so they don't touch the screen edges */
+    height: 70px;    /* Explicit height helps keep items centered vertically */
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    flex: 1; /* Allows the logo area to take up available space */
+}
+
+.main-logo {
+    height: 40px; /* Force a consistent height */
+    width: auto;
+    display: block;
+}
+
+.menu-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+    /* Prevent the dots from shrinking or moving */
+    flex-shrink: 0; 
+    margin-left: auto; 
+}
