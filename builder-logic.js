@@ -1,5 +1,5 @@
 /**
- * THE GOOD GREEN - BUILDER LOGIC
+ * THE GOOD GREEN - BUILDER LOGIC (Updated for Weekly Flow)
  * Isolated Subscription Logic
  */
 let menuData = []; 
@@ -25,6 +25,7 @@ let dayOffset = 0;
 
 async function init() {
     const user = JSON.parse(localStorage.getItem('current_user'));
+    const isAttempting24Day = (totalDaysRequested >= 24);
     
     if (user) {
         const { data: profile } = await sbClient
@@ -34,8 +35,8 @@ async function init() {
             .single();
 
         if (profile && profile.plan24days) {
-            // STRICT CHECK: Only trigger sub-logic if plan name AND 24-day duration match
-            if (totalDaysRequested >= 24 && params.get('plan') === profile.active_package_name) {
+            // Check if user is continuing their active 24-day plan
+            if (isAttempting24Day && params.get('plan') === profile.active_package_name) {
                 isPlan24Progress = true;
                 currentPlanWeek = profile["24planweek"] || 0;
                 planName = profile.active_package_name;
@@ -46,15 +47,16 @@ async function init() {
                 else if(name.includes("TRIO")) itemsPerDay = 3;
                 else if(name.includes("FULL")) itemsPerDay = 4;
             } 
-            // BLOCK: If trying to start a DIFFERENT 24-day plan while one is active
-            else if (totalDaysRequested >= 24 && params.get('plan') !== profile.active_package_name) {
+            // Block attempt to start a different plan while one is active
+            else if (isAttempting24Day && params.get('plan') !== profile.active_package_name) {
                 window.location.href = "plan-status.html";
                 return;
             }
         }
     }
 
-    displayDays = isPlan24Progress ? 6 : totalDaysRequested;
+    // UPDATED LOGIC: Force 6 days for any 24-day plan request to simplify UX
+    displayDays = isAttempting24Day ? 6 : totalDaysRequested;
     dayOffset = isPlan24Progress ? (currentPlanWeek * 6) : 0;
 
     document.getElementById('display-total-days').innerText = totalDaysRequested;
@@ -62,7 +64,9 @@ async function init() {
     const weekLabel = document.getElementById('week-label');
 
     planDisplay.innerText = planName;
-    if (isPlan24Progress && weekLabel) {
+    
+    // UI Labeling for Weeks
+    if (isAttempting24Day && weekLabel) {
         weekLabel.style.display = "inline-block";
         weekLabel.innerText = `Week ${currentPlanWeek + 1}`;
         document.getElementById('confirm-all-btn').innerText = `Confirm Week ${currentPlanWeek + 1}`;
@@ -71,6 +75,7 @@ async function init() {
         document.getElementById('confirm-all-btn').innerText = `Confirm Order`;
     }
 
+    // Build the selection state for the visible 6 days
     fullState = {};
     for(let i = 1; i <= displayDays; i++) { 
         fullState[i + dayOffset] = []; 
@@ -221,7 +226,7 @@ function updateUI() {
 
 function renderCalendar() {
     const grid = document.getElementById('calendar-grid'); grid.innerHTML = "";
-    const loops = isPlan24Progress ? 6 : totalDaysRequested;
+    const loops = displayDays;
     for(let i = 1; i <= loops; i++) {
         const idx = i + dayOffset;
         grid.innerHTML += `<div class="day-dot ${currentDay === idx ? 'active' : ''} ${fullState[idx]?.length === itemsPerDay ? 'complete' : ''}" onclick="switchDay(${idx})">${i}</div>`;
@@ -233,7 +238,7 @@ function removeItem(id) { fullState[currentDay] = fullState[currentDay].filter(i
 function showToast(m) { const t = document.createElement('div'); t.className = 'toast-notice show'; t.innerText = m; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
 async function handleFinalOrder() {
-    const loops = isPlan24Progress ? 6 : totalDaysRequested;
+    const loops = displayDays;
     for(let i = 1; i <= loops; i++) { 
         const actualIdx = i + dayOffset;
         if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
@@ -241,7 +246,7 @@ async function handleFinalOrder() {
         } 
     }
     localStorage.setItem('finalOrder', JSON.stringify(fullState));
-    const subFlag = isPlan24Progress ? "&isSub=true" : "&isSub=false";
+    const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";
     window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
 }
 
