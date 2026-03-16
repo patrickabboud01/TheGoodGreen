@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | The Good Green</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo-area">
+                    <a href="index.html">
+                        <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                    </a>
+                </div>
+
+                <div class="menu-dots" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </div>
+
+                <div class="sidebar" id="sidebar">
+                    <div class="close-sidebar" id="close-sidebar">&times;</div>
+                    <ul class="sidebar-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="packages.html">Packages</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+<main class="container" style="padding: 40px 0; text-align: center;">
+    <h2 style="color: var(--forest); margin-bottom: 30px;">Our Seasonal Menu</h2>
+    
+    <div class="menu-display" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+        <img src="images/menu1.jpeg" alt="The Good Green Menu Page 1" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <img src="images/menu2.jpeg" alt="The Good Green Menu Page 2" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <img src="images/menu3.jpeg" alt="The Good Green Menu Page 3" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+    </div>
+    
+    <div style="margin-top: 50px; padding-bottom: 40px;">
+        <a href="packages.html" class="btn-primary" style="display: inline-block; width: auto; padding: 18px 45px; text-decoration: none;">Ready to Customize Your Plan?</a>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="footer-content">
+        <p>&copy; 2026 The Good Green. All rights reserved.</p>
+        
+        <div class="footer-links">
+            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" style="width: 18px;">
+                <span>thegoodgreen.lb</span>
+            </a>
+
+            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 18px; filter: brightness(0) invert(1);">
+                <span>+961 81 15 39 17</span>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Header Scroll Logic
+    let lastScrollY = window.scrollY;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > lastScrollY && window.scrollY > 100) {
+            header.classList.add('header-hidden');
+        } else {
+            header.classList.remove('header-hidden');
+        }
+        lastScrollY = window.scrollY;
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
