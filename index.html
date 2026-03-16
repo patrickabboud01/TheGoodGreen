@@ -104,6 +104,7 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="packages.html">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
+                    <li><a href="plan-status.html">Countinue your plan</a></li>
                 </ul>
             </div>
         </div>
@@ -297,6 +298,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    function handleContinueBuilding() {
+    const savedPhone = localStorage.getItem('user_phone');
+
+    if (!savedPhone) {
+        // If not logged in, open that same popup you use for checkout
+        openLoginPopup(); 
+    } else {
+        // If we know who they are, go to the progress page
+        window.location.href = "plan-status.html";
+    }
+}
+
+// Add the button to your sidebar HTML structure
+// <li><a href="#" onclick="handleContinueBuilding()">Continue Building Your Plan</a></li>
 </script>
 </body>
 </html>

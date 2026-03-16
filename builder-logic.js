@@ -1,37 +1,90 @@
 /**
- * THE GOOD GREEN - ULTIMATE BUILDER LOGIC (FIXED MODALS)
- * Features: 6-Day Weekly Building, Signup/Login Toggle, Plan Restrictions, Ingredient Toggles
+ * THE GOOD GREEN - BUILDER LOGIC
+ * Isolated Subscription Logic
  */
-
 let menuData = []; 
-let currentDay = 1;
+let currentDay = 1; 
 let fullState = {};
 let pendingItem = null; 
 let editingItem = null; 
 let currentChoiceStep = 0;
 let displayDays = 1; 
 
-// --- 1. SUPABASE CONFIG ---
-const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
-const K = 'sb_publishable_6ktk6QMyDzhrCDDI33G9pA_hgCf8gFU';
-const sbClient = supabase.createClient(U, K);
+const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+const sbClient = supabase.createClient(sbUrl, sbKey);
 
-// --- 2. PLAN SETTINGS ---
 const params = new URLSearchParams(window.location.search);
-const planName = params.get('plan') || "Custom Plan";
-const itemsPerDay = parseInt(params.get('items')) || 3;
-const totalDays = parseInt(params.get('days')) || 1;
-const planPrice = params.get('price') || "0"; 
+let planName = params.get('plan') || "Custom Plan";
+let itemsPerDay = parseInt(params.get('items')) || 3;
+const totalDaysRequested = parseInt(params.get('days')) || 1;
 
-// --- 3. INITIALIZATION & 6-DAY CAP ---
-function init() {
-    displayDays = (totalDays >= 24) ? 6 : totalDays;
-    document.getElementById('plan-name-display').innerText = (totalDays >= 24) ? `${planName} (Week 1)` : planName;
-    document.getElementById('display-total-days').innerText = displayDays;
+let isPlan24Progress = false; 
+let currentPlanWeek = 0; 
+let dayOffset = 0;
+
+async function init() {
+    const user = JSON.parse(localStorage.getItem('current_user'));
+    
+    if (user) {
+        const { data: profile } = await sbClient
+            .from('profiles')
+            .select('plan24days, "24planweek", active_package_name')
+            .eq('email', user.email)
+            .single();
+
+        if (profile && profile.plan24days) {
+            // STRICT CHECK: Only trigger sub-logic if plan name AND 24-day duration match
+            if (totalDaysRequested >= 24 && params.get('plan') === profile.active_package_name) {
+                isPlan24Progress = true;
+                currentPlanWeek = profile["24planweek"] || 0;
+                planName = profile.active_package_name;
+                
+                const name = planName.toUpperCase();
+                if(name.includes("SOLO")) itemsPerDay = 1;
+                else if(name.includes("DUO")) itemsPerDay = 2;
+                else if(name.includes("TRIO")) itemsPerDay = 3;
+                else if(name.includes("FULL")) itemsPerDay = 4;
+            } 
+            // BLOCK: If trying to start a DIFFERENT 24-day plan while one is active
+            else if (totalDaysRequested >= 24 && params.get('plan') !== profile.active_package_name) {
+                window.location.href = "plan-status.html";
+                return;
+            }
+        }
+    }
+
+    displayDays = isPlan24Progress ? 6 : totalDaysRequested;
+    dayOffset = isPlan24Progress ? (currentPlanWeek * 6) : 0;
+
+    document.getElementById('display-total-days').innerText = totalDaysRequested;
+    const planDisplay = document.getElementById('plan-name-display');
+    const weekLabel = document.getElementById('week-label');
+
+    planDisplay.innerText = planName;
+    if (isPlan24Progress && weekLabel) {
+        weekLabel.style.display = "inline-block";
+        weekLabel.innerText = `Week ${currentPlanWeek + 1}`;
+        document.getElementById('confirm-all-btn').innerText = `Confirm Week ${currentPlanWeek + 1}`;
+    } else if (weekLabel) {
+        weekLabel.style.display = "none";
+        document.getElementById('confirm-all-btn').innerText = `Confirm Order`;
+    }
 
     fullState = {};
-    for(let i = 1; i <= displayDays; i++) { fullState[i] = []; }
+    for(let i = 1; i <= displayDays; i++) { 
+        fullState[i + dayOffset] = []; 
+    }
+    
+    currentDay = 1 + dayOffset;
+    document.getElementById('active-day-num').innerText = 1; 
 
+    applyCategoryRestrictions();
+    updateUI();
+    if (isPlan24Progress) setTimeout(checkPlanAndAuthUI, 500);
+}
+
+function applyCategoryRestrictions() {
     const cleanPlanName = planName.toLowerCase().trim();
     const restrictions = {
         "solo": ["snack", "snacks", "protein", "extra pro"],
@@ -39,194 +92,115 @@ function init() {
         "trio": ["protein", "extra pro"],
         "protein": ["breakfast", "snack", "snacks", "main meals"]
     };
-
     const navButtons = document.querySelectorAll('.cat-btn');
-    let firstAllowedBtn = null;
-
     navButtons.forEach(btn => {
         const btnText = btn.innerText.toLowerCase().trim();
         let isRestricted = false;
         for (const plan in restrictions) {
-            if (cleanPlanName.includes(plan) && restrictions[plan].includes(btnText)) {
-                isRestricted = true; break;
-            }
+            if (cleanPlanName.includes(plan) && restrictions[plan].includes(btnText)) { isRestricted = true; break; }
         }
         if (isRestricted) {
             btn.classList.add('unavailable');
-            btn.style.opacity = "0.3";
-            btn.style.pointerEvents = "none";
-        } else if (!firstAllowedBtn) {
-            firstAllowedBtn = btn;
+            btn.style.opacity = "0.3"; btn.style.pointerEvents = "none";
         }
     });
-
-    if (firstAllowedBtn) firstAllowedBtn.click();
-    else renderMenu('breakfast');
-
-    updateUI();
-    setTimeout(checkPlanAndAuth, 500);
+    const firstAllowed = Array.from(navButtons).find(b => !b.classList.contains('unavailable'));
+    if (firstAllowed) firstAllowed.click();
 }
 
-// --- 4. AUTH MODAL LOGIC (FIXES THE WHITE WINDOW) ---
-function openEntryModal(mode = 'login') {
-    document.getElementById('entry-modal').style.display = 'flex';
-    toggleAuthMode(mode); 
-}
-
+function openEntryModal(mode = 'login') { document.getElementById('entry-modal').style.display = 'flex'; toggleAuthMode(mode); }
 function toggleAuthMode(mode) {
-    const loginArea = document.getElementById('login-form-area');
-    const signupArea = document.getElementById('signup-form-area');
-
-    if (mode === 'login') {
-        loginArea.style.display = 'block';
-        signupArea.style.display = 'none';
-    } else {
-        loginArea.style.display = 'none';
-        signupArea.style.display = 'block';
-    }
+    document.getElementById('login-form-area').style.display = mode === 'login' ? 'block' : 'none';
+    document.getElementById('signup-form-area').style.display = mode === 'login' ? 'none' : 'block';
 }
+function closeEntryModal() { document.getElementById('entry-modal').style.display = 'none'; }
+function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
 
-function closeEntryModal() {
-    document.getElementById('entry-modal').style.display = 'none';
-}
-
-function checkPlanAndAuth() {
+function checkPlanAndAuthUI() {
     const user = JSON.parse(localStorage.getItem('current_user'));
     const modal = document.getElementById('auth-modal');
-    const msgArea = document.getElementById('auth-message-area');
-    const btnArea = document.getElementById('auth-buttons-area');
-
-    if (totalDays >= 24) {
+    if (isPlan24Progress) {
         modal.style.display = 'flex';
         if (user) {
-            msgArea.innerHTML = `<h2 style="color:#2d5a27;">Welcome ${user.full_name}!</h2><p style="margin-top:15px; color:#444;">Building <strong>Week 1</strong> (6 Days).</p>`;
-            btnArea.innerHTML = `<button onclick="closeAuthModal()" class="btn-primary" style="width:100%">Start Week 1</button>`;
+            document.getElementById('auth-message-area').innerHTML = `<h2 style="color:#2d5a27;">Welcome ${user.full_name}!</h2><p>Building <strong>Week ${currentPlanWeek + 1}</strong>.</p>`;
+            document.getElementById('auth-buttons-area').innerHTML = `<button onclick="closeAuthModal()" class="btn-primary" style="width:100%">Continue</button>`;
         } else {
-            msgArea.innerHTML = `<h2 style="color:#2d5a27;">24-Day Program</h2><p style="margin-top:15px; color:#444;">Please Login/Signup to save progress.</p>`;
-            btnArea.innerHTML = `<button onclick="openEntryModal('login')" class="btn-primary" style="width:100%">Log In / Sign Up</button>`;
+            document.getElementById('auth-message-area').innerHTML = `<h2 style="color:#2d5a27;">24-Day Program</h2><p>Login to track weeks.</p>`;
+            document.getElementById('auth-buttons-area').innerHTML = `<button onclick="openEntryModal('login')" class="btn-primary" style="width:100%">Log In / Sign Up</button>`;
         }
     }
 }
 
-// --- 5. SUPABASE ACTIONS ---
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const { data, error } = await sbClient.from('profiles').select('*').eq('email', email).eq('password', password).single();
-    
-    if (error || !data) { alert("Invalid credentials."); } 
+    if (error) alert("Invalid credentials."); 
     else { localStorage.setItem('current_user', JSON.stringify(data)); location.reload(); }
 }
 
 async function handleSignup() {
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    const phone = document.getElementById('reg-phone').value;
-    const address = document.getElementById('reg-address').value;
-
-    if(!name || !email || !password || !phone || !address) { 
-        alert("All fields are required for delivery setup!"); 
-        return; 
-    }
-
-    // 1. Insert the user into Supabase
-    const { data, error } = await sbClient.from('profiles').insert([
-        { 
-            full_name: name, 
-            email: email, 
-            password: password,
-            phone_number: phone, 
-            address: address
-        }
-    ]).select(); // .select() is important to get the created record back
-
-    if (error) {
-        console.error("Supabase Error:", error);
-        alert("Signup failed: " + error.message);
-    } else {
-        // 2. AUTO-LOGIN: 
-        // We take the data we just sent (or the returned 'data[0]') 
-        // and save it to localStorage as if they had logged in.
-        const newUser = data[0] || { full_name: name, email: email, phone_number: phone, address: address };
-        localStorage.setItem('current_user', JSON.stringify(newUser));
-        
-        // 3. Refresh or Close Modals
-        alert("Welcome to The Good Green, " + name + "!");
-        location.reload(); // This reloads the builder with the user now "Logged In"
-    }
+    const { data, error } = await sbClient.from('profiles').insert([{ 
+        full_name: document.getElementById('reg-name').value, 
+        email: document.getElementById('reg-email').value, 
+        password: document.getElementById('reg-password').value, 
+        phone_number: document.getElementById('reg-phone').value, 
+        address: document.getElementById('reg-address').value, 
+        plan24days: (totalDaysRequested >= 24), 
+        "24planweek": 0,
+        active_package_name: planName
+    }]).select();
+    if (error) alert(error.message); else { localStorage.setItem('current_user', JSON.stringify(data[0])); location.reload(); }
 }
 
-// --- 6. MENU & UI CORE ---
 function loadMenu() {
     if (typeof rawMenuData === 'undefined') return;
     menuData = rawMenuData.map((item, index) => {
-        let choicesArray = [];
-        if (item.choice_options?.trim()) choicesArray.push({ title: item.choice_title || "Selection", options: item.choice_options.split(';').map(o => o.trim()) });
-        if (item.choice_options_2?.trim()) choicesArray.push({ title: item.choice_title_2 || "Selection 2", options: item.choice_options_2.split(';').map(o => o.trim()) });
-        return { id: index, category: item.category.toLowerCase(), name: item.name, protein: item.protein, ingredients: item.ingredients ? item.ingredients.split(';') : [], multiChoices: choicesArray };
+        let choices = [];
+        if (item.choice_options?.trim()) choices.push({ title: item.choice_title, options: item.choice_options.split(';').map(o => o.trim()) });
+        if (item.choice_options_2?.trim()) choices.push({ title: item.choice_title_2, options: item.choice_options_2.split(';').map(o => o.trim()) });
+        return { id: index, category: item.category.toLowerCase(), name: item.name, protein: item.protein, ingredients: item.ingredients ? item.ingredients.split(';') : [], multiChoices: choices };
     });
     init();
 }
 
 function renderMenu(cat) {
-    const grid = document.getElementById('menu-grid');
-    grid.innerHTML = "";
-    const cleanCat = cat.toLowerCase().trim();
-    document.querySelectorAll('.cat-btn').forEach(b => {
-        const btnText = b.innerText.toLowerCase().trim();
-        const btnCategory = btnText === "main meals" ? "lunch/dinner" : (btnText === "extra pro" ? "protein" : btnText);
-        b.classList.toggle('active', (cleanCat === btnCategory));
-    });
-    const itemsToShow = menuData.filter(m => (cat === 'lunch/dinner') ? (m.category === 'lunch' || m.category === 'dinner') : (m.category === cat));
-    itemsToShow.forEach(item => {
-        grid.innerHTML += `<div class="menu-item-card"><h4>${item.name}</h4><p>${item.protein}g Protein</p><button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button></div>`;
-    });
+    const grid = document.getElementById('menu-grid'); grid.innerHTML = "";
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(cat.split('/')[0])));
+    const items = menuData.filter(m => (cat === 'lunch/dinner') ? (m.category === 'lunch' || m.category === 'dinner') : (m.category === cat));
+    items.forEach(item => { grid.innerHTML += `<div class="menu-item-card"><h4>${item.name}</h4><p>${item.protein}g Protein</p><button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button></div>`; });
 }
 
 function addItem(id) {
     if (fullState[currentDay].length >= itemsPerDay) { showToast("Day full!"); return; }
     const item = menuData.find(i => i.id === id);
-    pendingItem = JSON.parse(JSON.stringify(item)); 
-    pendingItem.selectedChoices = [];
-    currentChoiceStep = 0; 
-    if (pendingItem.multiChoices?.length > 0) showChoicePopup(); 
-    else confirmAdd();
+    pendingItem = JSON.parse(JSON.stringify(item)); pendingItem.selectedChoices = [];
+    if (pendingItem.multiChoices?.length > 0) showChoicePopup(); else confirmAdd();
 }
 
 function showChoicePopup() {
-    const modal = document.getElementById('editModal');
-    const container = document.getElementById('ingredients-list');
     const choiceObj = pendingItem.multiChoices[currentChoiceStep];
-    container.innerHTML = `<h3>${choiceObj.title}</h3><div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">${choiceObj.options.map(opt => `<button class="btn-confirm-mini" style="background:#2d5a27; color:white; padding:15px;" onclick="finalizeChoice('${opt}')">${opt}</button>`).join('')}</div>`;
-    modal.style.display = "flex";
+    document.getElementById('ingredients-list').innerHTML = `<h3>${choiceObj.title}</h3><div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">${choiceObj.options.map(opt => `<button class="btn-confirm-mini" style="background:#2d5a27; color:white; padding:15px;" onclick="finalizeChoice('${opt}')">${opt}</button>`).join('')}</div>`;
+    document.getElementById('editModal').style.display = "flex";
 }
 
 function finalizeChoice(selection) {
-    pendingItem.selectedChoices.push(selection);
-    currentChoiceStep++;
+    pendingItem.selectedChoices.push(selection); currentChoiceStep++;
     if (currentChoiceStep < pendingItem.multiChoices.length) showChoicePopup();
-    else { confirmAdd(); document.getElementById('editModal').style.display = "none"; }
+    else { confirmAdd(); document.getElementById('editModal').style.display = "none"; currentChoiceStep = 0; }
 }
 
 function confirmAdd() {
-    pendingItem.instanceId = Date.now() + Math.random();
-    pendingItem.removedIngredients = [];
-    fullState[currentDay].push(pendingItem);
-    pendingItem = null;
-    updateUI();
+    pendingItem.instanceId = Date.now(); pendingItem.removedIngredients = [];
+    fullState[currentDay].push(pendingItem); updateUI();
 }
 
 function openEditModal(instanceId) {
     editingItem = fullState[currentDay].find(i => i.instanceId === instanceId);
-    const modal = document.getElementById('editModal');
-    const container = document.getElementById('ingredients-list');
-    container.innerHTML = `<h3>Customize ${editingItem.name}</h3>`;
-    editingItem.ingredients.forEach(ing => {
-        const isRemoved = editingItem.removedIngredients.includes(ing);
-        container.innerHTML += `<label style="display:block; padding:10px;"><input type="checkbox" ${isRemoved ? '' : 'checked'} onchange="toggleIngredient('${ing}')"> ${ing}</label>`;
-    });
-    modal.style.display = "flex";
+    let html = `<h3>Customize ${editingItem.name}</h3>`;
+    editingItem.ingredients.forEach(ing => html += `<label style="display:block; padding:10px;"><input type="checkbox" ${editingItem.removedIngredients.includes(ing) ? '' : 'checked'} onchange="toggleIngredient('${ing}')"> ${ing}</label>`);
+    document.getElementById('ingredients-list').innerHTML = html;
+    document.getElementById('editModal').style.display = "flex";
 }
 
 function toggleIngredient(ing) {
@@ -234,52 +208,41 @@ function toggleIngredient(ing) {
     else editingItem.removedIngredients.push(ing);
 }
 
-function closeEditModal() { document.getElementById('editModal').style.display = "none"; editingItem = null; updateUI(); }
+function closeEditModal() { document.getElementById('editModal').style.display = "none"; updateUI(); }
 
 function updateUI() {
-    const list = document.getElementById('selection-list');
-    list.innerHTML = "";
+    const list = document.getElementById('selection-list'); list.innerHTML = "";
     fullState[currentDay].forEach(item => {
-        list.innerHTML += `<li style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding: 10px 0;">
-            <div style="display: flex; justify-content: space-between;">
-                <div><strong>${item.name}</strong><br><small>${item.selectedChoices.join(' + ')}</small>
-                <button onclick="openEditModal(${item.instanceId})" style="display:block; font-size:0.7rem; color:#2d5a27; background:none; border:none; text-decoration:underline;">Edit</button></div>
-                <button onclick="removeItem(${item.instanceId})" style="color:red; background:none; border:none;">&times;</button>
-            </div></li>`;
+        list.innerHTML += `<li style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding: 10px 0;"><div style="display: flex; justify-content: space-between;"><div><strong>${item.name}</strong><br><small>${item.selectedChoices.join(' + ')}</small><button onclick="openEditModal(${item.instanceId})" style="display:block; font-size:0.7rem; color:#2d5a27; background:none; border:none; text-decoration:underline;">Edit</button></div><button onclick="removeItem(${item.instanceId})" style="color:red; background:none; border:none;">&times;</button></div></li>`;
     });
     document.getElementById('day-items-count').innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items`;
-    if(totalDays >= 24) document.getElementById('confirm-all-btn').innerText = "Confirm Week 1";
     renderCalendar();
 }
 
 function renderCalendar() {
-    const grid = document.getElementById('calendar-grid');
-    grid.innerHTML = "";
-    for(let i = 1; i <= displayDays; i++) {
-        const isFull = fullState[i]?.length === itemsPerDay;
-        grid.innerHTML += `<div class="day-dot ${currentDay === i ? 'active' : ''} ${isFull ? 'complete' : ''}" onclick="switchDay(${i})">${i}</div>`;
+    const grid = document.getElementById('calendar-grid'); grid.innerHTML = "";
+    const loops = isPlan24Progress ? 6 : totalDaysRequested;
+    for(let i = 1; i <= loops; i++) {
+        const idx = i + dayOffset;
+        grid.innerHTML += `<div class="day-dot ${currentDay === idx ? 'active' : ''} ${fullState[idx]?.length === itemsPerDay ? 'complete' : ''}" onclick="switchDay(${idx})">${i}</div>`;
     }
 }
 
-function switchDay(d) { currentDay = d; document.getElementById('active-day-num').innerText = d; updateUI(); }
+function switchDay(d) { currentDay = d; updateUI(); }
 function removeItem(id) { fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); updateUI(); }
-
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast-notice show';
-    toast.innerText = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
-}
-
-function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+function showToast(m) { const t = document.createElement('div'); t.className = 'toast-notice show'; t.innerText = m; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
 async function handleFinalOrder() {
-    for(let i=1; i<=displayDays; i++) {
-        if(fullState[i].length < itemsPerDay) { showToast(`Day ${i} incomplete!`); return; }
+    const loops = isPlan24Progress ? 6 : totalDaysRequested;
+    for(let i = 1; i <= loops; i++) { 
+        const actualIdx = i + dayOffset;
+        if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
+            showToast(`Day ${i} incomplete!`); return; 
+        } 
     }
     localStorage.setItem('finalOrder', JSON.stringify(fullState));
-    window.location.href = "checkout.html";
+    const subFlag = isPlan24Progress ? "&isSub=true" : "&isSub=false";
+    window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
 }
 
 loadMenu();
