@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Sidebar Styling (Add to style.css to keep it everywhere) */
+        /* Sidebar Styling */
         .menu-dots {
             display: flex;
             flex-direction: column;
@@ -46,7 +46,7 @@
         .sidebar-links li { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .sidebar-links a { text-decoration: none; color: #333; font-weight: 600; font-size: 1.2rem; }
 
-        /* Existing Pricing Styles */
+        /* Pricing Styles */
         .pricing-table {
             width: 100%;
             border-collapse: collapse;
@@ -297,11 +297,22 @@
         document.getElementById(modalId).style.display = 'none';
     }
 
+    // --- UPDATED BUILDER REDIRECT WITH LOGIN GUARD ---
     function goToBuilder(days) {
+        // CHECK LOGIN STATUS FOR 24-DAY PLAN
+        if (days === 24) {
+            const user = localStorage.getItem('current_user');
+            if (!user) {
+                alert("For a 24-day plan, you have to create an account or log in first.");
+                // Redirect to home with the login trigger
+                window.location.href = "index.html?action=login";
+                return; // Stop the function here
+            }
+        }
+
         const priceStr = planDetails[currentSelectedPlan].prices[days === 1 ? "1 Day" : (days === 5 ? "5 Days" : "24 Days")];
         const price = priceStr.replace('$', '');
         
-        // CRITICAL: Save to localStorage for the Checkout "Detective"
         localStorage.setItem('selectedPlanName', currentSelectedPlan);
         localStorage.setItem('selectedDuration', days);
         
