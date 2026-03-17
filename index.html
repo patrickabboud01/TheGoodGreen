@@ -28,6 +28,11 @@
             width: 90%; 
             max-width: 420px; 
             position: relative;
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         .close-btn {
             position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
@@ -51,6 +56,7 @@
         </div>
     </div>
 </div>
+
 <div id="entry-modal" class="auth-overlay">
     <div class="auth-modal-box">
         <button onclick="closeEntryModal()" class="close-btn">&times;</button>
@@ -85,6 +91,7 @@
         </div>
     </div>
 </div>
+
 <header>
     <nav class="navbar">
         <div class="container">
@@ -104,8 +111,11 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="packages.html">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
-                    <li><a href="plan-status.html">Countinue your plan</a></li>
+                    <li><a href="plan-status.html">Continue your plan</a></li>
                     <li><a href="user-account.html">My Account</a></li>
+                    <li id="auth-nav-item">
+                        <a href="#" id="auth-btn" onclick="handleAuthAction()">Login</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -159,103 +169,70 @@
 </footer>
 
 <script>
-// --- 1. SUPABASE CLIENT ---
+// --- 1. CONFIG ---
 const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
 const K = 'sb_publishable_6ktk6QMyDzhrCDDI33G9pA_hgCf8gFU';
 const sbClient = supabase.createClient(U, K);
 
-// --- 2. POPUP LOGIC ---
-function checkLoginStatus() {
+// --- 2. AUTH UI LOGIC ---
+
+function updateAuthButton() {
+    const authBtn = document.getElementById('auth-btn');
+    const user = localStorage.getItem('current_user');
+
+    if (user) {
+        authBtn.innerText = "Logout";
+        authBtn.style.color = "#d9534f";
+    } else {
+        authBtn.innerText = "Login / Sign Up";
+        authBtn.style.color = "#2d5a27";
+    }
+    authBtn.style.marginTop = "20px";
+    authBtn.style.borderTop = "1px solid #eee";
+    authBtn.style.paddingTop = "15px";
+    authBtn.style.display = "block";
+}
+
+function handleAuthAction() {
     const user = localStorage.getItem('current_user');
     if (user) {
-        const userData = JSON.parse(user);
-        document.getElementById('user-nav-item').innerHTML = `<a href="#" onclick="logoutUser()">Hi, ${userData.full_name.split(' ')[0]} (Logout)</a>`;
-        return true;
+        if (confirm("Are you sure you want to log out?")) {
+            localStorage.removeItem('current_user');
+            // When logging out, clear the choice flag so the popup can show again for a fresh session
+            sessionStorage.removeItem('auth_choice_made');
+            location.reload();
+        }
+    } else {
+        openEntryModal('login');
     }
-    return false;
 }
 
-window.onload = () => {
-    const isLoggedIn = checkLoginStatus();
-    const alreadySeen = sessionStorage.getItem('auth_choice_made');
-    
-    if (!isLoggedIn && !alreadySeen) {
-        setTimeout(() => {
-            document.getElementById('auth-modal').style.display = 'flex';
-        }, 1000);
-    }
-};
-
-function closeAuthModal() {
-    document.getElementById('auth-modal').style.display = 'none';
-    sessionStorage.setItem('auth_choice_made', 'true');
-}
 function openEntryModal(mode) {
-    // 1. Hide the initial "Welcome" choice modal if it's open
-    const welcomeModal = document.getElementById('auth-modal');
-    if (welcomeModal) welcomeModal.style.display = 'none';
-    
-    // 2. Show the main Entry Modal
+    document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('entry-modal').style.display = 'flex';
     
-    // 3. Switch between Login and Signup views
     const loginArea = document.getElementById('login-form-area');
     const signupArea = document.getElementById('signup-form-area');
 
     if (mode === 'login') {
         loginArea.style.display = 'block';
         signupArea.style.display = 'none';
-    } else if (mode === 'signup') {
+    } else {
         loginArea.style.display = 'none';
         signupArea.style.display = 'block';
     }
+}
+
+function closeAuthModal() {
+    document.getElementById('auth-modal').style.display = 'none';
+    sessionStorage.setItem('auth_choice_made', 'true');
 }
 
 function closeEntryModal() {
     document.getElementById('entry-modal').style.display = 'none';
 }
 
-function logoutUser() {
-    localStorage.removeItem('current_user');
-    location.reload();
-}
-
-// --- 3. AUTO-LOGIN AUTH ACTIONS ---
-
-async function handleSignup() {
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const phone = document.getElementById('reg-phone').value;
-    const address = document.getElementById('reg-address').value;
-    const password = document.getElementById('reg-password').value;
-
-    if(!email || !password || !name) return alert("Name, Email and Password are required!");
-
-    // Insert AND Select the created row
-    const { data, error } = await sbClient
-        .from('profiles')
-        .insert([{ 
-            full_name: name, 
-            email: email, 
-            phone_number: phone, 
-            address: address,
-            password: password 
-        }])
-        .select(); 
-
-    if (error) {
-        alert("Signup failed: " + error.message);
-        console.error(error);
-    } else {
-        // --- THE AUTO-LOGIN MAGIC ---
-        const newUser = data[0]; 
-        localStorage.setItem('current_user', JSON.stringify(newUser));
-        sessionStorage.setItem('auth_choice_made', 'true'); // Don't show the popup again
-        
-        alert("Welcome to The Good Green, " + name + "!");
-        location.reload(); // Refresh to update navbar and close modals
-    }
-}
+// --- 3. SUPABASE ACTIONS ---
 
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
@@ -271,48 +248,84 @@ async function handleLogin() {
     if (error || !data) {
         alert("Invalid email or password.");
     } else {
+        // IMPORTANT: Set these before reloading
         localStorage.setItem('current_user', JSON.stringify(data));
         sessionStorage.setItem('auth_choice_made', 'true');
         location.reload(); 
     }
 }
-document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const closeBtn = document.getElementById('close-sidebar');
 
-        if(toggle && sidebar && closeBtn) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebar.classList.add('active');
-            });
+async function handleSignup() {
+    const name = document.getElementById('reg-name').value;
+    const email = document.getElementById('reg-email').value;
+    const phone = document.getElementById('reg-phone').value;
+    const address = document.getElementById('reg-address').value;
+    const password = document.getElementById('reg-password').value;
 
-            closeBtn.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-            });
+    if(!email || !password || !name) return alert("Required fields missing!");
 
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                }
-            });
-        }
-    });
-    function handleContinueBuilding() {
-    const savedPhone = localStorage.getItem('user_phone');
+    const { data, error } = await sbClient
+        .from('profiles')
+        .insert([{ full_name: name, email, phone_number: phone, address, password }])
+        .select();
 
-    if (!savedPhone) {
-        // If not logged in, open that same popup you use for checkout
-        openLoginPopup(); 
+    if (error) {
+        alert("Signup failed: " + error.message);
     } else {
-        // If we know who they are, go to the progress page
-        window.location.href = "plan-status.html";
+        localStorage.setItem('current_user', JSON.stringify(data[0]));
+        sessionStorage.setItem('auth_choice_made', 'true');
+        location.reload();
     }
 }
 
-// Add the button to your sidebar HTML structure
-// <li><a href="#" onclick="handleContinueBuilding()">Continue Building Your Plan</a></li>
+// --- 4. INITIALIZATION & LISTENERS ---
+
+window.onload = () => {
+    updateAuthButton();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const user = localStorage.getItem('current_user');
+    const alreadySeen = sessionStorage.getItem('auth_choice_made');
+
+    // 1. If we have a user, ensure modals are hidden and choice is recorded
+    if (user) {
+        sessionStorage.setItem('auth_choice_made', 'true');
+        document.getElementById('auth-modal').style.display = 'none';
+        document.getElementById('entry-modal').style.display = 'none';
+    } 
+    // 2. Otherwise, check for external login requests or show welcome popup
+    else {
+        if (urlParams.get('action') === 'login') {
+            openEntryModal('login');
+        } else if (!alreadySeen) {
+            setTimeout(() => {
+                // Double check user didn't log in during the timeout
+                if (!localStorage.getItem('current_user')) {
+                    document.getElementById('auth-modal').style.display = 'flex';
+                }
+            }, 1200);
+        }
+    }
+};
+
+// Sidebar Handlers
+const toggle = document.getElementById('menu-toggle');
+const sidebar = document.getElementById('sidebar');
+const closeBtn = document.getElementById('close-sidebar');
+
+if(toggle && sidebar && closeBtn) {
+    toggle.onclick = (e) => {
+        e.stopPropagation();
+        sidebar.classList.add('active');
+    };
+    closeBtn.onclick = () => sidebar.classList.remove('active');
+    
+    document.onclick = (e) => {
+        if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    };
+}
 </script>
 </body>
 </html>
