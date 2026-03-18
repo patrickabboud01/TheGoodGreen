@@ -3,60 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Good Green | Admin Portal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Good Green | Admin Kitchen Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --forest: #2d5a27; --sand: #f4f1ea; }
-        body { background: var(--sand); padding: 20px; font-family: sans-serif; }
-        .admin-box { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: var(--forest); color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
-        .view-btn { background: var(--forest); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); overflow-y: auto; }
-        .modal-content { background: white; margin: 5% auto; padding: 20px; width: 80%; border-radius: 10px; }
-        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        :root { 
+            --forest: #2d5a27; --sand: #f4f1ea; --error: #d9534f; 
+            --working: #f39c12; --done: #27ae60; --info: #3498db;
+        }
+        
+        body { background: var(--sand); padding: 10px; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        
+        .admin-box { 
+            max-width: 1200px; margin: 10px auto; background: white; 
+            padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
+        }
+        
+        /* Mobile Responsive Header */
+        .header-flex { 
+            display: flex; flex-direction: column; gap: 10px; 
+            margin-bottom: 20px; border-bottom: 2px solid var(--sand); padding-bottom: 15px; 
+        }
+        @media (min-width: 768px) { .header-flex { flex-direction: row; justify-content: space-between; align-items: center; } }
+
+        /* Controls Layout */
+        .controls { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .search-container { width: 100%; margin-bottom: 10px; }
+        #search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+
+        .view-btn { 
+            flex: 1; min-width: 120px; background: var(--forest); color: white; border: none; 
+            padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        }
+        .view-btn.outline { background: white; color: var(--forest); border: 2px solid var(--forest); }
+
+        /* Status Toggles */
+        .status-btn { 
+            width: 100%; padding: 12px; border-radius: 8px; border: none; 
+            font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase;
+        }
+        .status-Pending { background: #e0e0e0; color: #666; }
+        .status-Cooking { background: var(--working); color: white; }
+        .status-Ready { background: var(--info); color: white; }
+        .status-Delivered { background: var(--done); color: white; }
+        .status-Active { background: var(--forest); color: white; }
+        .status-Paused { background: #95a5a6; color: white; }
+
+        /* RESPONSIVE TABLE TO CARDS */
+        table { width: 100%; border-collapse: collapse; }
+        
+        @media (max-width: 768px) {
+            thead { display: none; } /* Hide headers on mobile */
+            tr { 
+                display: block; background: #fff; border: 1px solid #eee; 
+                margin-bottom: 15px; border-radius: 10px; padding: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            }
+            td { 
+                display: flex; justify-content: space-between; align-items: center; 
+                padding: 8px 5px; border: none; font-size: 0.9rem; text-align: right;
+            }
+            td::before { content: attr(data-label); font-weight: bold; color: var(--forest); text-align: left; }
+            .group-header { background: var(--forest) !important; color: white !important; text-align: center; display: block; }
+            .group-header td::before { content: ""; }
+        }
+
+        @media (min-width: 769px) {
+            th { background: #f8f9fa; color: var(--forest); padding: 15px; text-align: left; border-bottom: 2px solid #eee; }
+            td { padding: 15px; border-bottom: 1px solid #eee; }
+        }
+
+        .group-header { background: #f0f4f0; font-weight: bold; color: var(--forest); }
+        .instruction-tag { background: #fff5f5; color: var(--error); padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.75rem; border: 1px solid #feb2b2; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" style="text-align: center; margin-top: 100px;">
-        <h2>Kitchen Access Only</h2>
-        <input type="password" id="pass-code" placeholder="Enter Secret Code" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-        <button onclick="checkLogin()" class="view-btn">Unlock</button>
+    <div id="login-screen" style="text-align:center; margin-top:15vh; padding: 20px;">
+        <div style="background:white; padding:30px; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.1); width: 100%; max-width: 350px; display: inline-block;">
+            <h2 style="color:var(--forest);">Kitchen Access</h2>
+            <input type="password" id="pass-code" placeholder="Enter PIN" style="width:100%; padding:15px; border-radius:8px; border:1px solid #ddd; margin-bottom:15px; box-sizing: border-box; font-size: 1.2rem; text-align: center;"><br>
+            <button onclick="checkLogin()" class="view-btn" style="width:100%; font-size: 1.1rem;">Unlock</button>
+        </div>
     </div>
 
     <div id="admin-content" class="admin-box" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 style="color: var(--forest);">Orders Feed</h1>
-            <button onclick="loadOrders()" class="view-btn">Refresh List</button>
+        <div class="header-flex">
+            <h1 style="color: var(--forest); margin: 0; font-size: 1.5rem;">Kitchen Ops</h1>
+            <button onclick="refreshCurrentView()" class="view-btn outline" style="flex: 0; min-width: 80px;">↻</button>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Customer</th>
-                    <th>Plan</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="orders-body">
-                </tbody>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search customer or meal..." oninput="renderFilteredData()">
+        </div>
+
+        <div class="controls">
+            <button id="btn-orders" class="view-btn" onclick="switchView('orders')">Subs</button>
+            <button id="btn-production" class="view-btn outline" onclick="switchView('production')">Cook List</button>
+            <button id="btn-group" class="view-btn outline" onclick="toggleGroup()">Group</button>
+            <input type="number" id="day-filter" placeholder="Day #" oninput="refreshCurrentView()" style="width:70px; padding:10px; border-radius:8px; border:1px solid #ddd; display:none;">
+        </div>
+
+        <table id="main-table">
+            <thead id="table-head"></thead>
+            <tbody id="table-body"></tbody>
         </table>
-    </div>
-
-    <div id="mealModal" class="modal">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between;">
-                <h2 id="modal-title">Meal Schedule</h2>
-                <button onclick="closeModal()" style="font-size: 2rem; border: none; background: none; cursor: pointer;">&times;</button>
-            </div>
-            <div id="meal-list-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
-                </div>
-        </div>
     </div>
 
 <script>
@@ -64,72 +114,118 @@
     const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
     const sbClient = supabase.createClient(sbUrl, sbKey);
 
+    let currentView = 'orders';
+    let isGrouped = false;
+    let rawData = [];
+
     function checkLogin() {
-        const code = document.getElementById('pass-code').value;
-        if(code === "1234") { // <--- Change this to your actual secret code
+        if(document.getElementById('pass-code').value === "1234") {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
-            loadOrders();
+            refreshCurrentView();
+        } else { alert("Wrong Code"); }
+    }
+
+    function switchView(view) {
+        currentView = view;
+        document.getElementById('btn-orders').classList.toggle('outline', view !== 'orders');
+        document.getElementById('btn-production').classList.toggle('outline', view !== 'production');
+        document.getElementById('day-filter').style.display = (view === 'production') ? 'block' : 'none';
+        refreshCurrentView();
+    }
+
+    function toggleGroup() {
+        isGrouped = !isGrouped;
+        document.getElementById('btn-group').classList.toggle('outline', !isGrouped);
+        renderFilteredData();
+    }
+
+    async function refreshCurrentView() {
+        const body = document.getElementById('table-body');
+        body.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+
+        if (currentView === 'orders') {
+            const { data } = await sbClient.from('orders').select('*').order('customer_name', {ascending: true});
+            rawData = data;
         } else {
-            alert("Wrong code, Chef!");
+            const dayVal = document.getElementById('day-filter').value;
+            let query = sbClient.from('order_items').select('*, orders(customer_name, plan_name)');
+            if(dayVal) query = query.eq('day_number', dayVal);
+            const { data } = await query.order('day_number', {ascending: true});
+            rawData = data;
+        }
+        renderFilteredData();
+    }
+
+    function renderFilteredData() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        const filtered = rawData.filter(item => {
+            const name = (currentView === 'orders' ? item.customer_name : item.orders?.customer_name) || "";
+            const meal = item.meal_name || "";
+            return name.toLowerCase().includes(searchTerm) || meal.toLowerCase().includes(searchTerm);
+        });
+
+        const head = document.getElementById('table-head');
+        const body = document.getElementById('table-body');
+        body.innerHTML = "";
+
+        if (currentView === 'orders') {
+            head.innerHTML = `<tr><th>Customer</th><th>Date</th><th>Plan</th><th>Status</th></tr>`;
+        } else {
+            head.innerHTML = `<tr><th>Day</th><th>Meal</th><th>Customer</th><th>Instructions</th><th>Status</th></tr>`;
+        }
+
+        if (isGrouped) {
+            const grouped = filtered.reduce((acc, item) => {
+                const name = currentView === 'orders' ? item.customer_name : item.orders?.customer_name;
+                if (!acc[name]) acc[name] = [];
+                acc[name].push(item);
+                return acc;
+            }, {});
+
+            for (const name in grouped) {
+                body.innerHTML += `<tr class="group-header"><td colspan="5" style="text-align:center">${name}</td></tr>`;
+                body.innerHTML += grouped[name].map(item => currentView === 'orders' ? orderRow(item) : mealRow(item)).join('');
+            }
+        } else {
+            body.innerHTML = filtered.map(item => currentView === 'orders' ? orderRow(item) : mealRow(item)).join('');
         }
     }
 
-    async function loadOrders() {
-        const { data, error } = await sbClient
-            .from('orders')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) return console.error(error);
-
-        const tbody = document.getElementById('orders-body');
-        tbody.innerHTML = data.map(order => `
-            <tr>
-                <td>${new Date(order.created_at).toLocaleDateString()}</td>
-                <td><strong>${order.customer_name}</strong></td>
-                <td><span class="status-badge">${order.plan_name}</span></td>
-                <td>${order.customer_phone}</td>
-                <td><button class="view-btn" onclick="viewMeals('${order.id}', '${order.customer_name}')">View Meals</button></td>
-            </tr>
-        `).join('');
+    function orderRow(o) {
+        const status = o.status || 'Active';
+        return `<tr>
+            <td data-label="Name">${o.customer_name}</td>
+            <td data-label="Date">${new Date(o.created_at).toLocaleDateString()}</td>
+            <td data-label="Plan">${o.plan_name}</td>
+            <td data-label="Action"><button class="status-btn status-${status}" onclick="cycleStatus('orders', '${o.id}', '${status}')">${status}</button></td>
+        </tr>`;
     }
 
-   async function viewMeals(orderId, name) {
-    console.log("Looking for meals for Order ID:", orderId); // Debugging line
-    document.getElementById('modal-title').innerText = "Meal Schedule for " + name;
-    
-    const { data, error } = await sbClient
-        .from('order_items') // Double check if your table name is exactly this!
-        .select('*')
-        .eq('order_id', orderId)
-        .order('day_number', { ascending: true });
-
-    if (error) {
-        console.error("Supabase Error:", error);
-        alert("Database Error: " + error.message);
-        return;
+    function mealRow(m) {
+        const status = m.status || 'Pending';
+        return `<tr>
+            <td data-label="Day">Day ${m.day_number}</td>
+            <td data-label="Meal"><strong>${m.meal_name}</strong></td>
+            <td data-label="Name">${m.orders?.customer_name || '...'}</td>
+            <td data-label="Notes">${m.removals ? `<span class="instruction-tag">NO ${m.removals}</span>` : 'Standard'}</td>
+            <td data-label="Action"><button class="status-btn status-${status}" onclick="cycleStatus('order_items', '${m.id}', '${status}')">${status}</button></td>
+        </tr>`;
     }
 
-    const grid = document.getElementById('meal-list-grid');
-    
-    if (!data || data.length === 0) {
-        grid.innerHTML = `<p style="color: red; padding: 20px;">No meals found in the database for this Order ID (${orderId}).</p>`;
-    } else {
-        grid.innerHTML = data.map(item => `
-            <div style="border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fafafa; margin-bottom: 10px;">
-                <p style="margin: 0; font-weight: bold; color: var(--forest);">Day ${item.day_number}</p>
-                <p style="margin: 5px 0; font-size: 0.9rem;">${item.meal_name}</p>
-                <p style="margin: 0; font-size: 0.8rem; color: #666;">Choice: ${item.choice}</p>
-                ${item.removals ? `<p style="margin: 0; font-size: 0.8rem; color: red;">No: ${item.removals}</p>` : ''}
-            </div>
-        `).join('');
+    async function cycleStatus(table, id, current) {
+        let next;
+        if (table === 'orders') {
+            next = current === 'Active' ? 'Paused' : 'Active';
+        } else {
+            const flow = ['Pending', 'Cooking', 'Ready', 'Delivered'];
+            next = flow[(flow.indexOf(current) + 1) % flow.length];
+        }
+
+        const { data, error } = await sbClient.from(table).update({ status: next }).eq('id', id).select();
+        if (!error && data.length > 0) refreshCurrentView();
+        else if (error) alert("Update failed: " + error.message);
     }
-
-    document.getElementById('mealModal').style.display = 'block';
-}
-
-    function closeModal() { document.getElementById('mealModal').style.display = 'none'; }
 </script>
 </body>
 </html>
