@@ -27,24 +27,35 @@
             text-transform: uppercase; margin-bottom: 4px; display: inline-block;
         }
 
-        /* --- CUSTOM ALERT MODAL STYLES --- */
+        /* --- UNIFIED MODAL STYLES --- */
+        #editModal .modal-content {
+            max-width: 400px;
+            border-radius: 25px;
+            padding: 30px 20px;
+            text-align: center;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .review-scroll-area {
+            max-height: 380px;
+            overflow-y: auto;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+
         .custom-alert-overlay {
-            display: none; 
-            position: fixed; 
+            display: none; position: fixed; 
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); 
-            z-index: 10000000; /* Higher than everything else */
-            align-items: center; 
-            justify-content: center;
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.7); z-index: 10000000; 
+            align-items: center; justify-content: center; backdrop-filter: blur(4px);
         }
         .custom-alert-box {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
+            background: white; padding: 30px; border-radius: 20px;
+            width: 90%; max-width: 400px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             animation: popIn 0.3s ease-out;
         }
@@ -52,31 +63,9 @@
             0% { transform: scale(0.9); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        .alert-btns {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-        .btn-cancel {
-            background: #eee;
-            color: #444;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            flex: 1;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-confirm-discard {
-            background: #d9534f;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            flex: 1;
-            cursor: pointer;
-            font-weight: 700;
-        }
+        .alert-btns { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-cancel { background: #eee; color: #444; border: none; padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; font-weight: 600; }
+        .btn-confirm-discard { background: #d9534f; color: white; border: none; padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; font-weight: 700; }
     </style>
 </head>
 <body class="builder-app-ui">
@@ -85,7 +74,7 @@
         <div class="custom-alert-box">
             <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
             <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
-            <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave the builder? Your meal selections will not be saved.</p>
+            <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave? Your meal selections will not be saved.</p>
             <div class="alert-btns">
                 <button class="btn-cancel" onclick="closeCustomAlert()">Stay Here</button>
                 <button class="btn-confirm-discard" id="confirm-redirect-btn">Discard</button>
@@ -165,9 +154,9 @@
     </div>
 
     <div id="editModal" class="modal">
-        <div class="modal-content app-modal">
-            <div id="ingredients-list"></div>
-            <button class="btn-primary" onclick="closeEditModal()" style="margin-top:20px; width: 100%;">Save & Close</button>
+        <div class="modal-content">
+            <div id="ingredients-list">
+                </div>
         </div>
     </div>
 
@@ -175,19 +164,15 @@
     <script src="builder-logic.js"></script>
 
     <script>
-        // --- CUSTOM MODAL LOGIC FOR BUILDER ---
         let pendingUrl = "";
-        
         function triggerCustomAlert(url) {
             pendingUrl = url;
             document.getElementById('custom-alert').style.display = 'flex';
         }
-
         function closeCustomAlert() {
             document.getElementById('custom-alert').style.display = 'none';
             pendingUrl = "";
         }
-
         document.getElementById('confirm-redirect-btn').onclick = function() {
             if (pendingUrl) window.location.href = pendingUrl;
         };
