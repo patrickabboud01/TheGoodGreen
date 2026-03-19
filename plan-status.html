@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Journey | The Good Green</title>
@@ -9,8 +9,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .status-page { background: #f9fbf9; min-height: 100vh; padding: 20px; font-family: 'Montserrat', sans-serif; }
-        .status-card { background: white; border-radius: 20px; padding: 30px; max-width: 500px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+        /* 1. STICKY FOOTER & RESET */
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body { 
+            display: flex; 
+            flex-direction: column; 
+            background: #f9fbf9; 
+            font-family: 'Montserrat', sans-serif; 
+        }
+
+        /* 2. SIDEBAR STYLING */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+        }
+        .sidebar.active { right: 0; }
+        .user-greeting {
+            padding: 30px 0 15px; border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #2d5a27; margin-bottom: 15px;
+        }
+        .sidebar-links { list-style: none; padding: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a { color: #444; text-decoration: none; display: block; padding: 8px 0; }
+        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27; }
+
+        /* 3. MAIN CONTENT AREA */
+        main { flex: 1 0 auto; padding: 40px 20px; }
+        
+        .status-card { 
+            background: white; border-radius: 20px; padding: 30px; 
+            max-width: 500px; margin: 0 auto; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; 
+        }
+
         .badge-active { background: #e8f5e9; color: #2d5a27; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 15px; }
         .progress-bar-bg { background: #eee; height: 12px; border-radius: 10px; margin: 25px 0 10px; overflow: hidden; }
         .progress-bar-fill { background: #2d5a27; height: 100%; transition: width 0.5s ease; }
@@ -18,106 +50,142 @@
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; text-align: left; border-top: 1px solid #eee; padding-top: 20px; }
         .info-item { font-size: 0.85rem; color: #555; }
         .info-item strong { color: #2d5a27; display: block; margin-bottom: 2px; }
+
+        .site-footer { flex-shrink: 0; }
     </style>
 </head>
-<body class="status-page">
-    <div class="container">
-        <header style="text-align: center; padding-bottom: 20px;">
-            <a href="index.html"><img src="images/longlogo.png" alt="Logo" style="width: 160px;"></a>
-        </header>
+<body>
 
-        <main class="status-card" id="status-container">
-            <div style="padding: 40px;">Loading your progress...</div>
-        </main>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
+            </div>
+            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span></div>
+            
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                <ul class="sidebar-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="packages.html" style="color: #2d5a27; font-weight: 700;">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="plan-status.html">Continue your plan</a></li>
+                    <li><a href="user-account.html">My Account</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<style>
+    /* ... existing styles ... */
+
+    header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background: white; /* Ensures content doesn't show through header */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    main { 
+        flex: 1 0 auto; 
+        padding: 120px 20px 60px; /* This pushes the card down below the fixed header */
+        display: flex;
+        align-items: center; /* Centers the card vertically if there's room */
+    }
+    
+    /* ... existing styles ... */
+</style>
+
+<div class="sidebar" id="sidebar">
+    <div class="close-sidebar" id="close-sidebar">&times;</div>
+    <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="packages.html">Packages</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="plan-status.html" style="color: #2d5a27; font-weight: 700;">My Journey</a></li>
+        <li><a href="user-account.html">My Account</a></li>
+        <li><a href="#" id="auth-btn" style="margin-top:20px; display:block; font-weight:700;" onclick="handleAuthAction()">Login</a></li>
+    </ul>
+</div>
+
+<main>
+    <div class="status-card" id="status-container">
+        <div style="padding: 40px;">Loading your progress...</div>
     </div>
+</main>
+
 <footer class="site-footer">
     <div class="footer-content">
-        
         <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
+            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon"><i class="fa-brands fa-facebook-f"></i></a>
         </div>
-
         <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
     </div>
 </footer>
-    <script>
-        const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
-        const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
-        const sbClient = supabase.createClient(sbUrl, sbKey);
 
-        window.onload = async function() {
-            const user = JSON.parse(localStorage.getItem('current_user'));
-            if (!user) { window.location.href = "builder.html"; return; }
+<script>
+    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(sbUrl, sbKey);
 
-            const { data: profile, error } = await sbClient.from('profiles').select('*').eq('email', user.email).single();
-            const container = document.getElementById('status-container');
+    // Sidebar Logic
+    document.getElementById('menu-toggle').onclick = () => document.getElementById('sidebar').classList.add('active');
+    document.getElementById('close-sidebar').onclick = () => document.getElementById('sidebar').classList.remove('active');
 
-            if (!profile || !profile.plan24days) {
-                container.innerHTML = `
-                    <h2>Welcome, ${user.full_name}!</h2>
-                    <p style="color:#666; margin: 15px 0;">You don't have an active 24-Day Journey yet.</p>
-                    <a href="packages.html" class="btn-primary" style="display:block; margin-top:20px;">Get Started</a>
-                `;
-                return;
-            }
-
-            const currentWeek = profile["24planweek"] || 0;
-            const progressPercent = (currentWeek / 4) * 100;
-            const pkg = profile.active_package_name || "THE SOLO";
-            
-            let items = 1;
-            if (pkg.toUpperCase().includes("DUO")) items = 2;
-            else if (pkg.toUpperCase().includes("TRIO")) items = 3;
-            else if (pkg.toUpperCase().includes("FULL")) items = 4;
-
-            const buildLink = `builder.html?plan=${encodeURIComponent(pkg)}&items=${items}&days=24`;
-
-            container.innerHTML = `
-                <span class="badge-active">JOURNEY ACTIVE</span>
-                <h1 style="color:#2d5a27; margin-bottom: 5px;">${pkg}</h1>
-                <p style="color:#777; font-size:0.9rem;">Your Sustainable Living Plan</p>
-
-                <div class="progress-section">
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
-                    </div>
-                    <div class="progress-labels">
-                        <span>Day 1</span>
-                        <span style="color:#2d5a27;">Week ${currentWeek + 1} of 4</span>
-                        <span>Day 24</span>
-                    </div>
-                </div>
-
-                <div style="margin-top: 35px;">
-                    <a href="${buildLink}" class="btn-primary" style="display: block; text-decoration: none; padding: 18px; font-weight:700;">
-                        Build Week ${currentWeek + 1} Meals
-                    </a>
-                </div>
-
-                <div class="info-grid">
-                    <div class="info-item"><strong>Current Week</strong> Week ${currentWeek + 1}</div>
-                    <div class="info-item"><strong>Plan Price</strong> Pre-paid</div>
-                    <div class="info-item"><strong>Account</strong> ${user.email}</div>
-                    <div class="info-item"><strong>Status</strong> Active</div>
-                </div>
-                
-                <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:#aaa; font-size:0.7rem; margin-top:30px; cursor:pointer;">Log Out</button>
-            `;
+    function handleAuthAction() {
+        if (localStorage.getItem('current_user')) {
+            localStorage.removeItem('current_user');
+            window.location.href = 'index.html';
+        } else {
+            window.location.href = 'index.html?action=login';
         }
-    </script>
+    }
+
+    window.onload = async function() {
+        const user = JSON.parse(localStorage.getItem('current_user'));
+        const greeting = document.getElementById('user-greeting');
+        const authBtn = document.getElementById('auth-btn');
+
+        if (user) {
+            greeting.innerText = `Hi, ${user.full_name.split(' ')[0]}`;
+            authBtn.innerText = "Logout";
+            authBtn.style.color = "#d9534f";
+        }
+
+        if (!user) { window.location.href = "index.html?action=login"; return; }
+
+        const { data: profile } = await sbClient.from('profiles').select('*').eq('email', user.email).single();
+        const container = document.getElementById('status-container');
+
+        if (!profile || !profile.plan24days) {
+            container.innerHTML = `<h2>Welcome, ${user.full_name.split(' ')[0]}!</h2><p>You don't have an active plan yet.</p><a href="packages.html" class="btn-primary">Get Started</a>`;
+            return;
+        }
+
+        const currentWeek = profile["24planweek"] || 0;
+        const progressPercent = (currentWeek / 4) * 100;
+        const pkg = profile.active_package_name || "THE SOLO";
+        
+        container.innerHTML = `
+            <span class="badge-active">JOURNEY ACTIVE</span>
+            <h1 style="color:#2d5a27; margin-bottom: 5px;">${pkg}</h1>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progressPercent}%"></div></div>
+            <div class="progress-labels"><span>Day 1</span><span style="color:#2d5a27;">Week ${currentWeek + 1} of 4</span><span>Day 24</span></div>
+            <div style="margin-top: 35px;"><a href="builder.html" class="btn-primary" style="display:block; text-decoration:none; padding:15px;">Build Week ${currentWeek + 1} Meals</a></div>
+            <div class="info-grid">
+                <div class="info-item"><strong>Current Week</strong> Week ${currentWeek + 1}</div>
+                <div class="info-item"><strong>Status</strong> Active</div>
+            </div>
+        `;
+    }
+</script>
 </body>
 </html>

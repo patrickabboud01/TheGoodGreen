@@ -414,22 +414,38 @@ section { padding: 60px 0; }
 
 .menu-tabs::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
-.tab-btn {
-    padding: 8px 18px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    background: white;
-    white-space: nowrap;
-    font-weight: 600;
-    cursor: pointer;
+.tabs { 
+    display: flex; 
+    gap: 12px; 
+    margin-bottom: 30px; 
+    border-bottom: none; /* Removed the line since we are using button styles now */
+    padding-bottom: 10px;
 }
 
-.tab-btn.active {
-    background: var(--forest);
-    color: white;
-    border-color: var(--forest);
+.tab-btn { 
+    background: #eee; /* Light gray for inactive tabs */
+    border: none; 
+    padding: 12px 24px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    color: #666; 
+    transition: all 0.3s ease;
+    border-radius: 50px; /* Makes them rounded pills */
+    font-size: 0.9rem;
 }
 
+/* THE FIX: Green background + White text */
+.tab-btn.active { 
+    background-color: #2d5a27 !important; 
+    color: white !important; 
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3); /* Adds a subtle glow */
+}
+
+/* Hover effect for inactive buttons */
+.tab-btn:hover:not(.active) {
+    background-color: #e0e0e0;
+    color: #2d5a27;
+}
 /* Menu Grid Items */
 .menu-grid {
     display: grid;
@@ -1495,3 +1511,28 @@ section { padding: 60px 0; }
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
 }
+/* --- STICKY FOOTER FIX --- */
+/* 1. Ensure the browser knows the page is full height */
+html {
+    height: 100%;
+}
+
+/* 2. Turn the body into a flex container */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%; /* Or 100vh */
+    margin: 0;
+}
+
+/* 3. Tell the main content area to GROW and fill empty space */
+/* This is the "Spring" that pushes the footer down */
+main, .container {
+    flex: 1 0 auto;
+}
+
+/* 4. Ensure the footer stays at the bottom and doesn't shrink */
+.site-footer {
+    flex-shrink: 0;
+}
+
