@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Sidebar Styling */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; transition: 0.3s; z-index: 100000; padding: 20px;
@@ -20,33 +19,90 @@
         .user-greeting {
             padding: 30px 0 15px; margin-bottom: 15px;
             border-bottom: 1px solid #f4f1ea;
-            font-weight: 700; color: #2d5a27; font-size: 1rem;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
         }
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
         .sidebar-links li { margin-bottom: 10px; }
         .sidebar-links li a {
-            font-weight: 400; color: #444; padding: 8px 0;
+            font-weight: 400; color: #5d8039; padding: 8px 0;
             display: block; text-decoration: none; transition: 0.2s;
         }
-        .sidebar-links li a:hover { color: #2d5a27; }
+        .sidebar-links li a:hover { color: #5d8039; }
         .auth-btn-sidebar {
             margin-top: 20px; border-top: 1px solid #eee;
             padding-top: 15px; display: block; font-weight: 700;
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
-        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27; }
 
-        /* Pricing Styles */
-        .pricing-table {
-            width: 100%; border-collapse: collapse; background: white;
-            border-radius: 10px; overflow: hidden; margin-top: 15px;
+
+/* Pricing Styles */
+/* Pricing Styles */
+.pricing-table {
+    width: 100%; 
+    border-collapse: collapse; 
+    background: white;
+    border-radius: 10px; 
+    overflow: hidden; 
+    margin-top: 15px;
+}
+
+.pricing-table th { 
+    background: #5d8039; 
+    color: white; 
+    padding: 15px; 
+    text-align: left; 
+}
+
+.pricing-table td { 
+    padding: 15px; 
+    border-bottom: 1px solid #eee; 
+    color: #333; 
+    text-align: left; /* Keeps general data like 'Name' or 'Price' on the left */
+}
+
+/* THE FIX: Specifically centering the list within its cell */
+.pricing-table td:has(.plan-feature-list), 
+.feature-column {
+    text-align: center !important; 
+}
+
+.plan-feature-list { 
+    margin: 0 auto; 
+    padding: 0; 
+    list-style: none; 
+    font-size: 0.85rem; 
+    color: #666; 
+    display: inline-block; /* Allows the list to be centered as a block */
+    text-align: left;      /* Keeps the text lines aligned with each other inside the center */
+}
+
+.plan-feature-list li { 
+    margin-bottom: 5px; 
+}
+
+.price-tag { 
+    font-weight: 700; 
+    color: #5d8039; 
+}
+/* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
         }
-        .pricing-table th { background: #2d5a27; color: white; padding: 15px; text-align: left; }
-        .pricing-table td { padding: 15px; border-bottom: 1px solid #eee; color: #333; }
-        .price-tag { font-weight: 700; color: #2d5a27; }
-        .plan-feature-list { margin: 0; padding: 0; list-style: none; font-size: 0.85rem; color: #666; }
-        .plan-feature-list li { margin-bottom: 5px; }
-        .plan-feature-list i { color: #2d5a27; margin-right: 5px; }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
     </style>
 </head>
 <body>
@@ -57,14 +113,14 @@
             <div class="logo-area">
                 <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
             </div>
-            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span></div>
+            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span><span></span></div>
             
             <div class="sidebar" id="sidebar">
                 <div class="close-sidebar" id="close-sidebar">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                 <ul class="sidebar-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="packages.html" style="color: #2d5a27; font-weight: 700;">Packages</a></li>
+                    <li><a href="packages.html" style="color: #5d8039; font-weight: 700;">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
                     <li><a href="plan-status.html">Continue your plan</a></li>
                     <li><a href="user-account.html">My Account</a></li>
@@ -77,7 +133,7 @@
 
 <main>
     <section id="plans" class="container" style="padding: 60px 0;">
-        <h2 style="text-align: center; color: #2d5a27; margin-bottom: 40px;">Choose Your Plan</h2>
+        <h2 style="text-align: center; color: #5d8039; margin-bottom: 40px;">Choose Your Plan</h2>
         <div class="plan-grid">
             <div class="plan-card">
                 <h3>THE SOLO</h3>
@@ -125,7 +181,7 @@
 
 <div id="durationModal" class="modal">
     <div class="modal-content">
-        <h3 id="selected-plan-title" style="color: #2d5a27; margin-bottom: 10px;"></h3>
+        <h3 id="selected-plan-title" style="color: #5d8039; margin-bottom: 10px;"></h3>
         <p style="margin-bottom: 25px;">How long would you like your plan to last?</p>
         <div class="duration-options">
             <button onclick="goToBuilder(1)">1 Day</button>
@@ -139,7 +195,7 @@
 <div id="pricingModal" class="modal">
     <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 id="modal-plan-name" style="color: #2d5a27; margin: 0;">Plan Details</h3>
+            <h3 id="modal-plan-name" style="color: #5d8039; margin: 0;">Plan Details</h3>
             <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
         </div>
         <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
@@ -156,28 +212,18 @@
 </div>
 
 <footer class="site-footer">
-    <div class="footer-content">
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
-        </div>
-
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 <script>
     // --- AUTH & SIDEBAR UI ---

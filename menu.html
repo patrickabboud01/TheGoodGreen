@@ -34,46 +34,139 @@
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
         .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27; }
+            
+        /* Essential Modal Styles */
+        .auth-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); 
+            z-index: 999999; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .auth-modal-box {
+             background-color: #e0e0e0 !important;
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 420px; 
+            position: relative;
+            animation: popIn 0.3s ease-out;
+            text-align: center;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .sidebar.active { right: 0; }
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #5d8039; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #5d8039; }
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+
+        /* Custom Alert (Snackbar) */
+        #custom-alert {
+            visibility: hidden; min-width: 280px; background-color: #5d8039;
+            color: #fff; text-align: center; border-radius: 12px; padding: 16px;
+            position: fixed; z-index: 1000001; left: 50%; bottom: 30px;
+            transform: translateX(-50%); font-size: 14px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: 'Montserrat', sans-serif;
+        }
+        #custom-alert.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        /* Utility classes for forms */
+        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
+
+        /* Refined Footer Styles */
+           /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
+    
     </style>
 </head>
 <body>
 
-    <header>
-        <nav class="navbar">
-            <div class="container">
-                <div class="logo-area">
-                    <a href="index.html">
-                        <img src="images/longlogo.png" alt="Logo" class="main-logo">
-                    </a>
-                </div>
-
-                <div class="menu-dots" id="menu-toggle">
-                    <span></span><span></span><span></span>
-                </div>
-
-                <div class="sidebar" id="sidebar">
-                    <div class="close-sidebar" id="close-sidebar">&times;</div>
-                    <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-                    <ul class="sidebar-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="packages.html">Packages</a></li>
-                        <li><a href="menu.html" style="color: #2d5a27; font-weight: 700;">Menu</a></li>
-                        <li><a href="plan-status.html">Continue your plan</a></li>
-                        <li><a href="user-account.html">My Account</a></li>
-                        <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
-                    </ul>
-                </div>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                </a>
             </div>
-        </nav>
-    </header>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                <ul class="sidebar-links">
+                    <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
 
 <main class="container" style="padding: 40px 0; text-align: center;">
-    <h2 style="color: #2d5a27; margin-bottom: 30px;">Our Seasonal Menu</h2>
+
     
-    <div class="menu-display" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
-        <img src="images/menu1.jpeg" alt="The Good Green Menu Page 1" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-        <img src="images/menu2.jpeg" alt="The Good Green Menu Page 2" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-        <img src="images/menu3.jpeg" alt="The Good Green Menu Page 3" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+    <div class="menu-display" style="display: flex; flex-direction: column; gap: 0px; align-items: center;">
+        <img src="images/menu1.png" alt="The Good Green Menu Page 1" style="max-width: 100%; border-radius: 0%; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <img src="images/menu2.png" alt="The Good Green Menu Page 2" style="max-width: 100%; border-radius: 0px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <img src="images/menu3.png" alt="The Good Green Menu Page 3" style="max-width: 100%; border-radius: 0px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
     </div>
     
     <div style="margin-top: 50px; padding-bottom: 40px;">
@@ -82,28 +175,18 @@
 </main>
 
 <footer class="site-footer">
-    <div class="footer-content">
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
-        </div>
-
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 
 <script>

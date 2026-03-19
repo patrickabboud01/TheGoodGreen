@@ -128,20 +128,20 @@ section { padding: 60px 0; }
 
 .btn-primary {
     background: transparent;
-    border: 2.5px solid var(--forest);
-    color: var(--forest);
+    border: 2.5px solid #5d8039;
+    color: #5d8039;
 }
 
 .btn-outline {
     background: transparent;
-    border: 2.5px solid var(--forest);
-    color: var(--forest);
+    border: 2.5px solid #5d8039;
+    color: #5d8039;
 }
 
 .btn-details {
     background: none;
     border: none;
-    color: var(--forest);
+    color: #5d8039;
     text-decoration: underline;
     font-weight: 600;
     font-size: 0.85rem;
@@ -411,6 +411,7 @@ section { padding: 60px 0; }
     padding: 10px 0;
     margin-bottom: 20px;
     scrollbar-width: none; /* Firefox */
+    
 }
 
 .menu-tabs::-webkit-scrollbar { display: none; } /* Chrome/Safari */
@@ -675,6 +676,7 @@ section { padding: 60px 0; }
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
+     background-color: #e0e0e0 !important;
 }
 
 .btn-confirm {
@@ -714,6 +716,7 @@ section { padding: 60px 0; }
 
     .menu-grid {
         grid-template-columns: repeat(2, 1fr); /* 2 items per row on phones */
+        background: white;
     }
 }
 /* --- HOW IT WORKS SECTION --- */
@@ -1045,6 +1048,7 @@ section { padding: 60px 0; }
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     padding: 15px;
+    background: white;
 }
 
 /* Status Card */
@@ -1362,15 +1366,15 @@ section { padding: 60px 0; }
 }
 
 .sidebar-links li {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 15px;
+    padding-bottom: 5px;
 }
 
 .sidebar-links a {
     text-decoration: none;
     color: #333;
-    font-size: 1.3rem;
+    font-size: 0.9rem;
     font-weight: 600;
     display: block;
 }
@@ -1578,4 +1582,39 @@ main, .hero-home, #how-it-works {
 .hero-home .container {
     margin-top: 0px !important;
     padding-top: 0px !important;
+}
+
+/* --- FOOTER ICON & TEXT ALIGNMENT --- */
+.footer-links {
+    display: flex;
+    flex-direction: row;      /* Keeps the three social blocks in a line */
+    justify-content: center;
+    align-items: center;
+    gap: 30px;                /* Space between Instagram, WhatsApp, and FB */
+    margin-bottom: 25px;
+    flex-wrap: wrap;          /* Prevents squishing on mobile */
+}
+
+.footer-icon {
+    display: flex;            /* THE FIX: Turns the link into a flex container */
+    flex-direction: row;      /* Forces icon and span to stay on one line */
+    align-items: center;      /* Vertically centers the icon with the text */
+    gap: 10px;                /* Space between the icon and the username */
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
+
+.footer-icon i {
+    font-size: 1.4rem;        /* Adjusts icon size independently */
+    display: inline-block;
+}
+
+.footer-icon span {
+    white-space: nowrap;      /* Prevents the phone number or handle from breaking */
+}
+
+.footer-icon:hover {
+    opacity: 0.8;
 }
