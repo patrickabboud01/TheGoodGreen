@@ -29,6 +29,7 @@
             max-width: 420px; 
             position: relative;
             animation: popIn 0.3s ease-out;
+            text-align: center;
         }
         @keyframes popIn {
             0% { transform: scale(0.95); opacity: 0; }
@@ -37,12 +38,57 @@
         .close-btn {
             position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
         }
+
+        /* Sidebar Styling & Font Refinements */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem; /* Smaller font for less aggression */
+        }
+        .sidebar.active { right: 0; }
+        
+        .user-greeting {
+            padding: 30px 0 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700;
+            color: #2d5a27;
+            font-size: 1rem;
+        }
+
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; /* Lighter weight */
+            color: #444;
+            padding: 8px 0;
+            display: block;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #2d5a27; }
+
+        .auth-btn-sidebar {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            display: block;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Utility classes for forms */
+        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
     </style>
 </head>
 <body>
 
 <div id="auth-modal" class="auth-overlay">
-    <div class="auth-modal-box" style="text-align: center;">
+    <div class="auth-modal-box">
         <button onclick="closeAuthModal()" class="close-btn">&times;</button>
         <img src="images/longlogo.png" alt="Logo" style="height: 40px; margin-bottom: 20px;">
         <h2 style="color: #2d5a27;">Welcome!</h2>
@@ -58,17 +104,16 @@
 </div>
 
 <div id="entry-modal" class="auth-overlay">
-    <div class="auth-modal-box">
+    <div class="auth-modal-box" style="text-align: left;">
         <button onclick="closeEntryModal()" class="close-btn">&times;</button>
         
         <div id="login-form-area">
             <h2 style="color: #2d5a27; margin-bottom: 20px;">Log In</h2>
-            <div style="display:flex; flex-direction:column; gap:15px;">
-                <input type="email" id="login-email" placeholder="Email Address" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
-                <input type="password" id="login-password" placeholder="Password" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
+            <div class="form-group">
+                <input type="email" id="login-email" class="form-input" placeholder="Email Address">
+                <input type="password" id="login-password" class="form-input" placeholder="Password">
                 <button onclick="handleLogin()" class="btn-primary" style="width:100%;">Enter Kitchen</button>
-                
-                <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-size: 0.9rem; cursor:pointer; margin-top:10px;">
+                <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-size: 0.85rem; cursor:pointer; margin-top:10px;">
                     Don't have an account? <strong>Create one</strong>
                 </button>
             </div>
@@ -76,15 +121,14 @@
 
         <div id="signup-form-area" style="display:none;">
             <h2 style="color: #2d5a27; margin-bottom: 15px;">Sign Up</h2>
-            <div style="display:flex; flex-direction:column; gap:12px;">
-                <input type="text" id="reg-name" placeholder="Full Name" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
-                <input type="email" id="reg-email" placeholder="Email" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
-                <input type="tel" id="reg-phone" placeholder="Phone Number" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
-                <textarea id="reg-address" placeholder="Delivery Address" rows="2" style="padding:10px; border:1px solid #ddd; border-radius:8px; font-family:inherit;"></textarea>
-                <input type="password" id="reg-password" placeholder="Password" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+            <div class="form-group">
+                <input type="text" id="reg-name" class="form-input" placeholder="Full Name">
+                <input type="email" id="reg-email" class="form-input" placeholder="Email">
+                <input type="tel" id="reg-phone" class="form-input" placeholder="Phone Number">
+                <textarea id="reg-address" class="form-input" placeholder="Delivery Address" rows="2"></textarea>
+                <input type="password" id="reg-password" class="form-input" placeholder="Password">
                 <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Create Account</button>
-                
-                <button onclick="openEntryModal('login')" style="background:none; border:none; color: #2d5a27; font-size: 0.9rem; cursor:pointer; margin-top:10px;">
+                <button onclick="openEntryModal('login')" style="background:none; border:none; color: #2d5a27; font-size: 0.85rem; cursor:pointer; margin-top:10px;">
                     Already have an account? <strong>Log In</strong>
                 </button>
             </div>
@@ -106,15 +150,18 @@
             </div>
 
             <div class="sidebar" id="sidebar">
-                <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer;">&times;</div>
+                
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                
                 <ul class="sidebar-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="packages.html">Packages</a></li>
-                    <li><a href="menu.html">Menu</a></li>
                     <li><a href="plan-status.html">Continue your plan</a></li>
                     <li><a href="user-account.html">My Account</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
                     <li id="auth-nav-item">
-                        <a href="#" id="auth-btn" onclick="handleAuthAction()">Login</a>
+                        <a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a>
                     </li>
                 </ul>
             </div>
@@ -124,7 +171,7 @@
 
 <main>
     <section class="hero-home">
-        <div class="container" style="max-width: 800px;">
+        <div class="container" style="max-width: 800px; text-align: center; margin-top: 40px;">
             <div class="badge" style="margin-bottom: 20px;">100% Dairy & Meat Free Kitchen</div>
             <h1>We got you.</h1>
             <p style="font-size: 1.1rem; color: #444; margin: 10px 0 30px; line-height: 1.6;">
@@ -142,17 +189,17 @@
         <div class="container">
             <h2 style="text-align: center; color: #2d5a27; margin-bottom: 40px;">Three Simple Steps</h2>
             <div class="plan-grid">
-                <div class="step-card">
+                <div class="step-card" style="text-align:center;">
                     <div style="font-size: 2.5rem; margin-bottom: 15px;">🌿</div>
                     <h4>1. Pick a Package</h4>
                     <p style="font-size: 0.85rem; color: #777;">Choose the number of daily items you need.</p>
                 </div>
-                <div class="step-card">
+                <div class="step-card" style="text-align:center;">
                     <div style="font-size: 2.5rem; margin-bottom: 15px;">⏱️</div>
                     <h4>2. Choose Your Duration</h4>
                     <p style="font-size: 0.85rem; color: #777;">Select a duration commitment.</p>
                 </div>
-                <div class="step-card">
+                <div class="step-card" style="text-align:center;">
                     <div style="font-size: 2.5rem; margin-bottom: 15px;">🗓️</div>
                     <h4>3. Build Your Plan</h4>
                     <p style="font-size: 0.85rem; color: #777;">Select every meal and customize ingredients.</p>
@@ -162,7 +209,7 @@
     </section>
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer" style="padding: 40px 0; text-align: center; background: #f4f1ea;">
     <div class="footer-content">
         <p>&copy; 2026 The Good Green.</p>
     </div>
@@ -171,26 +218,28 @@
 <script>
 // --- 1. CONFIG ---
 const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
-const K = 'sb_publishable_6ktk6QMyDzhrCDDI33G9pA_hgCf8gFU';
+const K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
 const sbClient = supabase.createClient(U, K);
 
 // --- 2. AUTH UI LOGIC ---
 
-function updateAuthButton() {
+function updateAuthUI() {
     const authBtn = document.getElementById('auth-btn');
-    const user = localStorage.getItem('current_user');
+    const greeting = document.getElementById('user-greeting');
+    const userStr = localStorage.getItem('current_user');
 
-    if (user) {
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        // Get first name for a friendly vibe
+        const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
+        greeting.innerText = `Hi, ${firstName}`;
         authBtn.innerText = "Logout";
         authBtn.style.color = "#d9534f";
     } else {
+        greeting.innerText = "Hi, Guest";
         authBtn.innerText = "Login / Sign Up";
         authBtn.style.color = "#2d5a27";
     }
-    authBtn.style.marginTop = "20px";
-    authBtn.style.borderTop = "1px solid #eee";
-    authBtn.style.paddingTop = "15px";
-    authBtn.style.display = "block";
 }
 
 function handleAuthAction() {
@@ -198,7 +247,6 @@ function handleAuthAction() {
     if (user) {
         if (confirm("Are you sure you want to log out?")) {
             localStorage.removeItem('current_user');
-            // When logging out, clear the choice flag so the popup can show again for a fresh session
             sessionStorage.removeItem('auth_choice_made');
             location.reload();
         }
@@ -248,7 +296,6 @@ async function handleLogin() {
     if (error || !data) {
         alert("Invalid email or password.");
     } else {
-        // IMPORTANT: Set these before reloading
         localStorage.setItem('current_user', JSON.stringify(data));
         sessionStorage.setItem('auth_choice_made', 'true');
         location.reload(); 
@@ -281,25 +328,19 @@ async function handleSignup() {
 // --- 4. INITIALIZATION & LISTENERS ---
 
 window.onload = () => {
-    updateAuthButton();
+    updateAuthUI();
 
     const urlParams = new URLSearchParams(window.location.search);
     const user = localStorage.getItem('current_user');
     const alreadySeen = sessionStorage.getItem('auth_choice_made');
 
-    // 1. If we have a user, ensure modals are hidden and choice is recorded
     if (user) {
         sessionStorage.setItem('auth_choice_made', 'true');
-        document.getElementById('auth-modal').style.display = 'none';
-        document.getElementById('entry-modal').style.display = 'none';
-    } 
-    // 2. Otherwise, check for external login requests or show welcome popup
-    else {
+    } else {
         if (urlParams.get('action') === 'login') {
             openEntryModal('login');
         } else if (!alreadySeen) {
             setTimeout(() => {
-                // Double check user didn't log in during the timeout
                 if (!localStorage.getItem('current_user')) {
                     document.getElementById('auth-modal').style.display = 'flex';
                 }
@@ -308,7 +349,7 @@ window.onload = () => {
     }
 };
 
-// Sidebar Handlers
+// Sidebar Toggle Logic
 const toggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar');
 const closeBtn = document.getElementById('close-sidebar');

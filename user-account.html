@@ -44,6 +44,33 @@
         .m-btn-gray { background: #eee; color: #444; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- UNIFIED SIDEBAR STYLES --- */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .sidebar.active { right: 0; }
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #2d5a27; font-size: 1rem;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #444; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #2d5a27; }
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
     </style>
 </head>
 <body class="account-body">
@@ -53,8 +80,7 @@
         <div id="modal-icon" style="font-size: 2.5rem; margin-bottom: 15px;">🌿</div>
         <h3 id="modal-title" style="color: #2d5a27; margin-bottom: 10px;">Message</h3>
         <p id="modal-text" style="color: #666; font-size: 0.95rem; line-height: 1.4;"></p>
-        <div class="modal-btns" id="modal-buttons">
-            </div>
+        <div class="modal-btns" id="modal-buttons"></div>
     </div>
 </div>
 
@@ -65,13 +91,17 @@
                 <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
             </div>
             <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span></div>
+            
             <div class="sidebar" id="sidebar">
                 <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                 <ul class="sidebar-links">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="packages.html">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
+                    <li><a href="plan-status.html">Continue your plan</a></li>
                     <li><a href="user-account.html" style="color: #2d5a27; font-weight: 700;">My Account</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -105,13 +135,54 @@
 </main>
 
 <script>
+    // --- CONFIGURATION ---
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
     const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
     const sbClient = supabase.createClient(sbUrl, sbKey);
 
     let currentUser = JSON.parse(localStorage.getItem('current_user') || '{}');
 
-    /* --- MODAL ENGINE --- */
+    // --- AUTH & SIDEBAR UI LOGIC ---
+
+    function updateAuthUI() {
+        const authBtn = document.getElementById('auth-btn');
+        const greeting = document.getElementById('user-greeting');
+        const userStr = localStorage.getItem('current_user');
+
+        if (userStr && greeting && authBtn) {
+            const user = JSON.parse(userStr);
+            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
+            greeting.innerText = `Hi, ${firstName}`;
+            authBtn.innerText = "Logout";
+            authBtn.style.color = "#d9534f";
+        } else if (greeting && authBtn) {
+            greeting.innerText = "Hi, Guest";
+            authBtn.innerText = "Login / Sign Up";
+            authBtn.style.color = "#2d5a27";
+        }
+    }
+
+    function handleAuthAction() {
+        if (localStorage.getItem('current_user')) {
+            showPopup({
+                title: "Logout",
+                text: "Are you sure you want to log out?",
+                icon: "👋",
+                buttons: [
+                    { text: "Logout", type: "gray", action: () => {
+                        localStorage.removeItem('current_user');
+                        sessionStorage.removeItem('auth_choice_made');
+                        window.location.href = 'index.html';
+                    }},
+                    { text: "Stay", type: "green" }
+                ]
+            });
+        } else {
+            window.location.href = 'index.html?action=login';
+        }
+    }
+
+    // --- MODAL ENGINE ---
     function showPopup({ title, text, icon = "🌿", buttons = [] }) {
         const modal = document.getElementById('custom-modal');
         document.getElementById('modal-title').innerText = title;
@@ -141,6 +212,8 @@
         document.getElementById(tabId).classList.add('active');
         event.target.classList.add('active');
     }
+
+    // --- DATA LOADING ---
 
     async function loadProfile() {
         if (!currentUser.email) { window.location.href = "index.html"; return; }
@@ -236,7 +309,6 @@
             }
         }
 
-        // Standard flow for non-subscribers
         showPopup({
             title: "Confirm Reorder",
             text: `Reorder this ${dayCount}-day plan for $${order.total_price}?`,
@@ -247,10 +319,26 @@
         });
     }
 
-    document.getElementById('menu-toggle').onclick = () => document.getElementById('sidebar').classList.add('active');
-    document.getElementById('close-sidebar').onclick = () => document.getElementById('sidebar').classList.remove('active');
+    // --- SIDEBAR TOGGLE LOGIC ---
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
 
-    window.onload = () => { loadProfile(); loadOrders(); };
+    if(toggle && sidebar && closeBtn) {
+        toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
+        closeBtn.onclick = () => sidebar.classList.remove('active');
+        document.onclick = (e) => {
+            if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        };
+    }
+
+    window.onload = () => { 
+        updateAuthUI();
+        loadProfile(); 
+        loadOrders(); 
+    };
 </script>
 </body>
 </html>

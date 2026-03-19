@@ -6,6 +6,34 @@
     <title>Menu | The Good Green</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Sidebar Styling Sync */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem; text-align: left;
+        }
+        .sidebar.active { right: 0; }
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #2d5a27; font-size: 1rem;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #444; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #2d5a27; }
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27; }
+    </style>
 </head>
 <body>
 
@@ -24,10 +52,14 @@
 
                 <div class="sidebar" id="sidebar">
                     <div class="close-sidebar" id="close-sidebar">&times;</div>
+                    <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                     <ul class="sidebar-links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="packages.html">Packages</a></li>
-                        <li><a href="menu.html">Menu</a></li>
+                        <li><a href="menu.html" style="color: #2d5a27; font-weight: 700;">Menu</a></li>
+                        <li><a href="plan-status.html">Continue your plan</a></li>
+                        <li><a href="user-account.html">My Account</a></li>
+                        <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -35,7 +67,7 @@
     </header>
 
 <main class="container" style="padding: 40px 0; text-align: center;">
-    <h2 style="color: var(--forest); margin-bottom: 30px;">Our Seasonal Menu</h2>
+    <h2 style="color: #2d5a27; margin-bottom: 30px;">Our Seasonal Menu</h2>
     
     <div class="menu-display" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
         <img src="images/menu1.jpeg" alt="The Good Green Menu Page 1" style="max-width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
@@ -67,6 +99,60 @@
 </footer>
 
 <script>
+    // --- AUTH & SIDEBAR UI LOGIC ---
+    function updateAuthUI() {
+        const authBtn = document.getElementById('auth-btn');
+        const greeting = document.getElementById('user-greeting');
+        const userStr = localStorage.getItem('current_user');
+
+        if (userStr && greeting && authBtn) {
+            const user = JSON.parse(userStr);
+            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
+            greeting.innerText = `Hi, ${firstName}`;
+            authBtn.innerText = "Logout";
+            authBtn.style.color = "#d9534f";
+        } else if (greeting && authBtn) {
+            greeting.innerText = "Hi, Guest";
+            authBtn.innerText = "Login / Sign Up";
+            authBtn.style.color = "#2d5a27";
+        }
+    }
+
+    function handleAuthAction() {
+        if (localStorage.getItem('current_user')) {
+            localStorage.removeItem('current_user');
+            window.location.href = 'index.html';
+        } else {
+            window.location.href = 'index.html?action=login';
+        }
+    }
+
+    // --- INTERFACE LOGIC ---
+    document.addEventListener('DOMContentLoaded', function() {
+        updateAuthUI();
+
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    });
+
     // Header Scroll Logic
     let lastScrollY = window.scrollY;
     const header = document.querySelector('header');
@@ -77,52 +163,6 @@
             header.classList.remove('header-hidden');
         }
         lastScrollY = window.scrollY;
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const closeBtn = document.getElementById('close-sidebar');
-
-        if(toggle && sidebar && closeBtn) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebar.classList.add('active');
-            });
-
-            closeBtn.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                }
-            });
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const closeBtn = document.getElementById('close-sidebar');
-
-        if(toggle && sidebar && closeBtn) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebar.classList.add('active');
-            });
-
-            closeBtn.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                }
-            });
-        }
     });
 </script>
 

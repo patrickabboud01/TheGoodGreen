@@ -60,6 +60,35 @@
             cursor: pointer;
             font-weight: 700;
         }
+
+        /* --- SIDEBAR REFINEMENTS --- */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem; /* Smaller, less aggressive font */
+        }
+        .sidebar.active { right: 0; }
+        
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #2d5a27; font-size: 1rem;
+        }
+
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #444; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #2d5a27; }
+
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
     </style>
 </head>
 <body class="checkout-body">
@@ -80,7 +109,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo-area">
-                <a href="#" onclick="triggerCustomAlert('index.html')">
+                <a href="javascript:void(0)" onclick="triggerCustomAlert('index.html')">
                     <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
@@ -90,12 +119,19 @@
             </div>
 
             <div class="sidebar" id="sidebar">
-                <div class="close-sidebar" id="close-sidebar">&times;</div>
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer;">&times;</div>
+                
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                
                 <ul class="sidebar-links">
-                    <li><a href="#" onclick="triggerCustomAlert('index.html')">Home</a></li>
-                    <li><a href="#" onclick="triggerCustomAlert('packages.html')">Packages</a></li>
-                    <li><a href="#" onclick="triggerCustomAlert('menu.html')">Menu</a></li>
-                    <li><a href="#" onclick="triggerCustomAlert('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('index.html')">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('user-account.html')">My Account</a></li>
+                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('packages.html')">Packages</a></li>
+                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('menu.html')">Menu</a></li>
+                    <li id="auth-nav-item">
+                        <a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -116,12 +152,17 @@
 </main>
 
 <script>
+    // --- SUPABASE & EMAILJS CONFIG ---
+    (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
+    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(sbUrl, sbKey);
+
     // --- CUSTOM MODAL LOGIC ---
     let pendingUrl = "";
     function triggerCustomAlert(url) {
         pendingUrl = url;
         document.getElementById('custom-alert').style.display = 'flex';
-        // Close sidebar if it's open
         document.getElementById('sidebar').classList.remove('active');
     }
 
@@ -134,12 +175,40 @@
         if (pendingUrl) window.location.href = pendingUrl;
     };
 
-    // --- EXISTING LOGIC ---
-    (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
-    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
-    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
-    const sbClient = supabase.createClient(sbUrl, sbKey);
+    // --- AUTH UI LOGIC ---
+    function updateAuthUI() {
+        const authBtn = document.getElementById('auth-btn');
+        const greeting = document.getElementById('user-greeting');
+        const userStr = localStorage.getItem('current_user');
 
+        if (userStr && greeting && authBtn) {
+            const user = JSON.parse(userStr);
+            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
+            greeting.innerText = `Hi, ${firstName}`;
+            authBtn.innerText = "Logout";
+            authBtn.style.color = "#d9534f";
+        } else if (greeting && authBtn) {
+            greeting.innerText = "Hi, Guest";
+            authBtn.innerText = "Login / Sign Up";
+            authBtn.style.color = "#2d5a27";
+        }
+    }
+
+    function handleAuthAction() {
+        const user = localStorage.getItem('current_user');
+        if (user) {
+            if (confirm("Are you sure you want to log out? Your order progress will be lost.")) {
+                localStorage.removeItem('current_user');
+                sessionStorage.removeItem('auth_choice_made');
+                localStorage.removeItem('finalOrder');
+                window.location.href = 'index.html';
+            }
+        } else {
+            triggerCustomAlert('index.html?action=login');
+        }
+    }
+
+    // --- CHECKOUT & SIDEBAR LOGIC ---
     const planPriceBook = {
         "THE SOLO": { "1": 12, "6": 50, "24": 200 },
         "THE DUO": { "1": 17, "6": 85, "24": 300 },
@@ -147,28 +216,24 @@
         "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
+    window.onload = async function() {
+        updateAuthUI();
+        
+        // Sidebar Toggle Handlers
         const toggle = document.getElementById('menu-toggle');
         const sidebar = document.getElementById('sidebar');
         const closeBtn = document.getElementById('close-sidebar');
 
         if(toggle && sidebar && closeBtn) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebar.classList.add('active');
-            });
-            closeBtn.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-            });
-            document.addEventListener('click', (e) => {
+            toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
+            closeBtn.onclick = () => sidebar.classList.remove('active');
+            document.onclick = (e) => {
                 if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
                     sidebar.classList.remove('active');
                 }
-            });
+            };
         }
-    });
 
-    window.onload = async function() {
         const user = JSON.parse(localStorage.getItem('current_user') || '{}');
         const rawOrder = localStorage.getItem('finalOrder');
         const urlParams = new URLSearchParams(window.location.search);
