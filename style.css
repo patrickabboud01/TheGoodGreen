@@ -1400,3 +1400,54 @@ section { padding: 60px 0; }
     flex-shrink: 0; 
     margin-left: auto; 
 }
+.site-footer {
+    background-color: #2d5a27;
+    color: white;
+    padding: 40px 15px;
+    text-align: center;
+    border-top: 5px solid #f4f1ea; /* Matches your card background */
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: row; /* Horizontal alignment */
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Space between the items */
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Ensures it stacks if the screen is EXTREMELY narrow */
+}
+
+.footer-icon {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column; /* Stack Icon ABOVE Text for a modern app look */
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem; /* Smaller text for horizontal fit */
+    transition: transform 0.2s;
+    min-width: 80px; /* Gives each link a clickable "zone" */
+}
+
+.footer-icon i {
+    font-size: 1.5rem; /* Larger icons since they are the focus */
+}
+
+.footer-icon:active {
+    transform: scale(0.9);
+}
+
+.site-footer p {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    letter-spacing: 1px;
+}
