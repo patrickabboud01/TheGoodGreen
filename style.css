@@ -1451,3 +1451,47 @@ section { padding: 60px 0; }
     border-top: 1px solid rgba(255,255,255,0.1);
     letter-spacing: 1px;
 }
+/* Custom Alert (Snackbar) Styling */
+#custom-alert {
+    visibility: hidden;
+    position: fixed;
+    z-index: 1000002; /* Higher than the modal */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    
+    /* THE RESET: Force height to disappear */
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: fit-content !important;
+    line-height: 1.2 !important; 
+    display: flex !important; /* Use flex to center text inside slimly */
+    align-items: center;
+    justify-content: center;
+
+    /* Shrink-wrap the width */
+    width: auto !important;
+    min-width: 200px !important; 
+    max-width: 80% !important;
+    
+    /* Look & Feel */
+    background-color: #2d5a27;
+    color: #fff;
+    text-align: center;
+    border-radius: 50px; 
+    padding: 15px 30px !important; /* This controls the slimness */
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    
+    /* Animation */
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0;
+    pointer-events: none; /* Let clicks pass through if it's stuck */
+}
+
+#custom-alert.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}

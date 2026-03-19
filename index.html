@@ -6,7 +6,7 @@
     <title>The Good Green | Your Personal Vegan Kitchen</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -39,53 +39,72 @@
             position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
         }
 
-        /* Sidebar Styling & Font Refinements */
+        /* Sidebar Styling */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; transition: 0.3s; z-index: 100000; padding: 20px;
             box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
-            font-size: 0.9rem; /* Smaller font for less aggression */
+            font-size: 0.9rem;
         }
         .sidebar.active { right: 0; }
-        
         .user-greeting {
-            padding: 30px 0 15px;
-            margin-bottom: 15px;
+            padding: 30px 0 15px; margin-bottom: 15px;
             border-bottom: 1px solid #f4f1ea;
-            font-weight: 700;
-            color: #2d5a27;
-            font-size: 1rem;
+            font-weight: 700; color: #2d5a27; font-size: 1rem;
         }
-
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
         .sidebar-links li { margin-bottom: 10px; }
         .sidebar-links li a {
-            font-weight: 400; /* Lighter weight */
-            color: #444;
-            padding: 8px 0;
-            display: block;
-            text-decoration: none;
-            transition: 0.2s;
+            font-weight: 400; color: #444; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
         }
         .sidebar-links li a:hover { color: #2d5a27; }
-
         .auth-btn-sidebar {
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-            display: block;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-decoration: none;
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
+
+        /* Custom Alert (Snackbar) */
+        #custom-alert {
+            visibility: hidden; min-width: 280px; background-color: #2d5a27;
+            color: #fff; text-align: center; border-radius: 12px; padding: 16px;
+            position: fixed; z-index: 1000001; left: 50%; bottom: 30px;
+            transform: translateX(-50%); font-size: 14px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: 'Montserrat', sans-serif;
+        }
+        #custom-alert.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
         /* Utility classes for forms */
         .form-group { display: flex; flex-direction: column; gap: 12px; }
         .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
+
+        /* Refined Footer Styles */
+        .site-footer {
+            background-color: #2d5a27; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
     </style>
 </head>
 <body>
+
+<div id="custom-alert">Message goes here</div>
 
 <div id="auth-modal" class="auth-overlay">
     <div class="auth-modal-box">
@@ -144,25 +163,20 @@
                     <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
-
             <div class="menu-dots" id="menu-toggle">
                 <span></span><span></span><span></span>
             </div>
 
             <div class="sidebar" id="sidebar">
-                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer;">&times;</div>
-                
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-                
                 <ul class="sidebar-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="plan-status.html">Continue your plan</a></li>
-                    <li><a href="user-account.html">My Account</a></li>
+                    <li><a href="index.html" style="color: #2d5a27; font-weight: 700;">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
                     <li><a href="packages.html">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
-                    <li id="auth-nav-item">
-                        <a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a>
-                    </li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -210,28 +224,18 @@
 </main>
 
 <footer class="site-footer">
-    <div class="footer-content">
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
-        </div>
-
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>Instagram</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>Facebook</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 
 <script>
@@ -240,8 +244,15 @@ const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
 const K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
 const sbClient = supabase.createClient(U, K);
 
-// --- 2. AUTH UI LOGIC ---
+// --- 2. NOTIFICATION SYSTEM ---
+function showAlert(message) {
+    const alertBox = document.getElementById("custom-alert");
+    alertBox.innerText = message;
+    alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
 
+// --- 3. AUTH UI LOGIC ---
 function updateAuthUI() {
     const authBtn = document.getElementById('auth-btn');
     const greeting = document.getElementById('user-greeting');
@@ -249,7 +260,6 @@ function updateAuthUI() {
 
     if (userStr) {
         const user = JSON.parse(userStr);
-        // Get first name for a friendly vibe
         const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
         greeting.innerText = `Hi, ${firstName}`;
         authBtn.innerText = "Logout";
@@ -264,11 +274,9 @@ function updateAuthUI() {
 function handleAuthAction() {
     const user = localStorage.getItem('current_user');
     if (user) {
-        if (confirm("Are you sure you want to log out?")) {
-            localStorage.removeItem('current_user');
-            sessionStorage.removeItem('auth_choice_made');
-            location.reload();
-        }
+        localStorage.removeItem('current_user');
+        sessionStorage.removeItem('auth_choice_made');
+        location.reload();
     } else {
         openEntryModal('login');
     }
@@ -277,10 +285,8 @@ function handleAuthAction() {
 function openEntryModal(mode) {
     document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('entry-modal').style.display = 'flex';
-    
     const loginArea = document.getElementById('login-form-area');
     const signupArea = document.getElementById('signup-form-area');
-
     if (mode === 'login') {
         loginArea.style.display = 'block';
         signupArea.style.display = 'none';
@@ -299,12 +305,10 @@ function closeEntryModal() {
     document.getElementById('entry-modal').style.display = 'none';
 }
 
-// --- 3. SUPABASE ACTIONS ---
-
+// --- 4. SUPABASE ACTIONS ---
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
-
     const { data, error } = await sbClient
         .from('profiles')
         .select('*')
@@ -313,7 +317,7 @@ async function handleLogin() {
         .single();
 
     if (error || !data) {
-        alert("Invalid email or password.");
+        showAlert("Invalid email or password.");
     } else {
         localStorage.setItem('current_user', JSON.stringify(data));
         sessionStorage.setItem('auth_choice_made', 'true');
@@ -324,19 +328,22 @@ async function handleLogin() {
 async function handleSignup() {
     const name = document.getElementById('reg-name').value;
     const email = document.getElementById('reg-email').value;
-    const phone = document.getElementById('reg-phone').value;
-    const address = document.getElementById('reg-address').value;
     const password = document.getElementById('reg-password').value;
-
-    if(!email || !password || !name) return alert("Required fields missing!");
+    if(!email || !password || !name) return showAlert("Missing fields!");
 
     const { data, error } = await sbClient
         .from('profiles')
-        .insert([{ full_name: name, email, phone_number: phone, address, password }])
+        .insert([{ 
+            full_name: name, 
+            email, 
+            phone_number: document.getElementById('reg-phone').value, 
+            address: document.getElementById('reg-address').value, 
+            password 
+        }])
         .select();
 
     if (error) {
-        alert("Signup failed: " + error.message);
+        showAlert("Signup failed: " + error.message);
     } else {
         localStorage.setItem('current_user', JSON.stringify(data[0]));
         sessionStorage.setItem('auth_choice_made', 'true');
@@ -344,18 +351,15 @@ async function handleSignup() {
     }
 }
 
-// --- 4. INITIALIZATION & LISTENERS ---
-
+// --- 5. INITIALIZATION & PROTECTED ROUTES ---
 window.onload = () => {
     updateAuthUI();
-
     const urlParams = new URLSearchParams(window.location.search);
     const user = localStorage.getItem('current_user');
     const alreadySeen = sessionStorage.getItem('auth_choice_made');
 
-    if (user) {
-        sessionStorage.setItem('auth_choice_made', 'true');
-    } else {
+    // Forced Modal Logic
+    if (!user) {
         if (urlParams.get('action') === 'login') {
             openEntryModal('login');
         } else if (!alreadySeen) {
@@ -368,18 +372,25 @@ window.onload = () => {
     }
 };
 
-// Sidebar Toggle Logic
+function protectedRedirect(targetUrl) {
+    if (localStorage.getItem('current_user')) {
+        window.location.href = targetUrl;
+    } else {
+        showAlert("Please log in to continue.");
+        setTimeout(() => {
+            window.location.href = "index.html?action=login";
+        }, 1500);
+    }
+}
+
+// Sidebar Logic
 const toggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar');
 const closeBtn = document.getElementById('close-sidebar');
 
 if(toggle && sidebar && closeBtn) {
-    toggle.onclick = (e) => {
-        e.stopPropagation();
-        sidebar.classList.add('active');
-    };
+    toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
     closeBtn.onclick = () => sidebar.classList.remove('active');
-    
     document.onclick = (e) => {
         if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
             sidebar.classList.remove('active');
