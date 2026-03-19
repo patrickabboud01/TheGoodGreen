@@ -82,12 +82,13 @@ section { padding: 60px 0; }
     text-align: center;
     background: var(--white);
     padding: 40px 20px 60px;
+  
 }
 
 .hero-home h1 {
     font-size: clamp(2rem, 8vw, 3rem);
     color: var(--forest);
-    margin: 15px 0;
+    margin: 0px 0;
 }
 
 .badge {
@@ -1400,7 +1401,7 @@ section { padding: 60px 0; }
 }
 
 .main-logo {
-    height: 40px; /* Force a consistent height */
+    height: 50px; /* Force a consistent height */
     width: auto;
     display: block;
 }
@@ -1415,6 +1416,29 @@ section { padding: 60px 0; }
     /* Prevent the dots from shrinking or moving */
     flex-shrink: 0; 
     margin-left: auto; 
+}
+/* --- UPDATED MENU DASHES --- */
+#menu-toggle {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Space between the dashes */
+    padding: 10px;
+}
+
+#menu-toggle span {
+    display: block;
+    width: 25px;        /* Length of the dash */
+    height: 1px;        /* Thickness of the dash */
+    background-color: #2d5a27; 
+    border-radius: 2px; /* Makes the ends slightly rounded */
+    transition: all 0.3s ease;
+}
+
+/* Shadier hover effect for the menu button itself */
+#menu-toggle:hover span {
+    background-color: #1e3d1a; /* Deeper green on hover */
+    transform: translateX(-2px);
 }
 .site-footer {
     background-color: #2d5a27;
@@ -1536,3 +1560,22 @@ main, .container {
     flex-shrink: 0;
 }
 
+main, .hero-home, #how-it-works {
+    background-color: white !important;
+}
+/* 1. Remove bottom space from gallery */
+.gallery-container {
+    margin-bottom: 0px !important; /* Forces the gallery to touch the bottom */
+}
+
+/* 2. Remove top space from hero section */
+.hero-home {
+    padding-top: 10px !important; /* Adjust this number to your liking (0 to 20px) */
+    margin-top: 0px !important;
+}
+
+/* 3. Ensure the internal container doesn't have a top margin */
+.hero-home .container {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}

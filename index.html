@@ -164,8 +164,8 @@
                     <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
-            <div class="menu-dots" id="menu-toggle">
-                <span></span><span></span><span></span>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span><span></span>
             </div>
 
             <div class="sidebar" id="sidebar">
@@ -185,11 +185,55 @@
 </header>
 
 <main>
+<div id="auto-gallery" class="gallery-container">
+    <div class="gallery-wrapper" id="gallery-wrapper">
+        </div>
+    <div class="gallery-overlay"></div>
+</div>
+
+<style>
+    
+   .gallery-container {
+    position: relative;
+    width: 95%;
+    max-width: 1366px; 
+    aspect-ratio: 1366 / 768; 
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 25px; 
+    
+    /* FIX 1: Explicitly kill the background and any borders */
+    background: none !important; 
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.gallery-wrapper img {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    object-fit: cover;     
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+    z-index: 1;
+}
+
+.gallery-wrapper img.active {
+    opacity: 1;
+    z-index: 2;
+}
+</style>
+
+
     <section class="hero-home">
-        <div class="container" style="max-width: 800px; text-align: center; margin-top: 40px;">
+        <div class="container" style="max-width: 800px; text-align: center; margin-top: 0px;">
+            <h1>WE GOT YOU</h1>
             <div class="badge" style="margin-bottom: 20px;">100% Dairy & Meat Free Kitchen</div>
-            <h1>We got you.</h1>
-            <p style="font-size: 1.1rem; color: #5d8039 margin: 10px 0 30px; line-height: 1.6;">
+            
+            <p style="font-size: 1.1rem; color: #5d8039; margin :10px 0 30px; line-height: 1.6;">
                 For your convenience, no need to think about your next vegan meal.<br>
                 <span style="font-size: 0.9rem; color: #777;">Customize your milk, remove ingredients, and build your perfect 24-day schedule.</span>
             </p>
@@ -398,6 +442,41 @@ if(toggle && sidebar && closeBtn) {
         }
     };
 }
+
+// gallery images script
+(function() {
+    
+        // 1. CONFIGURATION
+        const imageFolder = "images/gallery/"; // The path to your folder
+        const images = ["1.jpeg", "2.jpeg", "3.jpeg","4.jpeg", "5.jpeg", "6.jpeg"]; // List your filenames
+        const displayTime = 3000; // 3 seconds per photo
+
+        const wrapper = document.getElementById('gallery-wrapper');
+        let currentIndex = 0;
+
+        // 2. INJECT IMAGES
+        images.forEach((imgName, index) => {
+            const img = document.createElement('img');
+            img.src = imageFolder + imgName;
+            if (index === 0) img.classList.add('active');
+            wrapper.appendChild(img);
+        });
+
+        const allImages = wrapper.querySelectorAll('img');
+
+        // 3. LOOP LOGIC
+        function nextImage() {
+            allImages[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % allImages.length;
+            allImages[currentIndex].classList.add('active');
+        }
+
+        // Start the loop
+        if (allImages.length > 0) {
+            setInterval(nextImage, displayTime);
+        }
+    })();
+// end of gallery
 </script>
 </body>
 </html>
