@@ -74,7 +74,7 @@
         .user-greeting {
             padding: 30px 0 15px; margin-bottom: 15px;
             border-bottom: 1px solid #f4f1ea;
-            font-weight: 700; color: #2d5a27; font-size: 1rem;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
         }
 
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
@@ -83,12 +83,31 @@
             font-weight: 400; color: #444; padding: 8px 0;
             display: block; text-decoration: none; transition: 0.2s;
         }
-        .sidebar-links li a:hover { color: #2d5a27; }
+        .sidebar-links li a:hover { color: #5d8039; }
 
         .auth-btn-sidebar {
             margin-top: 20px; border-top: 1px solid #eee;
             padding-top: 15px; display: block; font-weight: 700;
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+         /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
     </style>
 </head>
@@ -97,7 +116,7 @@
 <div id="custom-alert" class="custom-alert-overlay">
     <div class="custom-alert-box">
         <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
-        <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
+        <h3 style="color: #5d8039; margin-bottom: 10px;">Discard Progress?</h3>
         <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave? Your meal selections will not be saved.</p>
         <div class="alert-btns">
             <button class="btn-cancel" onclick="closeCustomAlert()">Stay Here</button>
@@ -116,7 +135,7 @@
             </div>
 
             <div class="menu-dots" id="menu-toggle">
-                <span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
             </div>
 
             <div class="sidebar" id="sidebar">
@@ -153,28 +172,18 @@
 </main>
 
 <footer class="site-footer">
-    <div class="footer-content">
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
-        </div>
-
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 
 <script>
@@ -216,7 +225,7 @@
         } else if (greeting && authBtn) {
             greeting.innerText = "Hi, Guest";
             authBtn.innerText = "Login / Sign Up";
-            authBtn.style.color = "#2d5a27";
+            authBtn.style.color = "#5d8039";
         }
     }
 
@@ -290,7 +299,7 @@
                 <h2>${profile.active_package_name}</h2>
                 <p>Week ${profile["24planweek"] + 1} Selection</p>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Due Today:</span><span style="font-size: 2rem; color: #2d5a27;">$0.00</span>
+                    <span>Due Today:</span><span style="font-size: 2rem; color: #5d8039;">$0.00</span>
                 </div>`;
             document.getElementById('submit-btn').innerText = `Confirm Week ${profile["24planweek"] + 1}`;
         } else {
@@ -298,7 +307,7 @@
                 <div class="checkout-badge">${durationKey}-Day Plan</div>
                 <h2>${finalName}</h2>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Total:</span><span style="font-size: 2rem; color: #2d5a27;">$${finalPrice}</span>
+                    <span>Total:</span><span style="font-size: 2rem; color: #5d8039;">$${finalPrice}</span>
                 </div>`;
         }
 
