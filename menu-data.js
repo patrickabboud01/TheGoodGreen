@@ -1,67 +1,204 @@
 const rawMenuData = [
     // --- BREAKFAST ---
-    // Example: Oatmeal now has Milk choice AND Topping choice
     { 
         category: "breakfast", 
         name: "Oatmeal Bowl", 
         protein: 12, 
-        ingredients: "Oats;Peanut Butter;Dark Chocolate;Berries", 
+        fixed_ingredients: "Oats;Peanut Butter", 
+        removable_ingredients: "Dark Chocolate;Berries", 
         choice_title: "Step 1: Milk Type", 
         choice_options: "Oat;Soy;Almond",
+        choice_type: "single",
         choice_title_2: "Step 2: Extra Topping", 
-        choice_options_2: "Chia Seeds;Extra Berries;Flax Seeds" 
+        choice_options_2: "Chia Seeds;Extra Berries;Flax Seeds",
+        choice_type_2: "multiple" 
     },
     { 
         category: "breakfast", 
         name: "Pancakes", 
         protein: 10, 
-        ingredients: "Flour-based pancakes", 
+        fixed_ingredients: "Vegan Pancakes", 
+        removable_ingredients: "Maple Syrup", 
         choice_title: "Step 1: Spread", 
         choice_options: "Dark Chocolate;Maple;Lotus Spread",
+        choice_type: "single",
         choice_title_2: "Step 2: Fruit", 
-        choice_options_2: "Banana;Strawberry;Blueberry"
+        choice_options_2: "Banana;Strawberry;Blueberry",
+        choice_type_2: "multiple"
     },
-    { category: "breakfast", name: "Hummus & Crackers", protein: 8, ingredients: "Crackers;Hummus;Cucumber;Pumpkin Seeds", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "breakfast", name: "Avocado Toast", protein: 9, ingredients: "Garlic-infused toast;Avocado;Sautéed Mushrooms", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "breakfast", name: "Cornflakes & Milk", protein: 7, ingredients: "Plain or Chocolate Cornflakes", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond", choice_title_2: "", choice_options_2: "" },
+    { 
+        category: "breakfast", 
+        name: "Hummus & Crackers", 
+        protein: 8, 
+        fixed_ingredients: "Crackers;Hummus", 
+        removable_ingredients: "Cucumber;Pumpkin Seeds", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "breakfast", 
+        name: "Avocado Toast", 
+        protein: 9, 
+        fixed_ingredients: "Garlic Toast;Avocado", 
+        removable_ingredients: "Sautéed Mushrooms", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "breakfast", 
+        name: "Cornflakes & Milk", 
+        protein: 7, 
+        fixed_ingredients: "Cornflakes", 
+        removable_ingredients: "Chocolate Chips", 
+        choice_title: "Milk Type", 
+        choice_options: "Oat;Soy;Almond", 
+        choice_type: "single",
+        choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
 
     // --- LUNCH & DINNER ---
-    { category: "lunch", name: "Lentil Pasta Bolognese", protein: 18, ingredients: "Pasta;Lentils;Creamy Tomato Bolognese Sauce", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "lunch", name: "Quinoa & Veggie Bowl", protein: 15, ingredients: "Quinoa;Carrots;Bell Peppers;Zucchini;Potatoes;Chickpeas", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "lunch", name: "Falafel Burger", protein: 16, ingredients: "Homemade Bun;Falafel Patty;Tahini;Lettuce;Tomato", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "lunch", name: "Lentil Soup", protein: 12, ingredients: "Red Lentils;Garlic;Carrots;Potatoes", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "dinner", name: "Dal Bhat Soup", protein: 14, ingredients: "Lentils;Rice;Mixed Vegetables", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "dinner", name: "Pumpkin Soup", protein: 6, ingredients: "Roasted Pumpkin;Vegetable Broth", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "dinner", name: "Veggie Soup", protein: 8, ingredients: "Mixed Vegetables;Rice;Shariyeh", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "dinner", name: "Fattoush & Grilled Potatoes", protein: 7, ingredients: "Fattoush;Pomegranate Molasses;Grilled Potatoes", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "dinner", name: "Tabbouleh & Grilled Potatoes", protein: 6, ingredients: "Tabbouleh;Grilled Potatoes", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
+    { 
+        category: "lunch", 
+        name: "Lentil Pasta Bolognese", 
+        protein: 18, 
+        fixed_ingredients: "Pasta;Lentils", 
+        removable_ingredients: "Bolognese Sauce;Onions;Garlic", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "lunch", 
+        name: "Quinoa & Veggie Bowl", 
+        protein: 15, 
+        fixed_ingredients: "Quinoa;Chickpeas", 
+        removable_ingredients: "Carrots;Bell Peppers;Zucchini;Potatoes", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "lunch", 
+        name: "Falafel Burger", 
+        protein: 16, 
+        fixed_ingredients: "Bun;Falafel Patty", 
+        removable_ingredients: "Tahini;Lettuce;Tomato", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "lunch", 
+        name: "Lentil Soup", 
+        protein: 12, 
+        fixed_ingredients: "Red Lentils;Garlic", 
+        removable_ingredients: "Carrots;Potatoes", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "dinner", 
+        name: "Dal Bhat Soup", 
+        protein: 14, 
+        fixed_ingredients: "Lentils;Rice", 
+        removable_ingredients: "Mixed Vegetables", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "dinner", 
+        name: "Pumpkin Soup", 
+        protein: 6, 
+        fixed_ingredients: "Roasted Pumpkin", 
+        removable_ingredients: "Vegetable Broth", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "dinner", 
+        name: "Veggie Soup", 
+        protein: 8, 
+        fixed_ingredients: "Mixed Vegetables;Rice", 
+        removable_ingredients: "Shariyeh", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "dinner", 
+        name: "Fattoush & Grilled Potatoes", 
+        protein: 7, 
+        fixed_ingredients: "Fattoush;Grilled Potatoes", 
+        removable_ingredients: "Pomegranate Molasses", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "dinner", 
+        name: "Tabbouleh & Grilled Potatoes", 
+        protein: 6, 
+        fixed_ingredients: "Tabbouleh;Grilled Potatoes", 
+        removable_ingredients: "", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
     { 
         category: "dinner", 
         name: "Pasta Salad & Grilled Potatoes", 
         protein: 11, 
-        ingredients: "Pasta;Black Beans;Olives;Vegetables;Grilled Potatoes", 
+        fixed_ingredients: "Pasta;Grilled Potatoes", 
+        removable_ingredients: "Black Beans;Olives;Vegetables", 
         choice_title: "Dressing", 
         choice_options: "Lemon-Mayo;Olive Oil",
-        choice_title_2: "", 
-        choice_options_2: "" 
+        choice_type: "single", 
+        choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
 
-    // --- SNACKS  ---
-    { category: "snack", name: "Oat Cookie Plain", protein: 5, ingredients: "Banana;Oats;Peanut Butter", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "snack", name: "Fruit Salad", protein: 2, ingredients: "Mixed Fresh Seasonal Fruits", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
-    { category: "snack", name: "Oat Cookie Chocolate", protein: 5, ingredients: "Banana;Oats;Peanut Butter;Chocolate Flakes", choice_title: "", choice_options: "", choice_title_2: "", choice_options_2: "" },
+    // --- SNACKS ---
+    { 
+        category: "snack", 
+        name: "Oat Cookie Plain", 
+        protein: 5, 
+        fixed_ingredients: "Banana;Oats", 
+        removable_ingredients: "Peanut Butter", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "snack", 
+        name: "Fruit Salad", 
+        protein: 2, 
+        fixed_ingredients: "Fresh Seasonal Fruits", 
+        removable_ingredients: "", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "snack", 
+        name: "Oat Cookie Chocolate", 
+        protein: 5, 
+        fixed_ingredients: "Banana;Oats;Chocolate Flakes", 
+        removable_ingredients: "Peanut Butter", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
 
-     // --- PROTEIN ---
+    // --- PROTEIN ---
     { 
         category: "protein", 
-        name: "Protein Shake Plain + Protein Cookie", 
+        name: "Protein Shake Plain + Cookie", 
         protein: 50, 
-        ingredients: "300ml Vegan Protein Blend", 
+        fixed_ingredients: "Vegan Protein Blend", 
+        removable_ingredients: "", 
         choice_title: "Milk Type", 
         choice_options: "Oat;Soy;Almond",
+        choice_type: "single",
         choice_title_2: "Cookie Flavor",
-        choice_options_2: "Chocolate;Double Choc;Oatmeal"
+        choice_options_2: "Chocolate;Double Choc;Oatmeal",
+        choice_type_2: "single"
     },
-    { category: "protein", name: "Protein Shake Chocolate + Protein Cookie", protein: 50, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond", choice_title_2: "", choice_options_2: "" },
-    { category: "protein", name: "Protein Shake Berries + Protein Cookie", protein: 50, ingredients: "300ml Vegan Protein Blend", choice_title: "Milk Type", choice_options: "Oat;Soy;Almond", choice_title_2: "", choice_options_2: "" },
+    { 
+        category: "protein", 
+        name: "Protein Shake Chocolate + Cookie", 
+        protein: 50, 
+        fixed_ingredients: "Vegan Protein Blend (Choc)", 
+        removable_ingredients: "", 
+        choice_title: "Milk Type", 
+        choice_options: "Oat;Soy;Almond", 
+        choice_type: "single",
+        choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "protein", 
+        name: "Protein Shake Berries + Cookie", 
+        protein: 50, 
+        fixed_ingredients: "Vegan Protein Blend (Berry)", 
+        removable_ingredients: "", 
+        choice_title: "Milk Type", 
+        choice_options: "Oat;Soy;Almond", 
+        choice_type: "single",
+        choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    }
 ];

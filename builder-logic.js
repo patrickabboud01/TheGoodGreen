@@ -8,6 +8,7 @@ let pendingItem = null;
 let editingItem = null; 
 let currentChoiceStep = 0;
 let displayDays = 1; 
+let tempSelections = []; // Used for multiple-choice steps
 
 const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
 const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
@@ -56,16 +57,19 @@ async function init() {
     displayDays = isAttempting24Day ? 6 : totalDaysRequested;
     dayOffset = isPlan24Progress ? (currentPlanWeek * 6) : 0;
 
-    document.getElementById('display-total-days').innerText = totalDaysRequested;
+    const totalDaysEl = document.getElementById('display-total-days');
+    if (totalDaysEl) totalDaysEl.innerText = totalDaysRequested;
+
     const planDisplay = document.getElementById('plan-name-display');
     const weekLabel = document.getElementById('week-label');
 
-    planDisplay.innerText = planName;
+    if (planDisplay) planDisplay.innerText = planName;
     
     if (isAttempting24Day && weekLabel) {
         weekLabel.style.display = "inline-block";
         weekLabel.innerText = `Week ${currentPlanWeek + 1}`;
-        document.getElementById('confirm-all-btn').innerText = `Confirm Week ${currentPlanWeek + 1}`;
+        const confirmBtn = document.getElementById('confirm-all-btn');
+        if (confirmBtn) confirmBtn.innerText = `Confirm Week ${currentPlanWeek + 1}`;
     }
 
     fullState = {};
@@ -74,11 +78,10 @@ async function init() {
     }
     
     currentDay = 1 + dayOffset;
-    document.getElementById('active-day-num').innerText = 1; 
+    updateActiveDayDisplay(1);
 
     applyCategoryRestrictions();
     updateUI();
-    if (isPlan24Progress) setTimeout(checkPlanAndAuthUI, 500);
 }
 
 // --- POPUP FLOW (ADD / CHOICES / INGREDIENTS) ---
@@ -89,12 +92,15 @@ function addItem(id) {
         return; 
     }
     const item = menuData.find(i => i.id === id);
+    if (!item) return;
+
     pendingItem = JSON.parse(JSON.stringify(item)); 
     pendingItem.selectedChoices = [];
     pendingItem.removedIngredients = [];
     pendingItem.instanceId = Date.now();
     
     currentChoiceStep = 0;
+    tempSelections = [];
     
     if (pendingItem.multiChoices && pendingItem.multiChoices.length > 0) {
         showChoicePopup();
@@ -105,36 +111,73 @@ function addItem(id) {
 
 function showChoicePopup() {
     const choiceObj = pendingItem.multiChoices[currentChoiceStep];
-    const optionsWithNone = [...choiceObj.options, "None"];
+    const isMultiple = choiceObj.type === "multiple";
     
-    // Logic to decide if the button should say "Cancel" or "Back"
     const backBtnText = currentChoiceStep === 0 ? "✕" : "← Back";
     const backAction = currentChoiceStep === 0 ? "closeEditModal()" : "goBackStep()";
 
     let html = `
         <button onclick="${backAction}" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-weight:600;">${backBtnText}</button>
         
-        <h3 style="color: #2d5a27; margin-bottom: 5px; margin-top:10px;">${choiceObj.title}</h3>
-        <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">Step ${currentChoiceStep + 1} of ${pendingItem.multiChoices.length}</p>
+        <h3 style="color: #2d5a27; margin-bottom: 5px; margin-top:10px; text-align:center;">${choiceObj.title}</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px; text-align:center;">
+            ${isMultiple ? 'Choose one or more:' : 'Choose one option:'} (Step ${currentChoiceStep + 1} of ${pendingItem.multiChoices.length})
+        </p>
         
         <div style="display:flex; flex-direction:column; gap:10px;">
-            ${optionsWithNone.map(opt => `
-                <button class="btn-confirm-mini" 
-                        style="background:#f9f9f9; color:#333; padding:15px; border:1px solid #ddd; font-weight:600;" 
-                        onclick="finalizeChoice('${opt}')">
-                    ${opt}
-                </button>
-            `).join('')}
+            ${choiceObj.options.map(opt => {
+                const isSelected = isMultiple && tempSelections.includes(opt);
+                return `
+                    <button class="btn-confirm-mini ${isSelected ? 'active-choice-btn' : ''}" 
+                            style="background:${isSelected ? '#e8f5e9' : '#f9f9f9'}; color:#333; padding:15px; border:1px solid ${isSelected ? '#2d5a27' : '#ddd'}; font-weight:600;" 
+                            onclick="handleChoiceSelection('${opt}')">
+                        ${opt} ${isSelected ? '✓' : ''}
+                    </button>
+                `;
+            }).join('')}
+            <button class="btn-confirm-mini" style="background:#fff; color:#999; border:1px dashed #ccc;" onclick="handleChoiceSelection('None')">None / Skip</button>
         </div>
     `;
+
+    if (isMultiple) {
+        html += `<button class="btn-primary" style="margin-top:20px; width:100%;" onclick="confirmMultipleChoice()">Confirm Selection</button>`;
+    }
     
     document.getElementById('ingredients-list').innerHTML = html;
     document.getElementById('editModal').style.display = "flex";
 }
 
-function finalizeChoice(selection) {
-    if (selection !== "None") pendingItem.selectedChoices.push(selection);
-    
+function handleChoiceSelection(selection) {
+    const choiceObj = pendingItem.multiChoices[currentChoiceStep];
+
+    if (selection === "None") {
+        advanceChoiceStep();
+        return;
+    }
+
+    if (choiceObj.type === "single") {
+        pendingItem.selectedChoices.push(selection);
+        advanceChoiceStep();
+    } else {
+        // Toggle multiple
+        if (tempSelections.includes(selection)) {
+            tempSelections = tempSelections.filter(s => s !== selection);
+        } else {
+            tempSelections.push(selection);
+        }
+        showChoicePopup();
+    }
+}
+
+function confirmMultipleChoice() {
+    if (tempSelections.length > 0) {
+        pendingItem.selectedChoices.push(tempSelections.join(', '));
+    }
+    tempSelections = [];
+    advanceChoiceStep();
+}
+
+function advanceChoiceStep() {
     currentChoiceStep++;
     if (currentChoiceStep < pendingItem.multiChoices.length) {
         showChoicePopup();
@@ -143,54 +186,73 @@ function finalizeChoice(selection) {
     }
 }
 
+function goBackStep() {
+    if (currentChoiceStep > 0) {
+        currentChoiceStep--;
+        pendingItem.selectedChoices.pop();
+        tempSelections = [];
+        showChoicePopup();
+    }
+}
+
 function openIngredientReview() {
     const item = pendingItem || editingItem;
     
-    // Determine back button behavior
-    let backBtnHtml = "";
+    let navBtnHtml = "";
     if (pendingItem && pendingItem.multiChoices && pendingItem.multiChoices.length > 0) {
-        // Go back to the last Choice Step and remove the last selection made
-        backBtnHtml = `
-            <button onclick="currentChoiceStep--; if(pendingItem.selectedChoices.length > 0) pendingItem.selectedChoices.pop(); showChoicePopup();" 
-                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-weight:600; font-size:0.9rem;">
-               Back ←
+        navBtnHtml = `
+            <button onclick="goBackFromReview()" 
+                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#ccc; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                Back ←
             </button>`;
-       
     } else {
-        // Just a close button if editing or no choices exist
-        backBtnHtml = `
+        navBtnHtml = `
             <button onclick="closeEditModal()" 
-                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#ccc; cursor:pointer; font-size:1.2rem;">
                 ✕
             </button>`;
     }
 
     let html = `
-        ${backBtnHtml}
-        <h3 style="color: #5d8039; margin-bottom: 10px; margin-top: 15px;">Review Ingredients</h3>
-        <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px;">Uncheck to remove from your <strong>${item.name}</strong>.</p>
+        ${navBtnHtml}
+        <h3 style="color: #5d8039; margin-bottom: 10px; margin-top: 15px; text-align: center;">Review Ingredients</h3>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px; text-align: center;">Customize your <strong>${item.name}</strong>.</p>
         <div class="review-scroll-area">
     `;
 
-    item.ingredients.forEach(ing => {
+    // 1. FIXED
+    item.fixedIngredients.forEach(ing => {
+        html += `
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #f9f9f9; ">
+                <i class="fas fa-lock" style="font-size: 0.8rem; color: #ccc; width: 18px; text-align: center;"></i> 
+                <span style="font-size: 0.95rem; color: #666 ;">${ing} <small>(Required)</small></span>
+            </div>`;
+    });
+
+    // 2. REMOVABLE
+    item.removableIngredients.forEach(ing => {
         const isRemoved = item.removedIngredients.includes(ing);
         html += `
             <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
-                <input type="checkbox" style="width:18px; height:18px;" 
+                <input type="checkbox" style="width:18px; height:18px; accent-color: #5d8039;" 
                        ${isRemoved ? '' : 'checked'} 
                        onchange="toggleIngredient('${ing}')"> 
                 <span style="font-size: 0.95rem;">${ing}</span>
-            </label>
-        `;
+            </label>`;
     });
 
     html += `</div>`;
-    
     const actionText = editingItem ? "Save Changes" : "Approve & Add Meal";
     html += `<button class="btn-primary" onclick="finishMealProcess()" style="margin-top:20px; width: 100%;">${actionText}</button>`;
     
     document.getElementById('ingredients-list').innerHTML = html;
     document.getElementById('editModal').style.display = "flex";
+}
+
+function goBackFromReview() {
+    currentChoiceStep--; 
+    if(pendingItem.selectedChoices.length > 0) pendingItem.selectedChoices.pop(); 
+    showChoicePopup();
 }
 
 function toggleIngredient(ing) {
@@ -218,75 +280,85 @@ function openEditModal(instanceId) {
     openIngredientReview();
 }
 
-// --- FINAL CONFIRMATION & SUMMARY MODAL ---
+// --- CORE UI & DATA LOADING ---
 
-async function handleFinalOrder() {
-    const loops = displayDays;
-    for(let i = 1; i <= loops; i++) { 
-        const actualIdx = i + dayOffset;
-        if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
-            showToast(`Day ${i} is incomplete!`); 
-            return; 
-        } 
+function loadMenu() {
+    if (typeof rawMenuData === 'undefined') {
+        console.error("rawMenuData not found!");
+        return;
     }
-    showOrderReview();
+    menuData = rawMenuData.map((item, index) => {
+        let choices = [];
+        if (item.choice_options && item.choice_options.trim() !== "") {
+            choices.push({ 
+                title: item.choice_title || "Step 1", 
+                options: item.choice_options.split(';').map(o => o.trim()),
+                type: item.choice_type || "single"
+            });
+        }
+        if (item.choice_options_2 && item.choice_options_2.trim() !== "") {
+            choices.push({ 
+                title: item.choice_title_2 || "Step 2", 
+                options: item.choice_options_2.split(';').map(o => o.trim()),
+                type: item.choice_type_2 || "single"
+            });
+        }
+
+        return { 
+            id: index, 
+            category: (item.category || "lunch").toLowerCase().trim(), 
+            name: item.name, 
+            protein: item.protein, 
+            fixedIngredients: item.fixed_ingredients ? item.fixed_ingredients.split(';') : [],
+            removableIngredients: item.removable_ingredients ? item.removable_ingredients.split(';') : [],
+            multiChoices: choices 
+        };
+    });
+    init();
 }
 
-function showOrderReview() {
-    let html = `
-        <h3 style="color: #2d5a27; margin-bottom: 5px;">Final Review</h3>
-        <p style="font-size: 0.8rem; color: #666; margin-bottom: 20px;">Check your order before checkout.</p>
-        <div class="review-scroll-area">
-    `;
+function renderMenu(cat) {
+    const grid = document.getElementById('menu-grid'); 
+    if (!grid) return;
+    grid.innerHTML = "";
+    
+    const selectedCat = cat.toLowerCase().trim();
 
-    const loops = displayDays;
-    for (let i = 1; i <= loops; i++) {
-        const actualIdx = i + dayOffset;
-        const dayMeals = fullState[actualIdx] || [];
-        
-        html += `
-            <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                <h4 style="margin: 0 0 8px 0; color: #2d5a27; font-size: 0.9rem;">Day ${i}</h4>
-        `;
+    // Update highlights
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        const btnText = btn.innerText.toLowerCase().trim();
+        if (btnText === selectedCat || (selectedCat === 'lunch/dinner' && (btnText === 'lunch' || btnText === 'dinner'))) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 
-        dayMeals.forEach(item => {
-            const choices = item.selectedChoices.length > 0 ? item.selectedChoices.join(' + ') : "Standard";
-            const removals = item.removedIngredients.length > 0 
-                ? `<div style="color: #d9534f; font-size: 0.75rem; margin-top:2px;">• No ${item.removedIngredients.join(', ')}</div>` 
-                : "";
-            
-            html += `
-                <div style="margin-bottom: 8px; padding-left: 8px; border-left: 2px solid #ddd;">
-                    <div style="font-size: 0.85rem; font-weight: 600;">${item.name}</div>
-                    <div style="font-size: 0.75rem; color: #666;">${choices}${removals}</div>
-                </div>
-            `;
-        });
-        html += `</div>`;
+    const items = menuData.filter(m => {
+        if (selectedCat === 'lunch/dinner') return m.category === 'lunch' || m.category === 'dinner';
+        return m.category === selectedCat;
+    });
+
+    if (items.length === 0) {
+        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:20px; color:#aaa;">No meals in this category.</p>`;
+        return;
     }
 
-    html += `</div>`;
-    html += `
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <button class="btn-primary" onclick="proceedToCheckout()" style="width: 100%; padding: 15px;">Looks Good, Checkout</button>
-            <button onclick="closeEditModal()" style="background: none; border: none; color: #888; font-size: 0.85rem; cursor: pointer; text-decoration: underline;">Wait, let me change something</button>
-        </div>
-    `;
-
-    document.getElementById('ingredients-list').innerHTML = html;
-    document.getElementById('editModal').style.display = "flex";
+    items.forEach(item => { 
+        grid.innerHTML += `
+            <div class="menu-item-card">
+                <h4>${item.name}</h4>
+                <div style="color:#5d8039; font-weight:bold; font-size:0.8rem; margin-bottom:8px;">${item.protein}g Protein</div>
+                <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
+            </div>`; 
+    });
 }
-
-function proceedToCheckout() {
-    localStorage.setItem('finalOrder', JSON.stringify(fullState));
-    const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";
-    window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
-}
-
-// --- CORE UI & DATA ---
 
 function updateUI() {
-    const list = document.getElementById('selection-list'); list.innerHTML = "";
+    const list = document.getElementById('selection-list'); 
+    if (!list) return;
+    list.innerHTML = "";
+    
     fullState[currentDay].forEach(item => {
         list.innerHTML += `
             <li style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding: 10px 0;">
@@ -300,68 +372,48 @@ function updateUI() {
                 </div>
             </li>`;
     });
-const countDisplay = document.getElementById('day-items-count');
+
+    const countDisplay = document.getElementById('day-items-count');
     if (countDisplay) {
         countDisplay.innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items`;
     }
-    
     renderCalendar();
 }
 
-function loadMenu() {
-    if (typeof rawMenuData === 'undefined') return;
-    menuData = rawMenuData.map((item, index) => {
-        let choices = [];
-        if (item.choice_options?.trim()) choices.push({ title: item.choice_title, options: item.choice_options.split(';').map(o => o.trim()) });
-        if (item.choice_options_2?.trim()) choices.push({ title: item.choice_title_2, options: item.choice_options_2.split(';').map(o => o.trim()) });
-        return { id: index, category: item.category.toLowerCase(), name: item.name, protein: item.protein, ingredients: item.ingredients ? item.ingredients.split(';') : [], multiChoices: choices };
-    });
-    init();
-}
-
-function renderMenu(cat) {
-    const grid = document.getElementById('menu-grid'); 
-    grid.innerHTML = "";
-    
-    // 1. Update the Active Button Highlight
-    document.querySelectorAll('.cat-btn').forEach(btn => {
-        // We check if the onclick attribute contains the category string we just clicked
-        const btnOnclick = btn.getAttribute('onclick');
-        if (btnOnclick && btnOnclick.includes(`'${cat}'`)) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
-
-    // 2. Filter and Render Items
-    const items = menuData.filter(m => {
-        if (cat === 'lunch/dinner') {
-            return m.category === 'lunch' || m.category === 'dinner';
-        }
-        return m.category === cat;
-    });
-
-    items.forEach(item => { 
-        grid.innerHTML += `
-            <div class="menu-item-card">
-                <h4>${item.name}</h4>
-                <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
-            </div>`; 
-    });
-}
-
 function renderCalendar() {
-    const grid = document.getElementById('calendar-grid'); grid.innerHTML = "";
+    const grid = document.getElementById('calendar-grid'); 
+    if (!grid) return;
+    grid.innerHTML = "";
     for(let i = 1; i <= displayDays; i++) {
         const idx = i + dayOffset;
         grid.innerHTML += `<div class="day-dot ${currentDay === idx ? 'active' : ''} ${fullState[idx]?.length === itemsPerDay ? 'complete' : ''}" onclick="switchDay(${idx})">${i}</div>`;
     }
 }
 
-function switchDay(d) { currentDay = d; updateUI(); }
-function removeItem(id) { fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); updateUI(); }
-function showToast(m) { const t = document.createElement('div'); t.className = 'toast-notice show'; t.innerText = m; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
+function switchDay(d) { 
+    currentDay = d; 
+    const relativeDay = d - dayOffset;
+    updateActiveDayDisplay(relativeDay);
+    updateUI(); 
+}
+
+function updateActiveDayDisplay(dayNumber) {
+    const dayElement = document.getElementById('active-day-num');
+    if (dayElement) dayElement.textContent = dayNumber;
+}
+
+function removeItem(id) { 
+    fullState[currentDay] = fullState[currentDay].filter(i => i.instanceId !== id); 
+    updateUI(); 
+}
+
+function showToast(m) { 
+    const t = document.createElement('div'); 
+    t.className = 'toast-notice show'; 
+    t.innerText = m; 
+    document.body.appendChild(t); 
+    setTimeout(() => t.remove(), 2500); 
+}
 
 function applyCategoryRestrictions() {
     const cleanPlanName = planName.toLowerCase().trim();
@@ -386,56 +438,26 @@ function applyCategoryRestrictions() {
     if (firstAllowed) firstAllowed.click();
 }
 
-function openEntryModal(mode = 'login') { document.getElementById('entry-modal').style.display = 'flex'; toggleAuthMode(mode); }
-function toggleAuthMode(mode) {
-    document.getElementById('login-form-area').style.display = mode === 'login' ? 'block' : 'none';
-    document.getElementById('signup-form-area').style.display = mode === 'login' ? 'none' : 'block';
+// Modal closing helpers
+function closeEditModal() { 
+    document.getElementById('editModal').style.display = "none"; 
+    pendingItem = null;
+    editingItem = null;
 }
-function closeEntryModal() { document.getElementById('entry-modal').style.display = 'none'; }
-function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
-function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+
+// Final Step
+async function handleFinalOrder() {
+    const loops = displayDays;
+    for(let i = 1; i <= loops; i++) { 
+        const actualIdx = i + dayOffset;
+        if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
+            showToast(`Day ${i} is incomplete!`); 
+            return; 
+        } 
+    }
+    localStorage.setItem('finalOrder', JSON.stringify(fullState));
+    const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";
+    window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
+}
 
 loadMenu();
-
-
-// --- 1. ADD THE MISSING FUNCTION ---
-function showAlert(message) {
-    const alertBox = document.getElementById("custom-alert");
-    if (!alertBox) {
-        // Fallback if you forgot the HTML element
-        alert(message);
-        return;
-    }
-    alertBox.innerText = message;
-    alertBox.classList.add("show");
-    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
-}
-
-// Function to update the Day Number in the status card
-function updateActiveDayDisplay(dayNumber) {
-    const dayElement = document.getElementById('active-day-num');
-    if (dayElement) {
-        dayElement.textContent = dayNumber;
-    }
-}
-
-function switchDay(d) { 
-    currentDay = d; 
-    
-    // THE FIX: Calculate the relative day (1-6) instead of the offset (7-12, etc.)
-    const relativeDay = d - dayOffset;
-    const dayDisplay = document.getElementById('active-day-num');
-    if (dayDisplay) {
-        dayDisplay.innerText = relativeDay;
-    }
-
-    updateUI(); 
-}
-function goBackStep() {
-    if (currentChoiceStep > 0) {
-        currentChoiceStep--;
-        // Remove the last choice made since we are going back
-        pendingItem.selectedChoices.pop();
-        showChoicePopup();
-    }
-}
