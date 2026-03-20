@@ -439,7 +439,7 @@ section { padding: 60px 0; }
 
 /* THE FIX: Green background + White text */
 .tab-btn.active { 
-    background-color: #2d5a27 !important; 
+    background-color: #5d8039 !important; 
     color: white !important; 
     box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3); /* Adds a subtle glow */
 }
@@ -447,7 +447,7 @@ section { padding: 60px 0; }
 /* Hover effect for inactive buttons */
 .tab-btn:hover:not(.active) {
     background-color: #e0e0e0;
-    color: #2d5a27;
+    color: #5d8039;
 }
 /* Menu Grid Items */
 .menu-grid {
@@ -1672,3 +1672,4 @@ main, .hero-home, #how-it-works {
     border-collapse: separate;
     border-spacing: 0;
 }
+

@@ -9,6 +9,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
         /* 1. STICKY FOOTER & RESET */
         html, body { height: 100%; margin: 0; padding: 0; }
         body { 
@@ -27,12 +46,12 @@
         .sidebar.active { right: 0; }
         .user-greeting {
             padding: 30px 0 15px; border-bottom: 1px solid #f4f1ea;
-            font-weight: 700; color: #2d5a27; margin-bottom: 15px;
+            font-weight: 700; color: #5d8039; margin-bottom: 15px;
         }
         .sidebar-links { list-style: none; padding: 0; }
         .sidebar-links li { margin-bottom: 10px; }
         .sidebar-links li a { color: #444; text-decoration: none; display: block; padding: 8px 0; }
-        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27; }
+        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #5d8039; }
 
         /* 3. MAIN CONTENT AREA */
         main { flex: 1 0 auto; padding: 40px 20px; }
@@ -43,13 +62,13 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; 
         }
 
-        .badge-active { background: #e8f5e9; color: #2d5a27; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 15px; }
+        .badge-active { background: #e8f5e9; color: #5d8039; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 15px; }
         .progress-bar-bg { background: #eee; height: 12px; border-radius: 10px; margin: 25px 0 10px; overflow: hidden; }
-        .progress-bar-fill { background: #2d5a27; height: 100%; transition: width 0.5s ease; }
+        .progress-bar-fill { background: #5d8039; height: 100%; transition: width 0.5s ease; }
         .progress-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #777; font-weight: 600; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; text-align: left; border-top: 1px solid #eee; padding-top: 20px; }
         .info-item { font-size: 0.85rem; color: #555; }
-        .info-item strong { color: #2d5a27; display: block; margin-bottom: 2px; }
+        .info-item strong { color: #5d8039; display: block; margin-bottom: 2px; }
 
         .site-footer { flex-shrink: 0; }
     </style>
@@ -62,14 +81,14 @@
             <div class="logo-area">
                 <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
             </div>
-            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span></div>
+            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span><span></span></div>
             
             <div class="sidebar" id="sidebar">
                 <div class="close-sidebar" id="close-sidebar">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                 <ul class="sidebar-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="packages.html" style="color: #2d5a27; font-weight: 700;">Packages</a></li>
+                    <li><a href="packages.html" style="color: #5d8039; font-weight: 700;">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
                     <li><a href="plan-status.html">Continue your plan</a></li>
                     <li><a href="user-account.html">My Account</a></li>
@@ -108,7 +127,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="packages.html">Packages</a></li>
         <li><a href="menu.html">Menu</a></li>
-        <li><a href="plan-status.html" style="color: #2d5a27; font-weight: 700;">My Journey</a></li>
+        <li><a href="plan-status.html" style="color: #5d8039; font-weight: 700;">My Journey</a></li>
         <li><a href="user-account.html">My Account</a></li>
         <li><a href="#" id="auth-btn" style="margin-top:20px; display:block; font-weight:700;" onclick="handleAuthAction()">Login</a></li>
     </ul>
@@ -121,14 +140,18 @@
 </main>
 
 <footer class="site-footer">
-    <div class="footer-content">
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon"><i class="fa-brands fa-facebook-f"></i></a>
-        </div>
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 
 <script>
@@ -176,14 +199,20 @@
         
         container.innerHTML = `
             <span class="badge-active">JOURNEY ACTIVE</span>
-            <h1 style="color:#2d5a27; margin-bottom: 5px;">${pkg}</h1>
+            <h1 style="color:#5d8039; margin-bottom: 5px;">${pkg}</h1>
             <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progressPercent}%"></div></div>
-            <div class="progress-labels"><span>Day 1</span><span style="color:#2d5a27;">Week ${currentWeek + 1} of 4</span><span>Day 24</span></div>
+            <div class="progress-labels"><span>Day 1</span><span style="color:#5d8039;">Week ${currentWeek + 1} of 4</span><span>Day 24</span></div>
             <div style="margin-top: 35px;"><a href="builder.html" class="btn-primary" style="display:block; text-decoration:none; padding:15px;">Build Week ${currentWeek + 1} Meals</a></div>
-            <div class="info-grid">
-                <div class="info-item"><strong>Current Week</strong> Week ${currentWeek + 1}</div>
-                <div class="info-item"><strong>Status</strong> Active</div>
-            </div>
+<div class="info-grid" style="display: flex; justify-content: center; gap: 20px; width: 100%; margin: 15px 0;">
+    <div class="info-item" style="text-align: center;">
+        <strong style="display: block; font-size: 0.7rem; color: #888; text-transform: uppercase;">Week</strong> 
+        Week ${currentWeek + 1}
+    </div>
+    <div class="info-item" style="text-align: center;">
+        <strong style="display: block; font-size: 0.7rem; color: #888; text-transform: uppercase;">Status</strong> 
+        Active
+    </div>
+</div>
         `;
     }
 </script>

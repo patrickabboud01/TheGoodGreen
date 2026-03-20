@@ -12,16 +12,16 @@
         .account-container { max-width: 800px; margin: 40px auto; padding: 20px; }
         .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-weight: 700; color: #888; transition: 0.3s; }
-        .tab-btn.active { color: #2d5a27; border-bottom: 3px solid #2d5a27; }
+        .tab-btn.active { color: #5d8039; border-bottom: 3px solid #5d8039; }
         
         .section-panel { display: none; animation: fadeIn 0.3s ease-in; }
         .section-panel.active { display: block; }
         
         .order-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .order-info h4 { color: #2d5a27; margin-bottom: 5px; }
+        .order-info h4 { color: #5d8039; margin-bottom: 5px; }
         .order-info p { font-size: 0.85rem; color: #666; }
         
-        .btn-reorder { background: #2d5a27; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-reorder { background: #5d8039; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
 
         /* --- CUSTOM POPUP MODAL --- */
         .modal-overlay {
@@ -41,7 +41,7 @@
         }
         .modal-btns { display: flex; gap: 10px; margin-top: 25px; }
         .m-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
-        .m-btn-green { background: #2d5a27; color: white; }
+        .m-btn-green { background: #5d8039; color: white; }
         .m-btn-gray { background: #eee; color: #444; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -57,7 +57,7 @@
         .user-greeting {
             padding: 30px 0 15px; margin-bottom: 15px;
             border-bottom: 1px solid #f4f1ea;
-            font-weight: 700; color: #2d5a27; font-size: 1rem;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
         }
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
         .sidebar-links li { margin-bottom: 10px; }
@@ -65,13 +65,32 @@
             font-weight: 400; color: #444; padding: 8px 0;
             display: block; text-decoration: none; transition: 0.2s;
         }
-        .sidebar-links li a:hover { color: #2d5a27; }
+        .sidebar-links li a:hover { color: #5d8039; }
         .auth-btn-sidebar {
             margin-top: 20px; border-top: 1px solid #eee;
             padding-top: 15px; display: block; font-weight: 700;
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
         .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+            /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
     </style>
 </head>
 <body class="account-body">
@@ -79,7 +98,7 @@
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
         <div id="modal-icon" style="font-size: 2.5rem; margin-bottom: 15px;">🌿</div>
-        <h3 id="modal-title" style="color: #2d5a27; margin-bottom: 10px;">Message</h3>
+        <h3 id="modal-title" style="color: #5d8039; margin-bottom: 10px;">Message</h3>
         <p id="modal-text" style="color: #666; font-size: 0.95rem; line-height: 1.4;"></p>
         <div class="modal-btns" id="modal-buttons"></div>
     </div>
@@ -91,7 +110,7 @@
             <div class="logo-area">
                 <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
             </div>
-            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span></div>
+            <div class="menu-dots" id="menu-toggle"><span></span><span></span><span></span><span></span></div>
             
             <div class="sidebar" id="sidebar">
                 <div class="close-sidebar" id="close-sidebar">&times;</div>
@@ -101,7 +120,7 @@
                     <li><a href="packages.html">Packages</a></li>
                     <li><a href="menu.html">Menu</a></li>
                     <li><a href="plan-status.html">Continue your plan</a></li>
-                    <li><a href="user-account.html" style="color: #2d5a27; font-weight: 700;">My Account</a></li>
+                    <li><a href="user-account.html" style="color: #5d8039; font-weight: 700;">My Account</a></li>
                     <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
                 </ul>
             </div>
@@ -135,28 +154,18 @@
     </section>
 </main>
 <footer class="site-footer">
-    <div class="footer-content">
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
-        </div>
-
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 <script>
     // --- CONFIGURATION ---
@@ -182,7 +191,7 @@
         } else if (greeting && authBtn) {
             greeting.innerText = "Hi, Guest";
             authBtn.innerText = "Login / Sign Up";
-            authBtn.style.color = "#2d5a27";
+            authBtn.style.color = "#5d8039";
         }
     }
 
