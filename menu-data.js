@@ -4,6 +4,7 @@ const rawMenuData = [
         category: "breakfast", 
         name: "Oatmeal Bowl", 
         protein: 12, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Oats;Milk", 
         removable_ingredients: "Dark Chocolate;Peanut Butter", 
         choice_title: "Step 1: Milk Type", 
@@ -17,6 +18,7 @@ const rawMenuData = [
         category: "breakfast", 
         name: "Pancakes", 
         protein: 10, 
+        image: "images/menu items/pankakes.png",
         fixed_ingredients: "Vegan Pancakes", 
         removable_ingredients: "Maple Syrup", 
         choice_title: "Step 1: Spread", 
@@ -30,6 +32,7 @@ const rawMenuData = [
         category: "breakfast", 
         name: "Hummus & Crackers", 
         protein: 8, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Crackers;Hummus", 
         removable_ingredients: "Cucumber;Pumpkin Seeds", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -38,6 +41,7 @@ const rawMenuData = [
         category: "breakfast", 
         name: "Avocado Toast", 
         protein: 9, 
+        image: "images/menu items/avocado toast.png",
         fixed_ingredients: "Garlic Toast;Avocado", 
         removable_ingredients: "Sautéed Mushrooms", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -46,6 +50,7 @@ const rawMenuData = [
         category: "breakfast", 
         name: "Cornflakes & Milk", 
         protein: 7, 
+        image: "images/menu items/milk.png",
         fixed_ingredients: "Cornflakes", 
         removable_ingredients: "Chocolate Chips", 
         choice_title: "Milk Type", 
@@ -59,6 +64,7 @@ const rawMenuData = [
         category: "lunch", 
         name: "Lentil Pasta Bolognese", 
         protein: 18, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Pasta;Lentils", 
         removable_ingredients: "Bolognese Sauce;Onions;Garlic", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -67,6 +73,7 @@ const rawMenuData = [
         category: "lunch", 
         name: "Quinoa & Veggie Bowl", 
         protein: 15, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Quinoa;Chickpeas", 
         removable_ingredients: "Carrots;Bell Peppers;Zucchini;Potatoes", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -75,6 +82,7 @@ const rawMenuData = [
         category: "lunch", 
         name: "Falafel Burger", 
         protein: 16, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Bun;Falafel Patty", 
         removable_ingredients: "Tahini;Lettuce;Tomato", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -83,6 +91,7 @@ const rawMenuData = [
         category: "lunch", 
         name: "Lentil Soup", 
         protein: 12, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Red Lentils;Garlic", 
         removable_ingredients: "Carrots;Potatoes", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -91,6 +100,7 @@ const rawMenuData = [
         category: "dinner", 
         name: "Dal Bhat Soup", 
         protein: 14, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Lentils;Rice", 
         removable_ingredients: "Mixed Vegetables", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -99,6 +109,7 @@ const rawMenuData = [
         category: "dinner", 
         name: "Pumpkin Soup", 
         protein: 6, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Roasted Pumpkin", 
         removable_ingredients: "Vegetable Broth", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -107,6 +118,7 @@ const rawMenuData = [
         category: "dinner", 
         name: "Veggie Soup", 
         protein: 8, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Mixed Vegetables;Rice", 
         removable_ingredients: "Shariyeh", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -115,6 +127,7 @@ const rawMenuData = [
         category: "dinner", 
         name: "Fattoush & Grilled Potatoes", 
         protein: 7, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Fattoush;Grilled Potatoes", 
         removable_ingredients: "Pomegranate Molasses", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -123,6 +136,7 @@ const rawMenuData = [
         category: "dinner", 
         name: "Tabbouleh & Grilled Potatoes", 
         protein: 6, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Tabbouleh;Grilled Potatoes", 
         removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -131,6 +145,7 @@ const rawMenuData = [
         category: "dinner", 
         name: "Pasta Salad & Grilled Potatoes", 
         protein: 11, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Pasta;Grilled Potatoes", 
         removable_ingredients: "Black Beans;Olives;Vegetables", 
         choice_title: "Dressing", 
@@ -144,6 +159,7 @@ const rawMenuData = [
         category: "snack", 
         name: "Oat Cookie Plain", 
         protein: 5, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Banana;Oats", 
         removable_ingredients: "Peanut Butter", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -152,6 +168,7 @@ const rawMenuData = [
         category: "snack", 
         name: "Fruit Salad", 
         protein: 2, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Fresh Seasonal Fruits", 
         removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -160,6 +177,7 @@ const rawMenuData = [
         category: "snack", 
         name: "Oat Cookie Chocolate", 
         protein: 5, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Banana;Oats;Chocolate Flakes", 
         removable_ingredients: "Peanut Butter", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -170,6 +188,7 @@ const rawMenuData = [
         category: "protein", 
         name: "Protein Shake Plain + Cookie", 
         protein: 50, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
         choice_title: "Milk Type", 
@@ -183,6 +202,7 @@ const rawMenuData = [
         category: "protein", 
         name: "Protein Shake Chocolate + Cookie", 
         protein: 50, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Vegan Protein Blend (Choc)", 
         removable_ingredients: "", 
         choice_title: "Milk Type", 
@@ -194,6 +214,7 @@ const rawMenuData = [
         category: "protein", 
         name: "Protein Shake Berries + Cookie", 
         protein: 50, 
+        image: "images/menu items/oats.png",
         fixed_ingredients: "Vegan Protein Blend (Berry)", 
         removable_ingredients: "", 
         choice_title: "Milk Type", 

@@ -308,6 +308,7 @@ function loadMenu() {
             category: (item.category || "lunch").toLowerCase().trim(), 
             name: item.name, 
             protein: item.protein, 
+            image: item.image,
             fixedIngredients: item.fixed_ingredients ? item.fixed_ingredients.split(';') : [],
             removableIngredients: item.removable_ingredients ? item.removable_ingredients.split(';') : [],
             multiChoices: choices 
@@ -360,15 +361,22 @@ function renderMenu(cat) {
         return;
     }
 
+
     items.forEach(item => { 
         grid.innerHTML += `
             <div class="menu-item-card">
-                <h4>${item.name}</h4>
-                <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
+                 <div class="card-img-wrapper" style="width: 100%; height: 120px; overflow: hidden; border-radius:12px 12px 0 0;">
+                    <img src="${item.image}" 
+                     alt="${item.name}"
+                     style="width: 100%; height: 100%; object-fit: cover;" 
+                      onerror="this.src='https://placehold.co/400x300?text=Image+Missing'">                </div>
+                <div style="padding:10px;">
+                    <h4 style="font-size:0.9rem; margin-bottom:5px;">${item.name}</h4>
+                    <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
+                </div>
             </div>`; 
     });
 }
-
 function updateUI() {
     const list = document.getElementById('selection-list'); 
     if (!list) return;
