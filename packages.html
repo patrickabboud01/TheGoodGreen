@@ -270,7 +270,7 @@
         "THE DUO": { description: "Covers your two main meals.", features: ["Lunch & Dinner", "Customizable"], prices: { "1 Day": "$17", "5 Days": "$85", "24 Days": "$300" }, items: 2 },
         "THE TRIO": { description: "Total nutrition morning to night.", features: ["Breakfast, Lunch & Dinner", "Balanced Macros"], prices: { "1 Day": "$22", "5 Days": "$100", "24 Days": "$340" }, items: 3 },
         "THE FULL PLAN": { description: "3 Meals + 2 Healthy Snacks.", features: ["Full Day Coverage", "Zero Stress"], prices: { "1 Day": "$25", "5 Days": "$110", "24 Days": "$400" }, items: 5 },
-        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1 Day": "$10", "5 Days": "$40", "24 Days": "$150" }, items: 2 }
+        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1 Day": "$10", "5 Days": "$40", "24 Days": "$150" }, items: 1 }
     };
 
     function openDurationModal(planName, items) {
@@ -297,17 +297,32 @@
 
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    function goToBuilder(days) {
-        if (days === 24 && !localStorage.getItem('current_user')) {
-            alert("For a 24-day plan, please log in first.");
+function goToBuilder(days) {
+    if (days === 24 && !localStorage.getItem('current_user')) {
+        // 1. Use your custom animated snackbar
+        showAlert("For a 24-day plan, please log in first.");
+
+        // 2. Delay the redirect slightly so the user can actually read the message
+        setTimeout(() => {
             window.location.href = "index.html?action=login";
-            return;
-        }
+        }, 2000); 
+
+        return;
+    }
+    
+    // ... rest of your logic to proceed to the builder
+
         const price = planDetails[currentSelectedPlan].prices[days === 1 ? "1 Day" : (days === 5 ? "5 Days" : "24 Days")].replace('$', '');
         localStorage.setItem('selectedPlanName', currentSelectedPlan);
         localStorage.setItem('selectedDuration', days);
         window.location.href = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
     }
+    function showAlert(message) {
+    const alertBox = document.getElementById("custom-alert");
+    alertBox.innerText = message;
+    alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
 
     window.onload = updateAuthUI;
 </script>

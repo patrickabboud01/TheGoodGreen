@@ -87,13 +87,13 @@ section { padding: 60px 0; }
 
 .hero-home h1 {
     font-size: clamp(2rem, 8vw, 3rem);
-    color: var(--forest);
+    color: #5d8039;
     margin: 0px 0;
 }
 
 .badge {
     display: inline-block;
-    background: var(--forest);
+    background: #5d8039;
     color: var(--white);
     padding: 8px 16px;
     border-radius: 50px;
@@ -166,7 +166,7 @@ section { padding: 60px 0; }
 }
 
 .plan-card.featured {
-    border: 2px solid var(--forest);
+    border: 2px solid #5d8039;
 }
 
 /* --- 7. MODALS --- */
@@ -196,7 +196,7 @@ section { padding: 60px 0; }
     width: 100%;
     margin-bottom: 12px;
     padding: 18px;
-    background: var(--forest);
+    background: #5d8039;
     color: white;
     border: none;
     border-radius: 12px;
@@ -225,7 +225,7 @@ section { padding: 60px 0; }
 
 /* --- 9. FOOTER --- */
 .site-footer {
-    background: var(--forest);
+    background: #5d8039;
     color: white;
     padding: 40px 20px;
     text-align: center;
@@ -339,7 +339,7 @@ section { padding: 60px 0; }
 /* Sidebar Elements */
 .sidebar-title {
     font-size: 1.2rem;
-    color: var(--forest);
+    color: #5d8039;
     margin-bottom: 15px;
 }
 
@@ -392,15 +392,15 @@ section { padding: 60px 0; }
 }
 
 .day-dot.active {
-    border: 2px solid var(--forest);
-    color: var(--forest);
+    border: 2px solid #5d8039;
+    color: #5d8039;
     font-weight: bold;
 }
 
 .day-dot.complete {
-    background: var(--forest);
+    background: #5d8039;
     color: white;
-    border-color: var(--forest);
+    border-color: #5d8039;
 }
 
 /* Menu Tabs (The category scroll) */
@@ -482,7 +482,7 @@ section { padding: 60px 0; }
 .success-check {
     width: 80px;
     height: 80px;
-    background: var(--forest);
+    background: #5d8039;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -566,7 +566,7 @@ section { padding: 60px 0; }
 }
 
 #plan-name-display {
-    color: var(--forest);
+    color: #5d8039;
     margin: 0;
     font-size: 1.4rem;
 }
@@ -600,15 +600,15 @@ section { padding: 60px 0; }
 }
 
 .day-dot.active {
-    border: 2px solid var(--forest);
+    border: 2px solid #5d8039;
     background: #f0f4ee;
     font-weight: bold;
 }
 
 .day-dot.complete {
-    background: var(--forest);
+    background: #5d8039;
     color: white;
-    border-color: var(--forest);
+    border-color: #5d8039;
 }
 
 /* Selection List & Stats */
@@ -636,7 +636,7 @@ section { padding: 60px 0; }
 
 .day-stats {
     font-weight: 700;
-    color: var(--forest);
+    color: #5d8039;
     margin-bottom: 15px;
 }
 
@@ -667,9 +667,9 @@ section { padding: 60px 0; }
 }
 
 .tab-btn.active {
-    background: var(--forest);
+    background: #5d8039;
     color: white;
-    border-color: var(--forest);
+    border-color: #5d8039;
 }
 
 .menu-grid {
@@ -684,7 +684,7 @@ section { padding: 60px 0; }
     padding: 15px;
     border-radius: 8px;
     border: none;
-    background: var(--forest);
+    background: #5d8039;
     color: white;
     font-weight: 700;
     cursor: pointer;
@@ -778,7 +778,7 @@ section { padding: 60px 0; }
 }
 
 .checkout-header h1 {
-    color: var(--forest);
+    color: #5d8039;
     font-size: 1.8rem;
     margin-bottom: 10px;
 }
@@ -810,7 +810,7 @@ section { padding: 60px 0; }
 .form-group input:focus, 
 .form-group textarea:focus {
     outline: none;
-    border-color: var(--forest);
+    border-color: #5d8039;
 }
 
 /* Fix for the Summary Card specifically */
@@ -820,7 +820,7 @@ section { padding: 60px 0; }
 }
 
 .summary-details b {
-    color: var(--forest);
+    color: #5d8039;
 }
 /* Checkout Page specific layout */
 .checkout-body {
@@ -972,11 +972,11 @@ section { padding: 60px 0; }
 
 .back-btn { text-decoration: none; font-size: 1.5rem; color: #999; }
 .plan-info { flex-grow: 1; }
-.plan-info h2 { font-size: 1rem; margin: 0; color: var(--forest); }
+.plan-info h2 { font-size: 1rem; margin: 0; color: #5d8039; }
 .plan-info p { font-size: 0.75rem; margin: 0; color: #888; }
 
 .btn-confirm-mini {
-    background: var(--forest);
+    background: #5d8039;
     color: white;
     border: none;
     padding: 8px 15px;
@@ -1011,7 +1011,7 @@ section { padding: 60px 0; }
 }
 
 .day-dot.active {
-    background: var(--forest);
+    background: #5d8039;
     color: white;
 }
 
@@ -1037,9 +1037,9 @@ section { padding: 60px 0; }
 }
 
 .cat-btn.active {
-    background: var(--forest);
+    background: #5d8039 !important;
     color: white;
-    border-color: var(--forest);
+    border-color: #5d8039 !important;
 }
 
 /* Menu Grid - 2 columns */
@@ -1064,7 +1064,7 @@ section { padding: 60px 0; }
 }
 
 .protein-label { font-size: 0.7rem; display: block; color: #888; text-transform: uppercase; }
-.protein-val { font-size: 1.2rem; font-weight: 700; color: var(--forest); }
+.protein-val { font-size: 1.2rem; font-weight: 700; color: #5d8039; }
 /* Normal Category Button */
 .cat-btn {
     padding: 10px 20px;
@@ -1080,9 +1080,9 @@ section { padding: 60px 0; }
 
 /* HIGHLIGHT: The menu you are currently in */
 .cat-btn.active {
-    background: var(--forest) !important;
+    background: #5d8039 !important;
     color: white !important;
-    border-color: var(--forest) !important;
+    border-color:#5d8039 !important;
 }
 
 /* LOCKED: Unavailable for the specific package */
@@ -1094,13 +1094,7 @@ section { padding: 60px 0; }
     border-color: #ccc !important;
     opacity: 0.6;
 }
-/* The active category button style */
-.cat-btn.active {
-    background-color: #2e7d32 !important; /* Forest Green */
-    color: white !important;
-    border-color: #2e7d32 !important;
-    font-weight: 700;
-}
+
 
 /* Optional: Smooth transition when switching */
 .cat-btn {
@@ -1122,7 +1116,7 @@ section { padding: 60px 0; }
     top: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(-100px);
-    background: #ce4242; /* Red for alerts, use var(--forest) for success */
+    background: #ce4242; /* Red for alerts, use #5d8039; for success */
     color: white;
     padding: 12px 25px;
     border-radius: 30px;
@@ -1519,7 +1513,7 @@ section { padding: 60px 0; }
     max-width: 80% !important;
     
     /* Look & Feel */
-    background-color: #2d5a27;
+    background-color: #5d8039;
     color: #fff;
     text-align: center;
     border-radius: 50px; 

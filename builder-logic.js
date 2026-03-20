@@ -44,6 +44,7 @@ async function init() {
                 else if(name.includes("DUO")) itemsPerDay = 2;
                 else if(name.includes("TRIO")) itemsPerDay = 3;
                 else if(name.includes("FULL")) itemsPerDay = 4;
+                else if(name.includes("PROTEIN")) itemsPerDay = 1;
             } 
             else if (isAttempting24Day && params.get('plan') !== profile.active_package_name) {
                 window.location.href = "plan-status.html";
@@ -271,7 +272,11 @@ function updateUI() {
                 </div>
             </li>`;
     });
-    document.getElementById('day-items-count').innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items`;
+const countDisplay = document.getElementById('day-items-count');
+    if (countDisplay) {
+        countDisplay.innerText = `${fullState[currentDay].length} / ${itemsPerDay} Items`;
+    }
+    
     renderCalendar();
 }
 
@@ -287,11 +292,35 @@ function loadMenu() {
 }
 
 function renderMenu(cat) {
-    const grid = document.getElementById('menu-grid'); grid.innerHTML = "";
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(cat.split('/')[0])));
-    const items = menuData.filter(m => (cat === 'lunch/dinner') ? (m.category === 'lunch' || m.category === 'dinner') : (m.category === cat));
+    const grid = document.getElementById('menu-grid'); 
+    grid.innerHTML = "";
+    
+    // 1. Update the Active Button Highlight
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        // We check if the onclick attribute contains the category string we just clicked
+        const btnOnclick = btn.getAttribute('onclick');
+        if (btnOnclick && btnOnclick.includes(`'${cat}'`)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    // 2. Filter and Render Items
+    const items = menuData.filter(m => {
+        if (cat === 'lunch/dinner') {
+            return m.category === 'lunch' || m.category === 'dinner';
+        }
+        return m.category === cat;
+    });
+
     items.forEach(item => { 
-        grid.innerHTML += `<div class="menu-item-card"><h4>${item.name}</h4><p>${item.protein}g Protein</p><button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button></div>`; 
+        grid.innerHTML += `
+            <div class="menu-item-card">
+                <h4>${item.name}</h4>
+                <p>${item.protein}g Protein</p>
+                <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
+            </div>`; 
     });
 }
 
@@ -340,3 +369,38 @@ function closeAuthModal() { document.getElementById('auth-modal').style.display 
 function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
 
 loadMenu();
+
+
+// --- 1. ADD THE MISSING FUNCTION ---
+function showAlert(message) {
+    const alertBox = document.getElementById("custom-alert");
+    if (!alertBox) {
+        // Fallback if you forgot the HTML element
+        alert(message);
+        return;
+    }
+    alertBox.innerText = message;
+    alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
+
+// Function to update the Day Number in the status card
+function updateActiveDayDisplay(dayNumber) {
+    const dayElement = document.getElementById('active-day-num');
+    if (dayElement) {
+        dayElement.textContent = dayNumber;
+    }
+}
+
+function switchDay(d) { 
+    currentDay = d; 
+    
+    // THE FIX: Calculate the relative day (1-6) instead of the offset (7-12, etc.)
+    const relativeDay = d - dayOffset;
+    const dayDisplay = document.getElementById('active-day-num');
+    if (dayDisplay) {
+        dayDisplay.innerText = relativeDay;
+    }
+
+    updateUI(); 
+}

@@ -85,7 +85,8 @@
 
     <header class="builder-header">
         <div class="header-top">
-            <a href="#" class="back-btn" onclick="triggerCustomAlert('packages.html')">✕</a>
+            <!--<a href="#" class="back-btn" onclick="triggerCustomAlert('packages.html')">✕</a> -->
+            <a href="javascript:void(0)" class="back-btn" onclick="showAlert('Returning to packages...'); setTimeout(() => { window.location.href='packages.html' }, 1000);">✕</a>
             <div class="plan-info">
                 <div id="week-label" class="week-indicator" style="display:none;">Week 1</div>
                 <h2 id="plan-name-display">Loading...</h2>
@@ -102,7 +103,7 @@
         <div class="day-status-card">
             <div class="status-left">
                 <h3>Day <span id="active-day-num">1</span></h3>
-                <p id="day-items-count">0 / 0 Items Selected</p>
+
             </div>
             <div class="selection-drawer">
                 <h4>Current Selections</h4>
@@ -111,7 +112,7 @@
         </div>
 
         <nav class="category-nav">
-            <button class="cat-btn active" onclick="renderMenu('breakfast')">Breakfast</button>
+            <button class="cat-btn" onclick="renderMenu('breakfast')">Breakfast</button>
             <button class="cat-btn" onclick="renderMenu('lunch/dinner')">Main Meals</button>
             <button class="cat-btn" onclick="renderMenu('snack')">Snacks</button>
             <button class="cat-btn" onclick="renderMenu('protein')">Extra Pro</button>
