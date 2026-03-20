@@ -180,22 +180,38 @@
 </main>
 
 <div id="durationModal" class="modal">
-    <div class="modal-content">
-        <h3 id="selected-plan-title" style="color: #5d8039; margin-bottom: 10px;"></h3>
-        <p style="margin-bottom: 25px;">How long would you like your plan to last?</p>
-        <div class="duration-options">
-            <button onclick="goToBuilder(1)">1 Day</button>
-            <button onclick="goToBuilder(5)">1 Week (5 Days)</button>
-            <button onclick="goToBuilder(24)">Full Month (24 Days)</button>
+    <div class="modal-content" style="position: relative; padding: 40px 20px 20px 20px; max-width: 400px; background: white; border-radius: 25px;">
+        
+<button onclick="closeModal('durationModal')" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 22px; font-weight: bold; line-height: 1; padding: 5px;">
+            ✕
+        </button>
+
+        <h3 id="selected-plan-title" style="color: #5d8039; margin-bottom: 10px; text-align: center;"></h3>
+        
+        <p style="margin-bottom: 25px; text-align: center; color: #666; font-size: 0.95rem;">
+            How long would you like your plan to last?
+        </p>
+        
+        <div class="duration-options" style="display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="goToBuilder(1)" class="btn-outline">1 Day</button>
+            <button onclick="goToBuilder(5)" class="btn-outline">1 Week (5 Days)</button>
+            <button onclick="goToBuilder(24)" class="btn-primary">Full Month (24 Days)</button>
         </div>
-        <button onclick="closeModal('durationModal')" style="background:none; border:none; color:gray; cursor:pointer; margin-top:20px;">Cancel</button>
+
+        <button onclick="closeModal('durationModal')" 
+                style="background: none; border: none; color: #888; cursor: pointer; margin-top: 20px; width: 100%; font-size: 0.85rem; text-decoration: underline;">
+            Cancel
+        </button>
     </div>
 </div>
 
 <div id="pricingModal" class="modal">
     <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 id="modal-plan-name" style="color: #5d8039; margin: 0;">Plan Details</h3>
+           <h3 id="modal-plan-name" 
+    style="color: #5d8039; margin: 0; text-align: center; width: 100%;">
+    Plan Details
+</h3>
             <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
         </div>
         <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>

@@ -107,9 +107,16 @@ function showChoicePopup() {
     const choiceObj = pendingItem.multiChoices[currentChoiceStep];
     const optionsWithNone = [...choiceObj.options, "None"];
     
+    // Logic to decide if the button should say "Cancel" or "Back"
+    const backBtnText = currentChoiceStep === 0 ? "✕" : "← Back";
+    const backAction = currentChoiceStep === 0 ? "closeEditModal()" : "goBackStep()";
+
     let html = `
-        <h3 style="color: #2d5a27; margin-bottom: 5px;">${choiceObj.title}</h3>
+        <button onclick="${backAction}" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-weight:600;">${backBtnText}</button>
+        
+        <h3 style="color: #2d5a27; margin-bottom: 5px; margin-top:10px;">${choiceObj.title}</h3>
         <p style="font-size: 0.8rem; color: #888; margin-bottom: 15px;">Step ${currentChoiceStep + 1} of ${pendingItem.multiChoices.length}</p>
+        
         <div style="display:flex; flex-direction:column; gap:10px;">
             ${optionsWithNone.map(opt => `
                 <button class="btn-confirm-mini" 
@@ -139,8 +146,28 @@ function finalizeChoice(selection) {
 function openIngredientReview() {
     const item = pendingItem || editingItem;
     
+    // Determine back button behavior
+    let backBtnHtml = "";
+    if (pendingItem && pendingItem.multiChoices && pendingItem.multiChoices.length > 0) {
+        // Go back to the last Choice Step and remove the last selection made
+        backBtnHtml = `
+            <button onclick="currentChoiceStep--; if(pendingItem.selectedChoices.length > 0) pendingItem.selectedChoices.pop(); showChoicePopup();" 
+                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-weight:600; font-size:0.9rem;">
+               Back ←
+            </button>`;
+       
+    } else {
+        // Just a close button if editing or no choices exist
+        backBtnHtml = `
+            <button onclick="closeEditModal()" 
+                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                ✕
+            </button>`;
+    }
+
     let html = `
-        <h3 style="color: #2d5a27; margin-bottom: 10px;">Review Ingredients</h3>
+        ${backBtnHtml}
+        <h3 style="color: #5d8039; margin-bottom: 10px; margin-top: 15px;">Review Ingredients</h3>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px;">Uncheck to remove from your <strong>${item.name}</strong>.</p>
         <div class="review-scroll-area">
     `;
@@ -158,6 +185,7 @@ function openIngredientReview() {
     });
 
     html += `</div>`;
+    
     const actionText = editingItem ? "Save Changes" : "Approve & Add Meal";
     html += `<button class="btn-primary" onclick="finishMealProcess()" style="margin-top:20px; width: 100%;">${actionText}</button>`;
     
@@ -318,7 +346,6 @@ function renderMenu(cat) {
         grid.innerHTML += `
             <div class="menu-item-card">
                 <h4>${item.name}</h4>
-                <p>${item.protein}g Protein</p>
                 <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
             </div>`; 
     });
@@ -403,4 +430,12 @@ function switchDay(d) {
     }
 
     updateUI(); 
+}
+function goBackStep() {
+    if (currentChoiceStep > 0) {
+        currentChoiceStep--;
+        // Remove the last choice made since we are going back
+        pendingItem.selectedChoices.pop();
+        showChoicePopup();
+    }
 }

@@ -132,7 +132,7 @@
         <div class="auth-modal-box">
             <button onclick="closeEntryModal()" class="close-btn">&times;</button>
             <div id="login-form-area">
-                <h2 style="color: #2d5a27; margin-bottom: 20px;">Log In</h2>
+                <h2 style="color: #5d8039; margin-bottom: 20px;">Log In</h2>
                 <div style="display:flex; flex-direction:column; gap:15px;">
                     <input type="email" id="login-email" placeholder="Email Address" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
                     <input type="password" id="login-password" placeholder="Password" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
@@ -149,7 +149,7 @@
                     <input type="text" id="reg-address" placeholder="Delivery Address" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
                     <input type="password" id="reg-password" placeholder="Password" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
                     <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Sign Up</button>
-                    <button onclick="toggleAuthMode('login')" style="background:none; border:none; color:#2d5a27; cursor:pointer; font-weight:600;">Back to Login</button>
+                    <button onclick="toggleAuthMode('login')" style="background:none; border:none; color:#5d8039; cursor:pointer; font-weight:600;">Back to Login</button>
                 </div>
             </div>
         </div>
@@ -162,29 +162,42 @@
         </div>
     </div>
 <footer class="site-footer">
-    <div class="footer-content">
-        
-        <div class="footer-links">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-instagram"></i>
-                <span>Instagram</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span>WhatsApp</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span>Facebook</span>
-            </a>
-        </div>
-
-        <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
+<style>
+    /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
+        
+    
+</style>
 
     <script src="menu-data.js"></script>
     <script src="builder-logic.js"></script>

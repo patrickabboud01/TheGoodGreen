@@ -124,6 +124,7 @@ section { padding: 60px 0; }
     text-align: center;
     transition: all 0.2s ease;
     cursor: pointer;
+    font-size:medium;
 }
 
 .btn-primary {
@@ -1611,4 +1612,63 @@ main, .hero-home, #how-it-works {
 
 .footer-icon:hover {
     opacity: 0.8;
+}
+/* Styles the actual checkbox 'tick' and background */
+.review-scroll-area input[type="checkbox"] {
+    accent-color: #5d8039; /* Use your brand's green */
+    cursor: pointer;
+    transform: scale(1.1); /* Optional: makes it slightly larger and easier to tap */
+}
+
+
+
+
+#pricing-body td {
+    text-align: center;      /* Centers the text horizontally */
+   
+    padding: 18px 15px;      /* Adds the airy spacing from the image */
+    border-bottom: 1px solid #f0f0f0; 
+}
+
+.pricing-table {
+    width: 100%;
+    /* This removes the gaps between cells that often show as white lines */
+    border-collapse: separate; 
+    border-spacing: 0; 
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.pricing-table thead th {
+    background: #5d8039; /* Your brand green */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    
+    /* --- THE FIX: REMOVE THE WHITE LINE --- */
+    border: none !important;
+    outline: none !important;
+    /* -------------------------------------- */
+}
+.pricing-table th {
+    background: #718e53;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    
+    /* --- THE FIX: EQUAL COLUMNS --- */
+    width: 50%; 
+    border: none;
+    /* ------------------------------ */
+}
+
+/* Ensure the table itself takes up the full container width */
+.pricing-table {
+    width: 100%;
+    table-layout: fixed; /* This makes the 50% width strictly enforced */
+    border-collapse: separate;
+    border-spacing: 0;
 }
