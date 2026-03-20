@@ -135,8 +135,7 @@ function showChoicePopup() {
                     </button>
                 `;
             }).join('')}
-            <button class="btn-confirm-mini" style="background:#fff; color:#999; border:1px dashed #ccc;" onclick="handleChoiceSelection('None')">None / Skip</button>
-        </div>
+             </div>
     `;
 
     if (isMultiple) {
@@ -322,25 +321,42 @@ function renderMenu(cat) {
     if (!grid) return;
     grid.innerHTML = "";
     
+    // Normalize the clicked category (e.g., "breakfast")
     const selectedCat = cat.toLowerCase().trim();
 
-    // Update highlights
+    // 1. UPDATE BUTTON HIGHLIGHTS
     document.querySelectorAll('.cat-btn').forEach(btn => {
+        // Get the text on the button (e.g., "Breakfast" or "Main Meals")
         const btnText = btn.innerText.toLowerCase().trim();
-        if (btnText === selectedCat || (selectedCat === 'lunch/dinner' && (btnText === 'lunch' || btnText === 'dinner'))) {
+        
+        // Logic for highlighting:
+        // Match if names are identical OR if it's the "Lunch/Dinner" combo
+        const isMatch = (btnText === selectedCat);
+        const isLunchDinnerMatch = (selectedCat === 'lunch/dinner' && (btnText.includes('lunch') || btnText.includes('dinner') || btnText.includes('main')));
+
+        if (isMatch || isLunchDinnerMatch) {
             btn.classList.add('active');
+            // Ensure the style is visible (Optional if your CSS handles .active)
+            btn.style.backgroundColor = "#5d8039"; 
+            btn.style.color = "white";
         } else {
             btn.classList.remove('active');
+            btn.style.backgroundColor = ""; // Reset to CSS default
+            btn.style.color = "";
         }
     });
 
+    // 2. FILTER ITEMS
     const items = menuData.filter(m => {
-        if (selectedCat === 'lunch/dinner') return m.category === 'lunch' || m.category === 'dinner';
+        if (selectedCat === 'lunch/dinner') {
+            return m.category === 'lunch' || m.category === 'dinner';
+        }
         return m.category === selectedCat;
     });
 
+    // 3. RENDER ITEMS
     if (items.length === 0) {
-        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:20px; color:#aaa;">No meals in this category.</p>`;
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888; padding:20px;">No meals found.</p>`;
         return;
     }
 
@@ -348,7 +364,6 @@ function renderMenu(cat) {
         grid.innerHTML += `
             <div class="menu-item-card">
                 <h4>${item.name}</h4>
-                <div style="color:#5d8039; font-weight:bold; font-size:0.8rem; margin-bottom:8px;">${item.protein}g Protein</div>
                 <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
             </div>`; 
     });
@@ -461,3 +476,130 @@ async function handleFinalOrder() {
 }
 
 loadMenu();
+function showAlert(message) {
+    const alertBox = document.getElementById("custom-alert");
+    if (!alertBox) {
+        // Fallback: If the custom box is missing, use a standard alert
+        alert(message); 
+        return;
+    }
+    alertBox.innerText = message;
+    alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
+
+// --- FINAL CONFIRMATION & SUMMARY MODAL ---
+
+async function handleFinalOrder() {
+    const loops = displayDays;
+    // Check if every day has the required number of items
+    for(let i = 1; i <= loops; i++) { 
+        const actualIdx = i + dayOffset;
+        if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
+            showToast(`Day ${i} is incomplete!`); 
+            return; 
+        } 
+    }
+    showOrderReview();
+}
+
+function showOrderReview() {
+    let html = `
+        <button onclick="closeEditModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#888; cursor:pointer; font-size:1.2rem;">✕</button>
+        <h3 style="color: #2d5a27; margin-bottom: 5px; text-align:center;">Final Review</h3>
+        <p style="font-size: 0.8rem; color: #666; margin-bottom: 20px; text-align:center;">Check your order before checkout.</p>
+        <div class="review-scroll-area" style="max-height: 400px; overflow-y: auto; padding: 10px;">
+    `;
+
+    const loops = displayDays;
+    for (let i = 1; i <= loops; i++) {
+        const actualIdx = i + dayOffset;
+        const dayMeals = fullState[actualIdx] || [];
+        
+        html += `
+            <div style="margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #5d8039; font-size: 1rem; border-left: 4px solid #5d8039; padding-left: 10px;">Day ${i}</h4>
+        `;
+
+        dayMeals.forEach(item => {
+            const choices = item.selectedChoices.length > 0 ? item.selectedChoices.join(' + ') : "Standard";
+            const removals = item.removedIngredients.length > 0 
+                ? `<div style="color: #d9534f; font-size: 0.75rem; margin-top:4px; font-weight:600;">• No: ${item.removedIngredients.join(', ')}</div>` 
+                : "";
+            
+            html += `
+                <div style="margin-bottom: 12px; padding: 10px; background: #fdfdfd; border-radius: 8px; border: 1px solid #eee;">
+                    <div style="font-size: 0.9rem; font-weight: 700; color: #333;">${item.name}</div>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 2px;">Option: ${choices}</div>
+                    ${removals}
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+
+    html += `</div>`; // End scroll area
+    html += `
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn-primary" onclick="proceedToCheckout()" style="width: 100%; padding: 15px; font-weight:bold;">Looks Good, Checkout</button>
+            <button onclick="closeEditModal()" style="background: none; border: none; color: #888; font-size: 0.85rem; cursor: pointer; text-decoration: underline;">Wait, let me change something</button>
+        </div>
+    `;
+
+    const container = document.getElementById('ingredients-list');
+    if (container) {
+        container.innerHTML = html;
+        document.getElementById('editModal').style.display = "flex";
+    }
+}
+
+function proceedToCheckout() {
+    localStorage.setItem('finalOrder', JSON.stringify(fullState));
+    const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";
+    window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
+}
+
+// --- PREVENT ACCIDENTAL PAGE EXIT ---
+function showExitWarning(targetUrl) {
+    // Check if they actually have meals added
+    const hasMeals = Object.values(fullState).some(day => day.length > 0);
+    
+    // If no meals, just let them leave immediately
+    if (!hasMeals) {
+        window.location.href = targetUrl;
+        return;
+    }
+
+    let html = `
+        <div style="text-align: center; padding: 20px;">
+            <div style="background: #fff5f5; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                <i class="fas fa-exclamation-triangle" style="color: #d9534f; font-size: 1.5rem;"></i>
+            </div>
+            <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 25px; line-height: 1.5;">
+                You have meals in your plan. If you leave now, your selection will be lost.
+            </p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn-primary" onclick="closeEditModal()" style="width: 100%;">
+                    Keep Building
+                </button>
+                <button onclick="confirmExit('${targetUrl}')" style="background: none; border: none; color: #d9534f; font-size: 0.85rem; cursor: pointer; text-decoration: underline; font-weight: 600;">
+                    Yes, Discard and Leave
+                </button>
+            </div>
+        </div>
+    `;
+
+    const container = document.getElementById('ingredients-list');
+    if (container) {
+        container.innerHTML = html;
+        document.getElementById('editModal').style.display = "flex";
+    }
+}
+
+// Helper to actually leave
+function confirmExit(url) {
+    isNavigatingAway = true; // Set flag so beforeunload doesn't double-trigger
+    window.location.href = url;
+}

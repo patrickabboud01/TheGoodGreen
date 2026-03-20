@@ -4,13 +4,13 @@ const rawMenuData = [
         category: "breakfast", 
         name: "Oatmeal Bowl", 
         protein: 12, 
-        fixed_ingredients: "Oats;Peanut Butter", 
-        removable_ingredients: "Dark Chocolate;Berries", 
+        fixed_ingredients: "Oats;Milk", 
+        removable_ingredients: "Dark Chocolate;Peanut Butter", 
         choice_title: "Step 1: Milk Type", 
         choice_options: "Oat;Soy;Almond",
         choice_type: "single",
         choice_title_2: "Step 2: Extra Topping", 
-        choice_options_2: "Chia Seeds;Extra Berries;Flax Seeds",
+        choice_options_2: "Extra Berries;Flax Seeds;None / Skip",
         choice_type_2: "multiple" 
     },
     { 
