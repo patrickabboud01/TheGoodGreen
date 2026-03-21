@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+    (function() {
+        emailjs.init("O38XtdcMyAkWnvsoU"); // Using the ID from your previous snippet
+    })();
+</script>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -175,6 +181,52 @@
                 <button class="btn-outline mb-10" onclick="openDurationModal('PROTEIN BOOSTER', 2)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('PROTEIN BOOSTER')">View Details & Prices</button>
             </div>
+
+           <div class="plan-card" style="border: 2px dashed #5d8039; background: #f9fff4; position: relative;">
+                <h3 style="color: #5d8039;">NUTRITION PLAN</h3>
+                <p style="color: #888; font-size: 0.9rem;">Custom Kcal & Protein</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">Tailored <small style="font-weight: 400; font-size: 0.8rem;">/ Goal</small></div>
+                <button class="btn-primary mb-10" id="openModalBtn">Request a Quote</button>
+                <p style="font-size: 0.75rem; color: #5d8039; margin: 0;">For specific medical or athletic goals</p>
+            </div>
+    
+            
+            <div id="quoteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; padding: 30px; background: white; border-radius: 25px; position: relative; border: none;">
+        <span class="close-btn" style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #ccc;">&times;</span>
+        
+        <h3 style="color: #5d8039; text-align: center; margin-bottom: 10px;">Get Your Quote</h3>
+        <p style="text-align: center; font-size: 0.85rem; color: #666; margin-bottom: 25px;">Enter your targets and we'll reach out on WhatsApp.</p>
+        
+        <form id="quote-form" class="quote-form">
+            <style>
+                .quote-form input {
+                    width: 100%; padding: 12px; margin: 8px 0;
+                    border: 1px solid #f4f1ea; border-radius: 12px;
+                    background: #fafafa; font-family: inherit; box-sizing: border-box;
+                    outline: none; transition: 0.3s;
+                }
+                .quote-form input:focus { border-color: #5d8039; background: #fff; }
+                .submit-btn {
+                    width: 100%; background: #5d8039; color: white; border: none;
+                    padding: 15px; border-radius: 12px; font-weight: 700;
+                    cursor: pointer; margin-top: 15px; transition: 0.3s;
+                }
+                .submit-btn:hover { background: #4a662e; transform: translateY(-2px); }
+            </style>
+            
+            <input type="text" name="user_name" placeholder="Full Name" required>
+            <input type="tel" name="user_phone" placeholder="WhatsApp Number" required>
+            <input type="number" name="kcal_goal" placeholder="Daily Kcal Goal (e.g. 2200)" required>
+            <input type="number" name="protein_goal" placeholder="Protein Goal (Grams)" required>
+            
+            <button type="submit" class="submit-btn">Send Quote Request</button>
+        </form>
+    </div>
+</div>
+    
+        
+    
         </div>
     </section>
 </main>
@@ -341,6 +393,50 @@ function goToBuilder(days) {
 }
 
     window.onload = updateAuthUI;
+
+    const modal = document.getElementById("quoteModal");
+        const btn = document.getElementById("openModalBtn");
+        const closeX = document.querySelector(".close-btn");
+        const form = document.getElementById("quote-form");
+
+        // UI Interactions
+        btn.onclick = () => modal.style.display = "flex";
+        closeX.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
+
+        // Form Logic
+      form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    // 1. Change button text to show progress
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = "Sending...";
+    submitBtn.style.opacity = "0.7";
+    submitBtn.disabled = true;
+
+    emailjs.sendForm('service_ku8gtez', 'template_tlc5mia', this)
+        .then(() => {
+            // 2. Hide the Modal immediately
+            modal.style.display = "none";
+            
+            // 3. Show your BRANDED alert
+            showAlert("Quote request sent! .");
+
+            // 4. Prepare WhatsApp data
+            const name = encodeURIComponent(form.user_name.value);
+            const kcal = encodeURIComponent(form.kcal_goal.value);
+            const protein = encodeURIComponent(form.protein_goal.value);
+            const msg = `Hello! My name is ${name}. I'm looking for a custom quote. Goals: ${kcal}kcal & ${protein}g protein.`;
+            
+            
+        })
+        .catch((err) => {
+            showAlert("Error sending request. Please try again.");
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        });
+});
 </script>
 <div id="custom-alert">Message goes here</div>
 </body>
