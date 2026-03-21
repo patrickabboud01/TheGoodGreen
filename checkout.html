@@ -317,78 +317,82 @@
             document.getElementById('user_address').value = user.address || '';
         }
 
-        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true; btn.innerText = "Processing...";
+document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true; 
+    btn.innerText = "Processing...";
 
-            try {
-                const { data: orderData } = await sbClient.from('orders').insert([{
-                    customer_name: document.getElementById('user_name').value,
-                    customer_phone: document.getElementById('user_phone').value,
-                    customer_address: document.getElementById('user_address').value,
-                    plan_name: isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`,
-                    total_price: isSubscriptionRefill ? 0 : finalPrice
-                }]).select();
+    try {
+        // 1. Create the main order
+        const { data: orderData, error: orderError } = await sbClient.from('orders').insert([{
+            customer_name: document.getElementById('user_name').value,
+            customer_phone: document.getElementById('user_phone').value,
+            customer_address: document.getElementById('user_address').value,
+            plan_name: isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`,
+            total_price: isSubscriptionRefill ? 0 : finalPrice
+        }]).select();
 
-                const items = [];
-                dayKeys.forEach(day => fullState[day].forEach(m => items.push({ order_id: orderData[0].id, day_number: parseInt(day), meal_name: m.name, choice: m.selectedChoices?.join(', ') || '' })));
-                await sbClient.from('order_items').insert(items);
+        if (orderError) throw orderError;
 
-                if (isSubscriptionRefill || durationKey === "24") {
-                    let curWeek = isSubscriptionRefill ? profile["24planweek"] : 0;
-                    let nextWeek = curWeek + 1;
-                    let stillActive = nextWeek < 4;
-                    await sbClient.from('profiles').update({
-                        "plan24days": stillActive,
-                        "24planweek": stillActive ? nextWeek : 0,
-                        "active_package_name": stillActive ? (profile?.active_package_name || finalName) : null
-                    }).eq('email', user.email);
-                }
+        // 2. Prepare the items
+        const itemsToInsert = [];
+        const orderId = orderData[0].id;
 
-                await emailjs.send("service_rfcp52l", "template_oglmmp8", { customer_name: user_name.value, plan_name: finalName, total_price: isSubscriptionRefill ? "$0.00" : `$${finalPrice}` });
-                localStorage.removeItem('finalOrder');
-                window.location.href = "thanks.html";
-            } catch (err) { alert(err.message); btn.disabled = false; }
-        });
-    };
-    async function saveOrderToSupabase(orderId) {
-    // 1. Get the plan back from localStorage
-    const savedPlan = JSON.parse(localStorage.getItem('finalOrder'));
-    if (!savedPlan) return;
-
-    const itemsToInsert = [];
-
-    // 2. Loop through the days (1, 2, 3...)
-    for (const dayKey in savedPlan) {
-        const dayMeals = savedPlan[dayKey];
-        
-        dayMeals.forEach(meal => {
-            // Prepare the row for Supabase
-            itemsToInsert.push({
-                order_id: orderId, // The ID of the main order
-                meal_name: meal.name,
-                day_number: parseInt(dayKey),
-                selected_options: meal.selectedChoices.join(' + '),
-                removed_ingredients: meal.removedIngredients.join(', '),
-                // This captures the unique note for THIS specific meal
-                special_instructions: meal.specialInstructions || "" 
+        dayKeys.forEach(day => {
+            fullState[day].forEach(m => {
+                itemsToInsert.push({
+                    order_id: orderId,
+                    day_number: parseInt(day),
+                    meal_name: m.name,
+                    // Check your Supabase column name: is it 'choice' or 'selected_options'?
+                    // Based on your previous error, 'choice' is likely the correct one.
+                    choice: m.selectedChoices?.join(', ') || '', 
+                    removed_ingredients: m.removedIngredients?.join(', ') || '',
+                    special_instructions: m.specialInstructions || "" 
+                });
             });
         });
-    }
 
-    // 3. Insert into Supabase
-    const { data, error } = await sbClient
-        .from('order_items')
-        .insert(itemsToInsert);
+        // 3. Insert the detailed items
+        const { error: itemsError } = await sbClient.from('order_items').insert(itemsToInsert);
+        
+        // If this fails, it's usually because 'choice' or 'special_instructions' 
+        // doesn't exist in your Supabase table yet.
+        if (itemsError) throw itemsError;
 
-    if (error) {
-        console.error("Error saving meal items:", error);
-        alert("There was an error saving your meal choices.");
-    } else {
-        console.log("All meals and instructions saved successfully!");
+        // 4. Update Subscription status (If 24-day plan)
+        if (isSubscriptionRefill || durationKey === "24") {
+            let curWeek = isSubscriptionRefill ? (profile["24planweek"] || 0) : 0;
+            let nextWeek = curWeek + 1;
+            let stillActive = nextWeek < 4;
+            await sbClient.from('profiles').update({
+                "plan24days": stillActive,
+                "24planweek": stillActive ? nextWeek : 0,
+                "active_package_name": stillActive ? (profile?.active_package_name || finalName) : null
+            }).eq('email', user.email);
+        }
+
+        // 5. Send confirmation email
+        await emailjs.send("service_rfcp52l", "template_oglmmp8", { 
+            customer_name: document.getElementById('user_name').value, 
+            plan_name: finalName, 
+            total_price: isSubscriptionRefill ? "$0.00" : `$${finalPrice}` 
+        });
+
+        // 6. Cleanup and Redirect
+        localStorage.removeItem('finalOrder');
+        window.location.href = "thanks.html";
+
+    } catch (err) { 
+        console.error("Checkout Error:", err);
+        alert("Database Error: " + err.message + ". Please ensure your order_items table has 'choice' and 'special_instructions' columns."); 
+        btn.disabled = false; 
+        btn.innerText = "Confirm Order";
     }
-}
+});
+    };
+   
 </script>
 <div id="custom-alert">Message goes here</div>
 </body>

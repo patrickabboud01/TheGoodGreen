@@ -262,10 +262,12 @@ function toggleIngredient(ing) {
 function finishMealProcess() {
     const item = pendingItem || editingItem;
     
-    // Save the text to THIS specific meal object
+    // Check if the textarea exists and grab the value
     const instrInput = document.getElementById('user-instructions');
     if (instrInput) {
+        // This attaches the text to the specific meal object
         item.specialInstructions = instrInput.value.trim();
+        console.log("Saved Instruction:", item.specialInstructions); // Debugging line
     }
 
     if (pendingItem) {
@@ -275,7 +277,7 @@ function finishMealProcess() {
     
     editingItem = null;
     document.getElementById('editModal').style.display = "none";
-    updateUI(); 
+    updateUI();
 }
 function openEditModal(instanceId) {
     editingItem = fullState[currentDay].find(i => i.instanceId === instanceId);
@@ -536,7 +538,7 @@ function showOrderReview() {
 }
 
 function proceedToCheckout() {
-    // This saves the entire plan, including all unique instructions for each meal
+    // Stringify the fullState which now includes the specialInstructions
     localStorage.setItem('finalOrder', JSON.stringify(fullState));
     
     const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";

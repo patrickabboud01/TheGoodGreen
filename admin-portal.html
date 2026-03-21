@@ -9,6 +9,7 @@
         :root { 
             --forest: #2d5a27; --sand: #f4f1ea; --error: #d9534f; 
             --working: #f39c12; --done: #27ae60; --info: #3498db;
+            --accent-blue: #4338ca;
         }
         
         body { background: var(--sand); padding: 10px; font-family: 'Segoe UI', sans-serif; margin: 0; }
@@ -18,14 +19,12 @@
             padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
         }
         
-        /* Mobile Responsive Header */
         .header-flex { 
             display: flex; flex-direction: column; gap: 10px; 
             margin-bottom: 20px; border-bottom: 2px solid var(--sand); padding-bottom: 15px; 
         }
         @media (min-width: 768px) { .header-flex { flex-direction: row; justify-content: space-between; align-items: center; } }
 
-        /* Controls Layout */
         .controls { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .search-container { width: 100%; margin-bottom: 10px; }
         #search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
@@ -36,7 +35,6 @@
         }
         .view-btn.outline { background: white; color: var(--forest); border: 2px solid var(--forest); }
 
-        /* Status Toggles */
         .status-btn { 
             width: 100%; padding: 12px; border-radius: 8px; border: none; 
             font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase;
@@ -48,11 +46,10 @@
         .status-Active { background: var(--forest); color: white; }
         .status-Paused { background: #95a5a6; color: white; }
 
-        /* RESPONSIVE TABLE TO CARDS */
         table { width: 100%; border-collapse: collapse; }
         
         @media (max-width: 768px) {
-            thead { display: none; } /* Hide headers on mobile */
+            thead { display: none; }
             tr { 
                 display: block; background: #fff; border: 1px solid #eee; 
                 margin-bottom: 15px; border-radius: 10px; padding: 10px;
@@ -62,7 +59,7 @@
                 display: flex; justify-content: space-between; align-items: center; 
                 padding: 8px 5px; border: none; font-size: 0.9rem; text-align: right;
             }
-            td::before { content: attr(data-label); font-weight: bold; color: var(--forest); text-align: left; }
+            td::before { content: attr(data-label); font-weight: bold; color: var(--forest); text-align: left; padding-right: 10px; }
             .group-header { background: var(--forest) !important; color: white !important; text-align: center; display: block; }
             .group-header td::before { content: ""; }
         }
@@ -73,7 +70,12 @@
         }
 
         .group-header { background: #f0f4f0; font-weight: bold; color: var(--forest); }
-        .instruction-tag { background: #fff5f5; color: var(--error); padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.75rem; border: 1px solid #feb2b2; }
+        
+        /* Tag Styles */
+        .tag { padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.75rem; border: 1px solid; display: inline-block; margin-bottom: 2px; }
+        .tag-remove { background: #fff5f5; color: var(--error); border-color: #feb2b2; }
+        .tag-choice { background: #eef2ff; color: var(--accent-blue); border-color: #c7d2fe; }
+        .special-note { font-size: 0.75rem; color: #666; font-style: italic; margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
@@ -142,19 +144,25 @@
 
     async function refreshCurrentView() {
         const body = document.getElementById('table-body');
-        body.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+        body.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:20px;'>Loading...</td></tr>";
 
-        if (currentView === 'orders') {
-            const { data } = await sbClient.from('orders').select('*').order('customer_name', {ascending: true});
-            rawData = data;
-        } else {
-            const dayVal = document.getElementById('day-filter').value;
-            let query = sbClient.from('order_items').select('*, orders(customer_name, plan_name)');
-            if(dayVal) query = query.eq('day_number', dayVal);
-            const { data } = await query.order('day_number', {ascending: true});
-            rawData = data;
+        try {
+            if (currentView === 'orders') {
+                const { data } = await sbClient.from('orders').select('*').order('customer_name', {ascending: true});
+                rawData = data || [];
+            } else {
+                const dayVal = document.getElementById('day-filter').value;
+                // Fetching the new columns: choice, special_instructions, removed_ingredients
+                let query = sbClient.from('order_items').select('*, orders(customer_name, plan_name)');
+                if(dayVal) query = query.eq('day_number', dayVal);
+                const { data } = await query.order('day_number', {ascending: true});
+                rawData = data || [];
+            }
+            renderFilteredData();
+        } catch (err) {
+            body.innerHTML = "<tr><td colspan='5'>Error loading data. Check console.</td></tr>";
+            console.error(err);
         }
-        renderFilteredData();
     }
 
     function renderFilteredData() {
@@ -198,18 +206,34 @@
             <td data-label="Name">${o.customer_name}</td>
             <td data-label="Date">${new Date(o.created_at).toLocaleDateString()}</td>
             <td data-label="Plan">${o.plan_name}</td>
-            <td data-label="Action"><button class="status-btn status-${status}" onclick="cycleStatus('orders', '${o.id}', '${status}')">${status}</button></td>
+            <td data-label="Status"><button class="status-btn status-${status}" onclick="cycleStatus('orders', '${o.id}', '${status}')">${status}</button></td>
         </tr>`;
     }
 
     function mealRow(m) {
         const status = m.status || 'Pending';
+        
+        // Build Instructions HTML dynamically
+        let instructions = [];
+        if (m.removed_ingredients) {
+            instructions.push(`<span class="tag tag-remove">NO ${m.removed_ingredients}</span>`);
+        }
+        if (m.choice) {
+            instructions.push(`<span class="tag tag-choice">${m.choice}</span>`);
+        }
+        
+        const noteHtml = m.special_instructions ? `<span class="special-note">Note: ${m.special_instructions}</span>` : '';
+        const combinedInstructions = instructions.length > 0 ? instructions.join(' ') : '<span style="color:#ccc">Standard</span>';
+
         return `<tr>
             <td data-label="Day">Day ${m.day_number}</td>
             <td data-label="Meal"><strong>${m.meal_name}</strong></td>
-            <td data-label="Name">${m.orders?.customer_name || '...'}</td>
-            <td data-label="Notes">${m.removals ? `<span class="instruction-tag">NO ${m.removals}</span>` : 'Standard'}</td>
-            <td data-label="Action"><button class="status-btn status-${status}" onclick="cycleStatus('order_items', '${m.id}', '${status}')">${status}</button></td>
+            <td data-label="Customer">${m.orders?.customer_name || '...'}</td>
+            <td data-label="Instructions">
+                ${combinedInstructions}
+                ${noteHtml}
+            </td>
+            <td data-label="Status"><button class="status-btn status-${status}" onclick="cycleStatus('order_items', '${m.id}', '${status}')">${status}</button></td>
         </tr>`;
     }
 
