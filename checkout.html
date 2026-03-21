@@ -352,6 +352,43 @@
             } catch (err) { alert(err.message); btn.disabled = false; }
         });
     };
+    async function saveOrderToSupabase(orderId) {
+    // 1. Get the plan back from localStorage
+    const savedPlan = JSON.parse(localStorage.getItem('finalOrder'));
+    if (!savedPlan) return;
+
+    const itemsToInsert = [];
+
+    // 2. Loop through the days (1, 2, 3...)
+    for (const dayKey in savedPlan) {
+        const dayMeals = savedPlan[dayKey];
+        
+        dayMeals.forEach(meal => {
+            // Prepare the row for Supabase
+            itemsToInsert.push({
+                order_id: orderId, // The ID of the main order
+                meal_name: meal.name,
+                day_number: parseInt(dayKey),
+                selected_options: meal.selectedChoices.join(' + '),
+                removed_ingredients: meal.removedIngredients.join(', '),
+                // This captures the unique note for THIS specific meal
+                special_instructions: meal.specialInstructions || "" 
+            });
+        });
+    }
+
+    // 3. Insert into Supabase
+    const { data, error } = await sbClient
+        .from('order_items')
+        .insert(itemsToInsert);
+
+    if (error) {
+        console.error("Error saving meal items:", error);
+        alert("There was an error saving your meal choices.");
+    } else {
+        console.log("All meals and instructions saved successfully!");
+    }
+}
 </script>
 <div id="custom-alert">Message goes here</div>
 </body>

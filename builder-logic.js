@@ -1,5 +1,5 @@
 /**
- * THE GOOD GREEN - COMPLETE BUILDER LOGIC
+ * THE GOOD GREEN - COMPLETE BUILDER LOGIC (UPDATED WITH INSTRUCTIONS)
  */
 let menuData = []; 
 let currentDay = 1; 
@@ -8,7 +8,7 @@ let pendingItem = null;
 let editingItem = null; 
 let currentChoiceStep = 0;
 let displayDays = 1; 
-let tempSelections = []; // Used for multiple-choice steps
+let tempSelections = []; 
 
 const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
 const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
@@ -85,7 +85,6 @@ async function init() {
 }
 
 // --- POPUP FLOW (ADD / CHOICES / INGREDIENTS) ---
-
 function addItem(id) {
     if (fullState[currentDay].length >= itemsPerDay) { 
         showToast("Day full!"); 
@@ -97,6 +96,10 @@ function addItem(id) {
     pendingItem = JSON.parse(JSON.stringify(item)); 
     pendingItem.selectedChoices = [];
     pendingItem.removedIngredients = [];
+    
+    // CRITICAL: Initialize a unique instruction property for THIS meal instance
+    pendingItem.specialInstructions = ""; 
+    
     pendingItem.instanceId = Date.now();
     
     currentChoiceStep = 0;
@@ -148,17 +151,14 @@ function showChoicePopup() {
 
 function handleChoiceSelection(selection) {
     const choiceObj = pendingItem.multiChoices[currentChoiceStep];
-
     if (selection === "None") {
         advanceChoiceStep();
         return;
     }
-
     if (choiceObj.type === "single") {
         pendingItem.selectedChoices.push(selection);
         advanceChoiceStep();
     } else {
-        // Toggle multiple
         if (tempSelections.includes(selection)) {
             tempSelections = tempSelections.filter(s => s !== selection);
         } else {
@@ -196,20 +196,16 @@ function goBackStep() {
 
 function openIngredientReview() {
     const item = pendingItem || editingItem;
+    const container = document.getElementById('ingredients-list');
     
+    // 1. CLEAR THE ENTIRE WINDOW FIRST to prevent double boxes
+    container.innerHTML = "";
+
     let navBtnHtml = "";
     if (pendingItem && pendingItem.multiChoices && pendingItem.multiChoices.length > 0) {
-        navBtnHtml = `
-            <button onclick="goBackFromReview()" 
-                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#ccc; cursor:pointer; font-weight:600; font-size:0.9rem;">
-                Back ←
-            </button>`;
+        navBtnHtml = `<button onclick="goBackFromReview()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#ccc; cursor:pointer; font-weight:600; font-size:0.9rem;">Back ←</button>`;
     } else {
-        navBtnHtml = `
-            <button onclick="closeEditModal()" 
-                    style="position:absolute; top:20px; right:20px; background:none; border:none; color:#ccc; cursor:pointer; font-size:1.2rem;">
-                ✕
-            </button>`;
+        navBtnHtml = `<button onclick="closeEditModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#ccc; cursor:pointer; font-size:1.2rem;">✕</button>`;
     }
 
     let html = `
@@ -219,32 +215,33 @@ function openIngredientReview() {
         <div class="review-scroll-area">
     `;
 
-    // 1. FIXED
+    // Fixed Ingredients
     item.fixedIngredients.forEach(ing => {
-        html += `
-            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #f9f9f9; ">
-                <i class="fas fa-lock" style="font-size: 0.8rem; color: #ccc; width: 18px; text-align: center;"></i> 
-                <span style="font-size: 0.95rem; color: #666 ;">${ing} <small>(Required)</small></span>
-            </div>`;
+        html += `<div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #f9f9f9;"><i class="fas fa-lock" style="font-size: 0.8rem; color: #ccc; width: 18px; text-align: center;"></i><span style="font-size: 0.95rem; color: #666 ;">${ing} <small>(Required)</small></span></div>`;
     });
 
-    // 2. REMOVABLE
+    // Removable Ingredients
     item.removableIngredients.forEach(ing => {
         const isRemoved = item.removedIngredients.includes(ing);
-        html += `
-            <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
-                <input type="checkbox" style="width:18px; height:18px; accent-color: #5d8039;" 
-                       ${isRemoved ? '' : 'checked'} 
-                       onchange="toggleIngredient('${ing}')"> 
-                <span style="font-size: 0.95rem;">${ing}</span>
-            </label>`;
+        html += `<label style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer;"><input type="checkbox" style="width:18px; height:18px; accent-color: #5d8039;" ${isRemoved ? '' : 'checked'} onchange="toggleIngredient('${ing}')"><span style="font-size: 0.95rem;">${ing}</span></label>`;
     });
 
-    html += `</div>`;
+    html += `</div>`; // End scroll area
+
+    // 2. THE SINGLE MEAL-SPECIFIC TEXT BOX
+    html += `
+        <div style="margin-top: 15px; padding: 0 10px;">
+            <label style="display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; font-weight: 600;">Special Instructions (Optional)</label>
+            <textarea id="user-instructions" 
+                placeholder="e.g. No salt, extra spicy..." 
+                style="width: 100%; height: 60px; border: 1px solid #eee; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 0.85rem; resize: none;">${item.specialInstructions || ''}</textarea>
+        </div>
+    `;
+
     const actionText = editingItem ? "Save Changes" : "Approve & Add Meal";
     html += `<button class="btn-primary" onclick="finishMealProcess()" style="margin-top:20px; width: 100%;">${actionText}</button>`;
     
-    document.getElementById('ingredients-list').innerHTML = html;
+    container.innerHTML = html;
     document.getElementById('editModal').style.display = "flex";
 }
 
@@ -262,17 +259,24 @@ function toggleIngredient(ing) {
         item.removedIngredients.push(ing);
     }
 }
-
 function finishMealProcess() {
+    const item = pendingItem || editingItem;
+    
+    // Save the text to THIS specific meal object
+    const instrInput = document.getElementById('user-instructions');
+    if (instrInput) {
+        item.specialInstructions = instrInput.value.trim();
+    }
+
     if (pendingItem) {
         fullState[currentDay].push(pendingItem);
         pendingItem = null;
     } 
+    
     editingItem = null;
     document.getElementById('editModal').style.display = "none";
-    updateUI();
+    updateUI(); 
 }
-
 function openEditModal(instanceId) {
     editingItem = fullState[currentDay].find(i => i.instanceId === instanceId);
     pendingItem = null;
@@ -322,32 +326,24 @@ function renderMenu(cat) {
     if (!grid) return;
     grid.innerHTML = "";
     
-    // Normalize the clicked category (e.g., "breakfast")
     const selectedCat = cat.toLowerCase().trim();
 
-    // 1. UPDATE BUTTON HIGHLIGHTS
     document.querySelectorAll('.cat-btn').forEach(btn => {
-        // Get the text on the button (e.g., "Breakfast" or "Main Meals")
         const btnText = btn.innerText.toLowerCase().trim();
-        
-        // Logic for highlighting:
-        // Match if names are identical OR if it's the "Lunch/Dinner" combo
         const isMatch = (btnText === selectedCat);
         const isLunchDinnerMatch = (selectedCat === 'lunch/dinner' && (btnText.includes('lunch') || btnText.includes('dinner') || btnText.includes('main')));
 
         if (isMatch || isLunchDinnerMatch) {
             btn.classList.add('active');
-            // Ensure the style is visible (Optional if your CSS handles .active)
             btn.style.backgroundColor = "#5d8039"; 
             btn.style.color = "white";
         } else {
             btn.classList.remove('active');
-            btn.style.backgroundColor = ""; // Reset to CSS default
+            btn.style.backgroundColor = ""; 
             btn.style.color = "";
         }
     });
 
-    // 2. FILTER ITEMS
     const items = menuData.filter(m => {
         if (selectedCat === 'lunch/dinner') {
             return m.category === 'lunch' || m.category === 'dinner';
@@ -355,21 +351,20 @@ function renderMenu(cat) {
         return m.category === selectedCat;
     });
 
-    // 3. RENDER ITEMS
     if (items.length === 0) {
         grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888; padding:20px;">No meals found.</p>`;
         return;
     }
-
 
     items.forEach(item => { 
         grid.innerHTML += `
             <div class="menu-item-card">
                  <div class="card-img-wrapper" style="width: 100%; height: 120px; overflow: hidden; border-radius:12px 12px 0 0;">
                     <img src="${item.image}" 
-                     alt="${item.name}"
-                     style="width: 100%; height: 100%; object-fit: cover;" 
-                      onerror="this.src='https://placehold.co/400x300?text=Image+Missing'">                </div>
+                         alt="${item.name}"
+                         style="width: 100%; height: 100%; object-fit: cover;" 
+                         onerror="this.src='https://placehold.co/400x300?text=Image+Missing'">                
+                </div>
                 <div style="padding:10px;">
                     <h4 style="font-size:0.9rem; margin-bottom:5px;">${item.name}</h4>
                     <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
@@ -377,18 +372,21 @@ function renderMenu(cat) {
             </div>`; 
     });
 }
+
 function updateUI() {
     const list = document.getElementById('selection-list'); 
     if (!list) return;
     list.innerHTML = "";
     
     fullState[currentDay].forEach(item => {
+        const instrSnippet = item.specialInstructions ? `<div style="font-size:0.7rem; color:#888; font-style:italic;">Note: ${item.specialInstructions}</div>` : '';
         list.innerHTML += `
             <li style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding: 10px 0;">
                 <div style="display: flex; justify-content: space-between; align-items:center;">
                     <div>
                         <strong>${item.name}</strong><br>
                         <small style="color:#2d5a27;">${item.selectedChoices.join(' + ') || 'Standard'}</small>
+                        ${instrSnippet}
                         <button onclick="openEditModal(${item.instanceId})" style="display:block; font-size:0.7rem; color:#2d5a27; background:none; border:none; text-decoration:underline; cursor:pointer; padding:0; margin-top:3px;">Edit Ingredients</button>
                     </div>
                     <button onclick="removeItem(${item.instanceId})" style="color:red; background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
@@ -461,46 +459,16 @@ function applyCategoryRestrictions() {
     if (firstAllowed) firstAllowed.click();
 }
 
-// Modal closing helpers
 function closeEditModal() { 
     document.getElementById('editModal').style.display = "none"; 
     pendingItem = null;
     editingItem = null;
 }
 
-// Final Step
-async function handleFinalOrder() {
-    const loops = displayDays;
-    for(let i = 1; i <= loops; i++) { 
-        const actualIdx = i + dayOffset;
-        if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
-            showToast(`Day ${i} is incomplete!`); 
-            return; 
-        } 
-    }
-    localStorage.setItem('finalOrder', JSON.stringify(fullState));
-    const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";
-    window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
-}
-
-loadMenu();
-function showAlert(message) {
-    const alertBox = document.getElementById("custom-alert");
-    if (!alertBox) {
-        // Fallback: If the custom box is missing, use a standard alert
-        alert(message); 
-        return;
-    }
-    alertBox.innerText = message;
-    alertBox.classList.add("show");
-    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
-}
-
 // --- FINAL CONFIRMATION & SUMMARY MODAL ---
 
 async function handleFinalOrder() {
     const loops = displayDays;
-    // Check if every day has the required number of items
     for(let i = 1; i <= loops; i++) { 
         const actualIdx = i + dayOffset;
         if(!fullState[actualIdx] || fullState[actualIdx].length < itemsPerDay) { 
@@ -531,6 +499,11 @@ function showOrderReview() {
 
         dayMeals.forEach(item => {
             const choices = item.selectedChoices.length > 0 ? item.selectedChoices.join(' + ') : "Standard";
+            
+            const instructionsHtml = item.specialInstructions 
+                ? `<div style="color: #5d8039; font-size: 0.75rem; margin-top:4px; font-style: italic;">" ${item.specialInstructions} "</div>` 
+                : "";
+
             const removals = item.removedIngredients.length > 0 
                 ? `<div style="color: #d9534f; font-size: 0.75rem; margin-top:4px; font-weight:600;">• No: ${item.removedIngredients.join(', ')}</div>` 
                 : "";
@@ -540,13 +513,14 @@ function showOrderReview() {
                     <div style="font-size: 0.9rem; font-weight: 700; color: #333;">${item.name}</div>
                     <div style="font-size: 0.8rem; color: #666; margin-top: 2px;">Option: ${choices}</div>
                     ${removals}
+                    ${instructionsHtml}
                 </div>
             `;
         });
         html += `</div>`;
     }
 
-    html += `</div>`; // End scroll area
+    html += `</div>`;
     html += `
         <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
             <button class="btn-primary" onclick="proceedToCheckout()" style="width: 100%; padding: 15px; font-weight:bold;">Looks Good, Checkout</button>
@@ -562,52 +536,11 @@ function showOrderReview() {
 }
 
 function proceedToCheckout() {
+    // This saves the entire plan, including all unique instructions for each meal
     localStorage.setItem('finalOrder', JSON.stringify(fullState));
+    
     const subFlag = isPlan24Progress || totalDaysRequested >= 24 ? "&isSub=true" : "&isSub=false";
     window.location.href = `checkout.html?days=${totalDaysRequested}${subFlag}`;
 }
 
-// --- PREVENT ACCIDENTAL PAGE EXIT ---
-function showExitWarning(targetUrl) {
-    // Check if they actually have meals added
-    const hasMeals = Object.values(fullState).some(day => day.length > 0);
-    
-    // If no meals, just let them leave immediately
-    if (!hasMeals) {
-        window.location.href = targetUrl;
-        return;
-    }
-
-    let html = `
-        <div style="text-align: center; padding: 20px;">
-            <div style="background: #fff5f5; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                <i class="fas fa-exclamation-triangle" style="color: #d9534f; font-size: 1.5rem;"></i>
-            </div>
-            <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 25px; line-height: 1.5;">
-                You have meals in your plan. If you leave now, your selection will be lost.
-            </p>
-            
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn-primary" onclick="closeEditModal()" style="width: 100%;">
-                    Keep Building
-                </button>
-                <button onclick="confirmExit('${targetUrl}')" style="background: none; border: none; color: #d9534f; font-size: 0.85rem; cursor: pointer; text-decoration: underline; font-weight: 600;">
-                    Yes, Discard and Leave
-                </button>
-            </div>
-        </div>
-    `;
-
-    const container = document.getElementById('ingredients-list');
-    if (container) {
-        container.innerHTML = html;
-        document.getElementById('editModal').style.display = "flex";
-    }
-}
-
-// Helper to actually leave
-function confirmExit(url) {
-    isNavigatingAway = true; // Set flag so beforeunload doesn't double-trigger
-    window.location.href = url;
-}
+loadMenu();
