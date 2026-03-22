@@ -27,7 +27,7 @@
 
         .controls { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .search-container { width: 100%; margin-bottom: 10px; }
-        #search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        #search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 1rem; }
 
         .view-btn { 
             flex: 1; min-width: 120px; background: var(--forest); color: white; border: none; 
@@ -36,8 +36,8 @@
         .view-btn.outline { background: white; color: var(--forest); border: 2px solid var(--forest); }
 
         .status-btn { 
-            width: 100%; padding: 12px; border-radius: 8px; border: none; 
-            font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase;
+            width: 100%; padding: 10px; border-radius: 8px; border: none; 
+            font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase;
         }
         .status-Pending { background: #e0e0e0; color: #666; }
         .status-Cooking { background: var(--working); color: white; }
@@ -61,21 +61,20 @@
             }
             td::before { content: attr(data-label); font-weight: bold; color: var(--forest); text-align: left; padding-right: 10px; }
             .group-header { background: var(--forest) !important; color: white !important; text-align: center; display: block; }
-            .group-header td::before { content: ""; }
         }
 
         @media (min-width: 769px) {
-            th { background: #f8f9fa; color: var(--forest); padding: 15px; text-align: left; border-bottom: 2px solid #eee; }
-            td { padding: 15px; border-bottom: 1px solid #eee; }
+            th { background: #f8f9fa; color: var(--forest); padding: 15px; text-align: left; border-bottom: 2px solid #eee; font-size: 0.85rem; }
+            td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
         }
 
         .group-header { background: #f0f4f0; font-weight: bold; color: var(--forest); }
+        .id-badge { font-family: monospace; background: #eee; padding: 2px 5px; border-radius: 4px; font-size: 0.8rem; color: #555; }
         
-        /* Tag Styles */
         .tag { padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.75rem; border: 1px solid; display: inline-block; margin-bottom: 2px; }
         .tag-remove { background: #fff5f5; color: var(--error); border-color: #feb2b2; }
         .tag-choice { background: #eef2ff; color: var(--accent-blue); border-color: #c7d2fe; }
-        .special-note { font-size: 0.75rem; color: #666; font-style: italic; margin-top: 5px; display: block; }
+        .special-note { font-size: 0.75rem; color: #d97706; font-weight: 600; margin-top: 5px; display: block; background: #fffbeb; padding: 4px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -95,14 +94,14 @@
         </div>
 
         <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search customer or meal..." oninput="renderFilteredData()">
+            <input type="text" id="search-input" placeholder="Search ID, Name, or Meal..." oninput="renderFilteredData()">
         </div>
 
         <div class="controls">
-            <button id="btn-orders" class="view-btn" onclick="switchView('orders')">Subs</button>
-            <button id="btn-production" class="view-btn outline" onclick="switchView('production')">Cook List</button>
-            <button id="btn-group" class="view-btn outline" onclick="toggleGroup()">Group</button>
-            <input type="number" id="day-filter" placeholder="Day #" oninput="refreshCurrentView()" style="width:70px; padding:10px; border-radius:8px; border:1px solid #ddd; display:none;">
+            <button id="btn-orders" class="view-btn" onclick="switchView('orders')">Subscriptions</button>
+            <button id="btn-production" class="view-btn outline" onclick="switchView('production')">Production List</button>
+            <button id="btn-group" class="view-btn outline" onclick="toggleGroup()">Group by User</button>
+            <input type="number" id="day-filter" placeholder="Day #" oninput="refreshCurrentView()" style="width:80px; padding:10px; border-radius:8px; border:1px solid #ddd; display:none;">
         </div>
 
         <table id="main-table">
@@ -125,7 +124,7 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
             refreshCurrentView();
-        } else { alert("Wrong Code"); }
+        } else { alert("Access Denied"); }
     }
 
     function switchView(view) {
@@ -144,33 +143,37 @@
 
     async function refreshCurrentView() {
         const body = document.getElementById('table-body');
-        body.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:20px;'>Loading...</td></tr>";
+        body.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:40px;'>Syncing with Supabase...</td></tr>";
 
         try {
             if (currentView === 'orders') {
-                const { data } = await sbClient.from('orders').select('*').order('customer_name', {ascending: true});
+                const { data } = await sbClient.from('orders').select('*').order('created_at', {ascending: false});
                 rawData = data || [];
             } else {
                 const dayVal = document.getElementById('day-filter').value;
-                // Fetching the new columns: choice, special_instructions, removed_ingredients
-                let query = sbClient.from('order_items').select('*, orders(customer_name, plan_name)');
+                let query = sbClient.from('order_items').select('*, orders(customer_name, plan_name, id)');
                 if(dayVal) query = query.eq('day_number', dayVal);
                 const { data } = await query.order('day_number', {ascending: true});
                 rawData = data || [];
             }
             renderFilteredData();
         } catch (err) {
-            body.innerHTML = "<tr><td colspan='5'>Error loading data. Check console.</td></tr>";
-            console.error(err);
+            body.innerHTML = "<tr><td colspan='6'>Connection Error.</td></tr>";
         }
     }
 
     function renderFilteredData() {
         const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        
         const filtered = rawData.filter(item => {
-            const name = (currentView === 'orders' ? item.customer_name : item.orders?.customer_name) || "";
-            const meal = item.meal_name || "";
-            return name.toLowerCase().includes(searchTerm) || meal.toLowerCase().includes(searchTerm);
+            const customerName = (currentView === 'orders' ? item.customer_name : item.orders?.customer_name) || "";
+            const mealName = item.meal_name || "";
+            // Searchable by ID (Shortened or full)
+            const orderId = String(currentView === 'orders' ? item.id : (item.order_id || item.orders?.id)).toLowerCase();
+            
+            return customerName.toLowerCase().includes(searchTerm) || 
+                   mealName.toLowerCase().includes(searchTerm) || 
+                   orderId.includes(searchTerm);
         });
 
         const head = document.getElementById('table-head');
@@ -178,9 +181,9 @@
         body.innerHTML = "";
 
         if (currentView === 'orders') {
-            head.innerHTML = `<tr><th>Customer</th><th>Date</th><th>Plan</th><th>Status</th></tr>`;
+            head.innerHTML = `<tr><th>Order ID</th><th>Customer</th><th>Date</th><th>Plan</th><th>Status</th></tr>`;
         } else {
-            head.innerHTML = `<tr><th>Day</th><th>Meal</th><th>Customer</th><th>Instructions</th><th>Status</th></tr>`;
+            head.innerHTML = `<tr><th>Day</th><th>Meal</th><th>ID</th><th>Customer</th><th>Instructions</th><th>Status</th></tr>`;
         }
 
         if (isGrouped) {
@@ -192,7 +195,7 @@
             }, {});
 
             for (const name in grouped) {
-                body.innerHTML += `<tr class="group-header"><td colspan="5" style="text-align:center">${name}</td></tr>`;
+                body.innerHTML += `<tr class="group-header"><td colspan="6" style="text-align:center">${name}</td></tr>`;
                 body.innerHTML += grouped[name].map(item => currentView === 'orders' ? orderRow(item) : mealRow(item)).join('');
             }
         } else {
@@ -202,8 +205,10 @@
 
     function orderRow(o) {
         const status = o.status || 'Active';
+        const shortId = String(o.id).split('-')[0]; // Shows first part of UUID
         return `<tr>
-            <td data-label="Name">${o.customer_name}</td>
+            <td data-label="ID"><span class="id-badge">#${shortId}</span></td>
+            <td data-label="Name"><strong>${o.customer_name}</strong></td>
             <td data-label="Date">${new Date(o.created_at).toLocaleDateString()}</td>
             <td data-label="Plan">${o.plan_name}</td>
             <td data-label="Status"><button class="status-btn status-${status}" onclick="cycleStatus('orders', '${o.id}', '${status}')">${status}</button></td>
@@ -212,27 +217,21 @@
 
     function mealRow(m) {
         const status = m.status || 'Pending';
+        const shortId = String(m.order_id || m.orders?.id || '').split('-')[0];
         
-        // Build Instructions HTML dynamically
-        let instructions = [];
-        if (m.removed_ingredients) {
-            instructions.push(`<span class="tag tag-remove">NO ${m.removed_ingredients}</span>`);
-        }
-        if (m.choice) {
-            instructions.push(`<span class="tag tag-choice">${m.choice}</span>`);
-        }
+        let tags = [];
+        if (m.removed_ingredients) tags.push(`<span class="tag tag-remove">NO ${m.removed_ingredients}</span>`);
+        if (m.choice) tags.push(`<span class="tag tag-choice">${m.choice}</span>`);
         
-        const noteHtml = m.special_instructions ? `<span class="special-note">Note: ${m.special_instructions}</span>` : '';
-        const combinedInstructions = instructions.length > 0 ? instructions.join(' ') : '<span style="color:#ccc">Standard</span>';
+        const noteHtml = m.special_instructions ? `<span class="special-note">📝 ${m.special_instructions}</span>` : '';
+        const tagDisplay = tags.length > 0 ? tags.join(' ') : '<span style="color:#bbb">Standard</span>';
 
         return `<tr>
             <td data-label="Day">Day ${m.day_number}</td>
             <td data-label="Meal"><strong>${m.meal_name}</strong></td>
+            <td data-label="ID"><span class="id-badge">#${shortId}</span></td>
             <td data-label="Customer">${m.orders?.customer_name || '...'}</td>
-            <td data-label="Instructions">
-                ${combinedInstructions}
-                ${noteHtml}
-            </td>
+            <td data-label="Instructions">${tagDisplay}${noteHtml}</td>
             <td data-label="Status"><button class="status-btn status-${status}" onclick="cycleStatus('order_items', '${m.id}', '${status}')">${status}</button></td>
         </tr>`;
     }
@@ -247,8 +246,8 @@
         }
 
         const { data, error } = await sbClient.from(table).update({ status: next }).eq('id', id).select();
-        if (!error && data.length > 0) refreshCurrentView();
-        else if (error) alert("Update failed: " + error.message);
+        if (!error) renderFilteredData(); // Instant update
+        refreshCurrentView(); 
     }
 </script>
 </body>

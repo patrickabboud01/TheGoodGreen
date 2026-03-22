@@ -85,7 +85,8 @@
 
     <header class="builder-header">
         <div class="header-top">
-            <a href="javascript:void(0)" class="back-btn" onclick="showExitWarning('packages.html')">✕</a>
+            <a href="packages.html" class="back-btn" >✕</a>
+
             <div class="plan-info">
                 <div id="week-label" class="week-indicator" style="display:none;">Week 1</div>
                 <h2 id="plan-name-display">Loading...</h2>
@@ -214,6 +215,8 @@
         document.getElementById('confirm-redirect-btn').onclick = function() {
             if (pendingUrl) window.location.href = pendingUrl;
         };
+        
     </script>
+    
 </body>
 </html>

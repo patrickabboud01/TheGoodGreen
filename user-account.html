@@ -219,7 +219,7 @@
     function showPopup({ title, text, icon = "🌿", buttons = [] }) {
         const modal = document.getElementById('custom-modal');
         document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-text').innerText = text;
+        document.getElementById('modal-text').innerHTML = text;
         document.getElementById('modal-icon').innerText = icon;
         
         const btnContainer = document.getElementById('modal-buttons');
@@ -281,7 +281,16 @@
     async function loadOrders() {
         const { data: orders } = await sbClient
             .from('orders')
-            .select(`*, order_items(*)`)
+            .select(`
+            *, 
+            order_items(
+                day_number, 
+                meal_name, 
+                choice, 
+                removed_ingredients, 
+                special_instructions
+            )
+        `)
             .eq('customer_phone', currentUser.phone_number)
             .order('created_at', { ascending: false });
 
@@ -302,56 +311,61 @@
         `).join('');
     }
 
-    async function handleReorder(order) {
-        const { data: profile } = await sbClient.from('profiles').select('plan24days, "24planweek"').eq('email', currentUser.email).single();
+async function handleReorder(order) {
+    const { data: profile } = await sbClient.from('profiles').select('plan24days, "24planweek"').eq('email', currentUser.email).single();
 
-        const reorderState = {};
-        order.order_items.forEach(item => {
-            if (!reorderState[item.day_number]) reorderState[item.day_number] = [];
-            reorderState[item.day_number].push({
-                name: item.meal_name,
-                selectedChoices: item.choice ? item.choice.split(', ') : []
-            });
+    const reorderState = {};
+    // Create the review list HTML
+    let reviewHtml = `<div style="text-align: left; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">`;
+
+    order.order_items.forEach(item => {
+        if (!reorderState[item.day_number]) reorderState[item.day_number] = [];
+        
+        // Map the data for the Builder/Checkout
+        reorderState[item.day_number].push({
+            name: item.meal_name,
+            selectedChoices: item.choice ? item.choice.split(', ') : [],
+            removedIngredients: item.removed_ingredients ? item.removed_ingredients.split(', ') : [],
+            instructions: item.special_instructions || ""
         });
 
-        localStorage.setItem('finalOrder', JSON.stringify(reorderState));
-        const dayCount = Object.keys(reorderState).length;
+        // Build the display for the User to see now
+        reviewHtml += `
+            <div style="margin-bottom: 12px; font-size: 0.85rem;">
+                <strong style="color: #5d8039;">Day ${item.day_number}: ${item.meal_name}</strong><br>
+                <span style="color: #666;">Choices: ${item.choice || 'None'}</span><br>
+                ${item.removed_ingredients ? `<span style="color: #d9534f;">✕ Remove: ${item.removed_ingredients}</span><br>` : ''}
+                ${item.special_instructions ? `<span style="color: #5d8039; font-style: italic;">📝 Note: ${item.special_instructions}</span>` : ''}
+            </div>`;
+    });
 
-        if (profile?.plan24days === true) {
-            if (dayCount === 6) {
-                showPopup({
-                    title: "Subscription Refill",
-                    text: `Use this 6-day history for Week ${profile["24planweek"] + 1}?`,
-                    buttons: [
-                        { text: "Yes, Use Refill", type: "green", action: () => window.location.href = `checkout.html?isSub=true&days=6` },
-                        { text: "Cancel", type: "gray" }
-                    ]
-                });
-                return;
-            } else {
-                showPopup({
-                    title: "Incomplete Week",
-                    text: "Subscription refills require a 6-day order. You can still purchase this as a separate extra order.",
-                    icon: "⚠️",
-                    buttons: [
-                        { text: "Buy as Extra", type: "green", action: () => window.location.href = `checkout.html?days=${dayCount}` },
-                        { text: "Cancel", type: "gray" }
-                    ]
-                });
-                return;
-            }
-        }
+    reviewHtml += `</div>`;
 
-        showPopup({
-            title: "Confirm Reorder",
-            text: `Reorder this ${dayCount}-day plan for $${order.total_price}?`,
-            buttons: [
-                { text: "Confirm", type: "green", action: () => window.location.href = `checkout.html?days=${dayCount}` },
-                { text: "Back", type: "gray" }
-            ]
-        });
-    }
+    // Save to localStorage
+    localStorage.setItem('finalOrder', JSON.stringify(reorderState));
+    const dayCount = Object.keys(reorderState).length;
 
+    // Show the popup and MANUALLY set the content
+    showPopup({
+        title: "Review Order",
+        text: "Please confirm your selections:", 
+        icon: "📋",
+        buttons: [
+            { 
+                text: "Confirm & Proceed", 
+                type: "green", 
+                action: () => {
+                    const isSub = (profile?.plan24days === true && dayCount === 6);
+                    window.location.href = `checkout.html?days=${dayCount}${isSub ? '&isSub=true' : ''}`;
+                } 
+            },
+            { text: "Cancel", type: "gray" }
+        ]
+    });
+
+    // CRITICAL: This line inserts the review list into the modal immediately
+    document.getElementById('modal-text').innerHTML = "Please confirm your selections:" + reviewHtml;
+}
     // --- SIDEBAR TOGGLE LOGIC ---
     const toggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
