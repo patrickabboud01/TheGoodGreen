@@ -19,13 +19,13 @@ const rawMenuData = [
         name: "Pancakes", 
         protein: 10, 
         image: "images/menu items/pankakes.png",
-        fixed_ingredients: "Vegan Pancakes", 
-        removable_ingredients: "Maple Syrup", 
+        fixed_ingredients: "Vegan Pancakes mix", 
+        removable_ingredients: "", 
         choice_title: "Step 1: Spread", 
-        choice_options: "Dark Chocolate;Maple;Lotus Spread",
+        choice_options: "Dark Chocolate;Maple;Lotus Spread,Vegan Nutella",
         choice_type: "single",
         choice_title_2: "Step 2: Fruit", 
-        choice_options_2: "Banana;Strawberry;Blueberry",
+        choice_options_2: "Banana;Blueberry",
         choice_type_2: "multiple"
     },
     { 
@@ -82,7 +82,7 @@ const rawMenuData = [
         category: "lunch", 
         name: "Falafel Burger", 
         protein: 16, 
-        image: "images/menu items/Burger.png",
+        image: "images/menu items/burger.png",
         fixed_ingredients: "Bun;Falafel Patty", 
         removable_ingredients: "Tahini;Lettuce;Tomato", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
@@ -160,8 +160,8 @@ const rawMenuData = [
         name: "Lazy Cake", 
         protein: 5, 
         image: "images/menu items/lazy cake.png",
-        fixed_ingredients: "Banana;Oats", 
-        removable_ingredients: "Peanut Butter", 
+        fixed_ingredients: "Cacao;Biscuits,Coconut Oil, Vgean Milk", 
+        removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
