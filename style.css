@@ -1723,3 +1723,52 @@ main, .hero-home, #how-it-works {
     align-items: center;
     justify-content: center;
 }
+
+/* 1. The Main Row */
+.header-top {
+    display: flex;
+    align-items: center;       /* This centers everything vertically */
+    justify-content: space-between; 
+    padding: 15px 20px;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;    /* Prevents padding from breaking width */
+}
+
+/* 2. The Text Container */
+.plan-info {
+    flex: 1;                   /* Takes up all middle space */
+    margin-left: 20px;         /* Space after the 'X' */
+    display: flex;
+    flex-direction: column;    /* Keeps 'The Solo' above '1 Day' */
+    justify-content: center;   /* Centers the stack vertically */
+}
+
+/* 3. The Specific Text Reset (CRITICAL) */
+.plan-info h2 {
+    margin: 0 !important;      /* Removes the default gap above the text */
+    padding: 0;
+    line-height: 1;            /* Prevents extra invisible space */
+    font-size: 1.25rem;
+    color: #5d8039;
+}
+
+.plan-info p {
+    margin: 2px 0 0 0 !important; 
+    padding: 0;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+/* 4. The Button */
+.btn-confirm-mini {
+    height: fit-content;       /* Ensures it doesn't stretch to the header height */
+    padding: 10px 25px;
+    border-radius: 50px;       /* Pill shape */
+    background-color: #5d8039;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;       /* Prevents 'Confirm' from wrapping */
+}
