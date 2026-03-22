@@ -22,7 +22,7 @@ const rawMenuData = [
         fixed_ingredients: "Vegan Pancakes mix", 
         removable_ingredients: "", 
         choice_title: "Step 1: Spread", 
-        choice_options: "Dark Chocolate;Maple;Lotus Spread,Vegan Nutella",
+        choice_options: "Dark Chocolate;Maple;Lotus Spread;Vegan Nutella",
         choice_type: "single",
         choice_title_2: "Step 2: Fruit", 
         choice_options_2: "Banana;Blueberry",
