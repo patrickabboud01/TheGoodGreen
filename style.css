@@ -1772,3 +1772,33 @@ main, .hero-home, #how-it-works {
     cursor: pointer;
     white-space: nowrap;       /* Prevents 'Confirm' from wrapping */
 }
+/* 1. Ensure the parent body doesn't create a horizontal scrollbar */
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. Force the menu display to ignore the container's boundaries */
+.menu-display {
+    width: 100vw;
+    position: relative;
+    /* This calculation finds the exact distance to the left edge of the browser */
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Keeps images centered if they aren't wide enough */
+    background-color: #f4f1ea; /* Matches your cream/sand background to hide gaps */
+}
+
+.menu-display img {
+    width: 100%;       /* Forces image to stretch to the 100vw width */
+    max-width: 100%;   /* Ensures it doesn't exceed the breakout container */
+    height: auto;
+    display: block; 
+    margin-top: 0px;   /* Removes the 3px vertical gap between images */
+}
