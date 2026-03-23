@@ -129,29 +129,24 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo-area">
-                <a href="javascript:void(0)" onclick="triggerCustomAlert('index.html')">
+                <a href="index.html">
                     <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
-
-            <div class="menu-dots" id="menu-toggle">
+            <div class="menu-toggle" id="menu-toggle">
                 <span></span><span></span><span></span><span></span>
             </div>
 
             <div class="sidebar" id="sidebar">
-                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer;">&times;</div>
-                
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-                
                 <ul class="sidebar-links">
-                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('index.html')">Home</a></li>
-                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('plan-status.html')">Continue your plan</a></li>
-                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('user-account.html')">My Account</a></li>
-                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('packages.html')">Packages</a></li>
-                    <li><a href="javascript:void(0)" onclick="triggerCustomAlert('menu.html')">Menu</a></li>
-                    <li id="auth-nav-item">
-                        <a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a>
-                    </li>
+                    <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -171,20 +166,7 @@
     </div>
 </main>
 
-<footer class="site-footer">
-    <div class="footer-links">
-        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
-            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
-        </a>
-        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
-            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
-        </a>
-        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
-            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
-        </a>
-    </div>
-    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-</footer>
+
 
 <script>
     // --- SUPABASE & EMAILJS CONFIG ---
@@ -421,4 +403,18 @@ await emailjs.send("service_rfcp52l", "template_oglmmp8", {
 </script>
 <div id="custom-alert">Message goes here</div>
 </body>
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
+    </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+</footer>
 </html>
