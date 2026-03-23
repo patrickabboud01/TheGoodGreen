@@ -299,7 +299,15 @@
     <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 <script>
-    // --- AUTH & SIDEBAR UI ---
+    // --- GLOBAL REDIRECT & AUTH ---
+    function protectedRedirect(url) {
+        if (!localStorage.getItem('current_user')) {
+            window.location.href = 'index.html?action=login';
+        } else {
+            window.location.href = url;
+        }
+    }
+
     function updateAuthUI() {
         const authBtn = document.getElementById('auth-btn');
         const greeting = document.getElementById('user-greeting');
@@ -323,27 +331,37 @@
         }
     }
 
-    // Sidebar Toggle
-    document.getElementById('menu-toggle').onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById('sidebar').classList.add('active');
-    };
-    document.getElementById('close-sidebar').onclick = () => document.getElementById('sidebar').classList.remove('active');
+    // --- SIDEBAR LOGIC ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebar = document.getElementById('close-sidebar');
+
+    if(menuToggle) {
+        menuToggle.onclick = (e) => {
+            e.stopPropagation();
+            sidebar.classList.add('active');
+        };
+    }
+    if(closeSidebar) {
+        closeSidebar.onclick = () => sidebar.classList.remove('active');
+    }
+
     document.addEventListener('click', (e) => {
-        const sidebar = document.getElementById('sidebar');
-        if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) sidebar.classList.remove('active');
+        if (sidebar && !sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
     });
 
-    // --- PLAN LOGIC ---
+    // --- PLAN & PRICING DATA ---
     let currentSelectedPlan = "";
     let currentItemsPerDay = 0;
 
     const planDetails = {
-        "THE SOLO": { description: "One high-quality meal daily.", features: ["Lunch or Dinner", "Freshly Prepared"], prices: { "1 Day": "$12", "5 Days": "$50", "24 Days": "$200" }, items: 1 },
-        "THE DUO": { description: "Covers your two main meals.", features: ["Lunch & Dinner", "Customizable"], prices: { "1 Day": "$17", "5 Days": "$85", "24 Days": "$300" }, items: 2 },
-        "THE TRIO": { description: "Total nutrition morning to night.", features: ["Breakfast, Lunch & Dinner", "Balanced Macros"], prices: { "1 Day": "$22", "5 Days": "$100", "24 Days": "$340" }, items: 3 },
-        "THE FULL PLAN": { description: "3 Meals + 2 Healthy Snacks.", features: ["Full Day Coverage", "Zero Stress"], prices: { "1 Day": "$25", "5 Days": "$110", "24 Days": "$400" }, items: 5 },
-        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1 Day": "$10", "5 Days": "$40", "24 Days": "$150" }, items: 1 }
+        "THE SOLO": { description: "One high-quality meal daily.", features: ["Lunch or Dinner", "Freshly Prepared"], prices: { "1": "12", "5": "50", "24": "200" }, items: 1 },
+        "THE DUO": { description: "Covers your two main meals.", features: ["Lunch & Dinner", "Customizable"], prices: { "1": "17", "5": "85", "24": "300" }, items: 2 },
+        "THE TRIO": { description: "Total nutrition morning to night.", features: ["Breakfast, Lunch & Dinner", "Balanced Macros"], prices: { "1": "22", "5": "100", "24": "340" }, items: 3 },
+        "THE FULL PLAN": { description: "3 Meals + 2 Healthy Snacks.", features: ["Full Day Coverage", "Zero Stress"], prices: { "1": "25", "5": "110", "24": "400" }, items: 5 },
+        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1": "10", "5": "40", "24": "150" }, items: 2 }
     };
 
     function openDurationModal(planName, items) {
@@ -359,90 +377,78 @@
         currentItemsPerDay = data.items;
         document.getElementById('modal-plan-name').innerText = planName;
         document.getElementById('modal-plan-description').innerText = data.description;
+        
         const tbody = document.getElementById('pricing-body');
         tbody.innerHTML = "";
-        for (const [days, price] of Object.entries(data.prices)) {
-            tbody.innerHTML += `<tr><td>${days}</td><td class="price-tag">${price}</td></tr>`;
+        
+        // Match the keys exactly to how they are stored in the object
+        const displayKeys = {"1": "1 Day", "5": "1 Week (5 Days)", "24": "Full Month (24 Days)"};
+        for (const [key, label] of Object.entries(displayKeys)) {
+            tbody.innerHTML += `<tr><td>${label}</td><td class="price-tag">$${data.prices[key]}</td></tr>`;
         }
+
         document.getElementById('modal-features').innerHTML = data.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
         document.getElementById('pricingModal').style.display = "flex";
     }
 
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-function goToBuilder(days) {
-    if (days === 24 && !localStorage.getItem('current_user')) {
-        // 1. Use your custom animated snackbar
-        showAlert("For a 24-day plan, please log in first.");
-
-        // 2. Delay the redirect slightly so the user can actually read the message
-        setTimeout(() => {
-            window.location.href = "index.html?action=login";
-        }, 2000); 
-
-        return;
-    }
-    
-    // ... rest of your logic to proceed to the builder
-
-        const price = planDetails[currentSelectedPlan].prices[days === 1 ? "1 Day" : (days === 5 ? "5 Days" : "24 Days")].replace('$', '');
+    function goToBuilder(days) {
+        if (days === 24 && !localStorage.getItem('current_user')) {
+            showAlert("For a 24-day plan, please log in first.");
+            setTimeout(() => { window.location.href = "index.html?action=login"; }, 2000);
+            return;
+        }
+        
+        const price = planDetails[currentSelectedPlan].prices[days.toString()];
         localStorage.setItem('selectedPlanName', currentSelectedPlan);
         localStorage.setItem('selectedDuration', days);
         window.location.href = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
     }
+
     function showAlert(message) {
-    const alertBox = document.getElementById("custom-alert");
-    alertBox.innerText = message;
-    alertBox.classList.add("show");
-    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
-}
+        const alertBox = document.getElementById("custom-alert");
+        alertBox.innerText = message;
+        alertBox.style.display = "block";
+        alertBox.style.animation = "fadeIn 0.3s forwards";
+        setTimeout(() => { alertBox.style.display = "none"; }, 3000);
+    }
+
+    // --- QUOTE FORM LOGIC ---
+    const quoteForm = document.getElementById("quote-form");
+    if(quoteForm) {
+        quoteForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerText = "Sending...";
+            submitBtn.disabled = true;
+
+            emailjs.sendForm('service_ku8gtez', 'template_tlc5mia', this)
+                .then(() => {
+                    document.getElementById("quoteModal").style.display = "none";
+                    showAlert("Quote request sent! We'll contact you soon.");
+                    quoteForm.reset();
+                })
+                .catch(() => {
+                    showAlert("Error sending request. Please try again.");
+                })
+                .finally(() => {
+                    submitBtn.innerText = "Send Quote Request";
+                    submitBtn.disabled = false;
+                });
+        });
+    }
 
     window.onload = updateAuthUI;
-
-    const modal = document.getElementById("quoteModal");
-        const btn = document.getElementById("openModalBtn");
-        const closeX = document.querySelector(".close-btn");
-        const form = document.getElementById("quote-form");
-
-        // UI Interactions
-        btn.onclick = () => modal.style.display = "flex";
-        closeX.onclick = () => modal.style.display = "none";
-        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
-
-        // Form Logic
-      form.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    // 1. Change button text to show progress
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerText;
-    submitBtn.innerText = "Sending...";
-    submitBtn.style.opacity = "0.7";
-    submitBtn.disabled = true;
-
-    emailjs.sendForm('service_ku8gtez', 'template_tlc5mia', this)
-        .then(() => {
-            // 2. Hide the Modal immediately
-            modal.style.display = "none";
-            
-            // 3. Show your BRANDED alert
-            showAlert("Quote request sent! .");
-
-            // 4. Prepare WhatsApp data
-            const name = encodeURIComponent(form.user_name.value);
-            const kcal = encodeURIComponent(form.kcal_goal.value);
-            const protein = encodeURIComponent(form.protein_goal.value);
-            const msg = `Hello! My name is ${name}. I'm looking for a custom quote. Goals: ${kcal}kcal & ${protein}g protein.`;
-            
-            
-        })
-        .catch((err) => {
-            showAlert("Error sending request. Please try again.");
-            submitBtn.innerText = originalText;
-            submitBtn.disabled = false;
-        });
-});
 </script>
+
+<style>
+#custom-alert {
+    display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #5d8039; color: white; padding: 15px 30px; border-radius: 50px;
+    z-index: 100001; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: 600;
+}
+</style>
 <div id="custom-alert">Message goes here</div>
 </body>
 </html>

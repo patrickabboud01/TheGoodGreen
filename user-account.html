@@ -178,23 +178,27 @@
 
     let currentUser = JSON.parse(localStorage.getItem('current_user') || '{}');
 
-    // --- AUTH & SIDEBAR UI LOGIC ---
+    // --- GLOBAL REDIRECT & AUTH ---
+    function protectedRedirect(url) {
+        if (!localStorage.getItem('current_user')) {
+            window.location.href = 'index.html?action=login';
+        } else {
+            window.location.href = url;
+        }
+    }
 
     function updateAuthUI() {
-        const authBtn = document.getElementById('auth-btn');
-        const greeting = document.getElementById('user-greeting');
-        const userStr = localStorage.getItem('current_user');
+        const authBtns = document.querySelectorAll('#auth-btn');
+        const greetings = document.querySelectorAll('.user-greeting');
+        const user = JSON.parse(localStorage.getItem('current_user') || 'null');
 
-        if (userStr && greeting && authBtn) {
-            const user = JSON.parse(userStr);
+        if (user) {
             const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
-            greeting.innerText = `Hi, ${firstName}`;
-            authBtn.innerText = "Logout";
-            authBtn.style.color = "#d9534f";
-        } else if (greeting && authBtn) {
-            greeting.innerText = "Hi, Guest";
-            authBtn.innerText = "Login / Sign Up";
-            authBtn.style.color = "#5d8039";
+            greetings.forEach(g => g.innerText = `Hi, ${firstName}`);
+            authBtns.forEach(btn => {
+                btn.innerText = "Logout";
+                btn.style.color = "#d9534f";
+            });
         }
     }
 
@@ -218,7 +222,38 @@
         }
     }
 
-    // --- MODAL ENGINE ---
+    // --- SIDEBAR ENGINE ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebars = document.querySelectorAll('.sidebar');
+    const closeBtns = document.querySelectorAll('.close-sidebar');
+
+    if(menuToggle) {
+        menuToggle.onclick = (e) => { 
+            e.stopPropagation(); 
+            sidebars.forEach(s => s.classList.add('active')); 
+        };
+    }
+
+    closeBtns.forEach(btn => {
+        btn.onclick = () => sidebars.forEach(s => s.classList.remove('active'));
+    });
+
+    document.onclick = (e) => {
+        sidebars.forEach(s => {
+            if (!s.contains(e.target) && s.classList.contains('active')) {
+                s.classList.remove('active');
+            }
+        });
+    };
+
+    // --- TAB & MODAL LOGIC ---
+    function showTab(tabId) {
+        document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
     function showPopup({ title, text, icon = "🌿", buttons = [] }) {
         const modal = document.getElementById('custom-modal');
         document.getElementById('modal-title').innerText = title;
@@ -238,19 +273,10 @@
             };
             btnContainer.appendChild(b);
         });
-
         modal.style.display = 'flex';
     }
 
-    function showTab(tabId) {
-        document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.target.classList.add('active');
-    }
-
-    // --- DATA LOADING ---
-
+    // --- PROFILE & ORDERS ---
     async function loadProfile() {
         if (!currentUser.email) { window.location.href = "index.html"; return; }
         const { data } = await sbClient.from('profiles').select('*').eq('email', currentUser.email).single();
@@ -262,44 +288,16 @@
         }
     }
 
-    document.getElementById('update-profile-form').onsubmit = async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('save-btn');
-        btn.disabled = true; btn.innerText = "Saving...";
-
-        const { error } = await sbClient.from('profiles').update({
-            full_name: document.getElementById('acc-name').value,
-            phone_number: document.getElementById('acc-phone').value,
-            address: document.getElementById('acc-address').value
-        }).eq('email', currentUser.email);
-
-        if (!error) {
-            showPopup({ title: "Success", text: "Profile updated successfully!", icon: "✅", buttons: [{ text: "Great", type: "green" }] });
-        } else { 
-            showPopup({ title: "Error", text: error.message, icon: "❌", buttons: [{ text: "OK", type: "gray" }] });
-        }
-        btn.disabled = false; btn.innerText = "Save Changes";
-    };
-
     async function loadOrders() {
         const { data: orders } = await sbClient
             .from('orders')
-            .select(`
-            *, 
-            order_items(
-                day_number, 
-                meal_name, 
-                choice, 
-                removed_ingredients, 
-                special_instructions
-            )
-        `)
+            .select('*, order_items(*)')
             .eq('customer_phone', currentUser.phone_number)
             .order('created_at', { ascending: false });
 
         const container = document.getElementById('orders-list');
         if (!orders || orders.length === 0) {
-            container.innerHTML = "<p style='text-align:center;'>No previous orders found.</p>";
+            container.innerHTML = "<p style='text-align:center; padding:20px;'>No previous orders found.</p>";
             return;
         }
 
@@ -314,74 +312,47 @@
         `).join('');
     }
 
-async function handleReorder(order) {
-    const { data: profile } = await sbClient.from('profiles').select('plan24days, "24planweek"').eq('email', currentUser.email).single();
+    async function handleReorder(order) {
+        const { data: profile } = await sbClient.from('profiles').select('plan24days, "24planweek"').eq('email', currentUser.email).single();
+        const reorderState = {};
+        let reviewHtml = `<div style="text-align: left; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">`;
 
-    const reorderState = {};
-    // Create the review list HTML
-    let reviewHtml = `<div style="text-align: left; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">`;
+        order.order_items.forEach(item => {
+            if (!reorderState[item.day_number]) reorderState[item.day_number] = [];
+            reorderState[item.day_number].push({
+                name: item.meal_name,
+                selectedChoices: item.choice ? item.choice.split(', ') : [],
+                removedIngredients: item.removed_ingredients ? item.removed_ingredients.split(', ') : [],
+                instructions: item.special_instructions || ""
+            });
 
-    order.order_items.forEach(item => {
-        if (!reorderState[item.day_number]) reorderState[item.day_number] = [];
-        
-        // Map the data for the Builder/Checkout
-        reorderState[item.day_number].push({
-            name: item.meal_name,
-            selectedChoices: item.choice ? item.choice.split(', ') : [],
-            removedIngredients: item.removed_ingredients ? item.removed_ingredients.split(', ') : [],
-            instructions: item.special_instructions || ""
+            reviewHtml += `
+                <div style="margin-bottom: 12px; font-size: 0.85rem;">
+                    <strong style="color: #5d8039;">Day ${item.day_number}: ${item.meal_name}</strong><br>
+                    <span style="color: #666;">Choices: ${item.choice || 'None'}</span><br>
+                    ${item.removed_ingredients ? `<span style="color: #d9534f;">✕ Remove: ${item.removed_ingredients}</span><br>` : ''}
+                </div>`;
         });
 
-        // Build the display for the User to see now
-        reviewHtml += `
-            <div style="margin-bottom: 12px; font-size: 0.85rem;">
-                <strong style="color: #5d8039;">Day ${item.day_number}: ${item.meal_name}</strong><br>
-                <span style="color: #666;">Choices: ${item.choice || 'None'}</span><br>
-                ${item.removed_ingredients ? `<span style="color: #d9534f;">✕ Remove: ${item.removed_ingredients}</span><br>` : ''}
-                ${item.special_instructions ? `<span style="color: #5d8039; font-style: italic;">📝 Note: ${item.special_instructions}</span>` : ''}
-            </div>`;
-    });
+        localStorage.setItem('finalOrder', JSON.stringify(reorderState));
+        const dayCount = Object.keys(reorderState).length;
 
-    reviewHtml += `</div>`;
-
-    // Save to localStorage
-    localStorage.setItem('finalOrder', JSON.stringify(reorderState));
-    const dayCount = Object.keys(reorderState).length;
-
-    // Show the popup and MANUALLY set the content
-    showPopup({
-        title: "Review Order",
-        text: "Please confirm your selections:", 
-        icon: "📋",
-        buttons: [
-            { 
-                text: "Confirm & Proceed", 
-                type: "green", 
-                action: () => {
-                    const isSub = (profile?.plan24days === true && dayCount === 6);
-                    window.location.href = `checkout.html?days=${dayCount}${isSub ? '&isSub=true' : ''}`;
-                } 
-            },
-            { text: "Cancel", type: "gray" }
-        ]
-    });
-
-    // CRITICAL: This line inserts the review list into the modal immediately
-    document.getElementById('modal-text').innerHTML = "Please confirm your selections:" + reviewHtml;
-}
-    // --- SIDEBAR TOGGLE LOGIC ---
-    const toggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    const closeBtn = document.getElementById('close-sidebar');
-
-    if(toggle && sidebar && closeBtn) {
-        toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
-        closeBtn.onclick = () => sidebar.classList.remove('active');
-        document.onclick = (e) => {
-            if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-            }
-        };
+        showPopup({
+            title: "Review Order",
+            text: "Please confirm your selections:" + reviewHtml + "</div>", 
+            icon: "📋",
+            buttons: [
+                { 
+                    text: "Confirm & Proceed", 
+                    type: "green", 
+                    action: () => {
+                        const isSub = (profile?.plan24days === true && dayCount === 6);
+                        window.location.href = `checkout.html?days=${dayCount}${isSub ? '&isSub=true' : ''}`;
+                    } 
+                },
+                { text: "Cancel", type: "gray" }
+            ]
+        });
     }
 
     window.onload = () => { 
