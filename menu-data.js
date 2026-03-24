@@ -11,7 +11,7 @@ const rawMenuData = [
         choice_options: "Oat;Soy;Almond",
         choice_type: "single",
         choice_title_2: "Step 2: Extra Topping", 
-        choice_options_2: "Extra Berries;Flax Seeds;None / Skip",
+        choice_options_2: "Extra Berries;Banana;None / Skip",
         choice_type_2: "multiple" 
     },
     { 
@@ -22,7 +22,7 @@ const rawMenuData = [
         fixed_ingredients: "Vegan Pancakes mix", 
         removable_ingredients: "", 
         choice_title: "Step 1: Spread", 
-        choice_options: "Dark Chocolate;Maple;Lotus Spread;Vegan Nutella",
+        choice_options: "Dark Chocolate;Maple;Lotus Spread;Vegan Nutella*",
         choice_type: "single",
         choice_title_2: "Step 2: Fruit", 
         choice_options_2: "Banana;Blueberry",
@@ -42,8 +42,8 @@ const rawMenuData = [
         name: "Avocado Toast", 
         protein: 9, 
         image: "images/menu items/avocado toast.png",
-        fixed_ingredients: "Garlic Toast;Avocado", 
-        removable_ingredients: "Sautéed Mushrooms", 
+        fixed_ingredients: "Garlic Infused Toast;Avocado", 
+        removable_ingredients: "Sautéed Mushrooms;Herbs", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -51,8 +51,8 @@ const rawMenuData = [
         name: "Cornflakes & Milk", 
         protein: 7, 
         image: "images/menu items/milk.png",
-        fixed_ingredients: "Cornflakes", 
-        removable_ingredients: "Chocolate Chips", 
+        fixed_ingredients: "Cornflakes;Milk",
+        removable_ingredients: "", 
         choice_title: "Milk Type", 
         choice_options: "Oat;Soy;Almond", 
         choice_type: "single",
@@ -65,8 +65,8 @@ const rawMenuData = [
         name: "Lentil Pasta Bolognese", 
         protein: 18, 
         image: "images/menu items/bolo.jpeg",
-        fixed_ingredients: "Pasta;Lentils", 
-        removable_ingredients: "Bolognese Sauce;Onions;Garlic", 
+        fixed_ingredients: "Pasta;Lentils;Bolognese Sauce", 
+        removable_ingredients: ";Onions;Garlic", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -74,8 +74,8 @@ const rawMenuData = [
         name: "Quinoa & Veggie Bowl", 
         protein: 15, 
         image: "images/menu items/QuinoaVeg.png",
-        fixed_ingredients: "Quinoa;Chickpeas", 
-        removable_ingredients: "Carrots;Bell Peppers;Zucchini;Potatoes", 
+        fixed_ingredients: "Quinoa", 
+        removable_ingredients: "Carrots;Bell Peppers;Zucchini;Potatoes;Chickpeas", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -93,16 +93,16 @@ const rawMenuData = [
         protein: 12, 
         image: "images/menu items/lentille soupe.png",
         fixed_ingredients: "Red Lentils;Garlic", 
-        removable_ingredients: "Carrots;Potatoes", 
+        removable_ingredients: "Carrots;Potato", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
         category: "dinner", 
-        name: "Dal Bhat Soup", 
+        name: "Himalayan Dal Bhat Soup", 
         protein: 14, 
         image: "images/menu items/dhal.png",
         fixed_ingredients: "Lentils;Rice", 
-        removable_ingredients: "Mixed Vegetables", 
+        removable_ingredients: "potato;carrot;zucchini;Chilly sauce", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -110,8 +110,8 @@ const rawMenuData = [
         name: "Pumpkin Soup", 
         protein: 6, 
         image: "images/menu items/pump.png",
-        fixed_ingredients: "Roasted Pumpkin", 
-        removable_ingredients: "Vegetable Broth", 
+        fixed_ingredients: "Pumpkin", 
+        removable_ingredients: "Vegetable Broth;Onions", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -119,8 +119,8 @@ const rawMenuData = [
         name: "Veggie Soup", 
         protein: 8, 
         image: "images/menu items/oats.png",
-        fixed_ingredients: "Mixed Vegetables;Rice", 
-        removable_ingredients: "Shariyeh", 
+        fixed_ingredients: "", 
+        removable_ingredients: "Shariyeh;Rice;Zucchini;Carrots;Potato;Broccoli", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
