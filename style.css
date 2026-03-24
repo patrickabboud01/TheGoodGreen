@@ -1918,3 +1918,101 @@ html, body {
 .site-footer {
     flex-shrink: 0;
 }
+
+/* --- RESPONSIVE BUILDER WIDTH --- */
+
+/* 1. The Main Wrapper: Full width on mobile, centered & capped on PC */
+.container {
+    width: 95%;           /* Phone: nearly edge-to-edge */
+    max-width: 1200px;    /* PC: don't let it get wider than this */
+    margin: 0 auto;       /* Keep it centered */
+    padding: 10px;        /* Spacing for small screens */
+}
+
+/* 2. The Menu Grid: 2 columns on phone, 4 on PC */
+#menu-grid {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(2, 1fr); /* 2 meals per row on Phone */
+}
+
+/* 3. The Selection Sidebar (The list on the right/bottom) */
+.selection-sidebar {
+    width: 100%;          /* Stacked on top/bottom for Phone */
+}
+
+/* Desktop Specific Adjustments (PC) */
+@media (min-width: 992px) {
+    .container {
+        width: 50%;
+        padding: 40px 0;   /* More breathing room on PC */
+    }
+
+    #menu-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 meals per row on PC */
+    }
+
+    /* If you have a side-by-side layout for Menu vs Selection */
+    .builder-layout-wrapper {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+    }
+
+    .selection-sidebar {
+        width: 350px;      /* Fixed width sidebar on PC */
+        position: sticky;
+        top: 20px;
+    }
+}
+
+/* 4. The Edit Modal: Wider on PC, full screen on Phone */
+.modal-content {
+    width: 90%;
+    max-width: 500px;      /* Limits the size on PC */
+    margin: auto;
+}
+/* --- FIXING THE IMAGE SCALING --- */
+
+.card-img-wrapper {
+    width: 100% !important;   /* Take full width of the card */
+    height: auto !important;  /* Allow height to be defined by ratio, not a fixed pixel */
+    aspect-ratio: 1 / 1;      /* Forces the box to be a perfect square */
+    overflow: hidden;
+    background-color: #f9f9f9; /* Fallback color while loading */
+    border-radius: 12px 12px 0 0;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;        /* This fills the square. Change to 'contain' if you want to see the whole photo with bars */
+    display: block;
+}
+
+/* On PC, if the squares look too big, we can limit the card size */
+@media (min-width: 992px) {
+    .menu-item-card {
+        max-width: 250px; 
+        margin: 0 auto;
+    }
+}
+
+/* --- FIX HEADER OVERLAP ON PC --- */
+
+/* Target the first section after your header (usually <main> or a specific #ID) */
+main {
+    padding-top: 80px; /* Adjust this to match your actual header height */
+}
+
+@media (min-width: 992px) {
+    main {
+        /* On PC, if your header is taller, increase the gap */
+        padding-top: 120px; 
+    }
+    
+    /* If you have a specific builder container, give it a top margin too */
+    .container {
+        margin-top: 20px;
+    }
+}

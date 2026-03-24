@@ -109,6 +109,20 @@
             font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
+        /* --- FIX HEADER OVERLAP --- */
+.checkout-main {
+    padding-top: 100px; /* Adjust this number to match your header's height */
+    min-height: 80vh;   /* Ensures footer stays down */
+}
+
+/* Specific adjustment for PC/Desktop */
+@media (min-width: 992px) {
+    .checkout-main {
+        padding-top: 140px; /* More space for the larger PC header */
+        max-width: 800px;   /* Keeps the checkout form centered and readable on PC */
+        margin: 0 auto;
+    }
+}
     </style>
 </head>
 <body class="checkout-body">
