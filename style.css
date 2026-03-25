@@ -1780,29 +1780,33 @@ body {
 }
 
 /* 2. Force the menu display to ignore the container's boundaries */
+/* 1. Ensure the container starts AFTER the header */
 .menu-display {
-    width: 100vw;
-    position: relative;
-    /* This calculation finds the exact distance to the left edge of the browser */
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Keeps images centered if they aren't wide enough */
-    background-color: #f4f1ea; /* Matches your cream/sand background to hide gaps */
+    width: 100%;
+    padding-top: 100px; /* Increased this to clear the logo/nav */
+    background: white;
 }
 
-.menu-display img {
-    width: 100%;       /* Forces image to stretch to the 100vw width */
-    max-width: 100%;   /* Ensures it doesn't exceed the breakout container */
-    height: auto;
-    display: block; 
-    margin-top: 0px;   /* Removes the 3px vertical gap between images */
+/* 2. Control the image size on PC */
+.menu-display picture img {
+    width: 100%;       /* Fill the container width */
+    max-width: 100%;
+    height: auto;      
+    max-height: 85vh;  /* Crucial: Prevents image from being taller than 85% of the screen */
+    object-fit: contain; /* Keeps the whole menu visible without cropping */
+    display: block;
+    margin: 0 auto;    /* Centers it if it's smaller than the screen */
 }
 
+/* 3. Mobile specific adjustment */
+@media (max-width: 768px) {
+    .menu-display {
+        padding-top: 70px; /* Smaller padding for mobile headers */
+    }
+    .menu-display picture img {
+        max-height: none; /* Let the long vertical image scroll naturally on phones */
+    }
+}
 
 
 
