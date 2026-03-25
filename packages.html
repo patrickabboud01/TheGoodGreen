@@ -440,6 +440,49 @@
     }
 
     window.onload = updateAuthUI;
+    // --- NUTRITION PLAN MODAL LOGIC ---
+const quoteModal = document.getElementById("quoteModal");
+const openModalBtn = document.getElementById("openModalBtn");
+const closeQuoteBtn = document.querySelector("#quoteModal .close-btn");
+
+if (openModalBtn) {
+    openModalBtn.onclick = function() {
+        quoteModal.style.display = "flex";
+    }
+}
+
+if (closeQuoteBtn) {
+    closeQuoteBtn.onclick = function() {
+        quoteModal.style.display = "none";
+    }
+}
+
+// Close modal if user clicks outside the white box
+window.onclick = function(event) {
+    if (event.target == quoteModal) {
+        quoteModal.style.display = "none";
+    }
+    // Also handle your other modals
+    if (event.target == document.getElementById('durationModal')) {
+        closeModal('durationModal');
+    }
+    if (event.target == document.getElementById('pricingModal')) {
+        closeModal('pricingModal');
+    }
+}
+// --- GLOBAL MODAL BACKDROP CLICK HANDLER ---
+window.addEventListener('click', function(event) {
+    // List of all your modal IDs
+    const modals = ['quoteModal', 'durationModal', 'pricingModal', 'custom-alert'];
+
+    modals.forEach(id => {
+        const modal = document.getElementById(id);
+        // If the user clicked the modal overlay (the background), but NOT the white box inside it
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
 </script>
 
 <style>

@@ -2016,3 +2016,18 @@ main {
         margin-top: 20px;
     }
 }
+.modal, .custom-alert-overlay {
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* The dark backdrop */
+    z-index: 10001;
+    
+    /* These two lines are CRITICAL for the "Click Outside" to work */
+    display: none; /* Changed to 'flex' via JS to show */
+    align-items: center; 
+    justify-content: center;
+}

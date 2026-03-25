@@ -238,13 +238,27 @@
         btn.onclick = () => sidebars.forEach(s => s.classList.remove('active'));
     });
 
-    document.onclick = (e) => {
-        sidebars.forEach(s => {
-            if (!s.contains(e.target) && s.classList.contains('active')) {
+// --- GLOBAL CLICK HANDLER (SIDEBAR & MODAL) ---
+document.addEventListener('click', (e) => {
+    // 1. Sidebar Logic
+    const sidebars = document.querySelectorAll('.sidebar');
+    sidebars.forEach(s => {
+        // If clicking outside the sidebar while it's active
+        if (!s.contains(e.target) && s.classList.contains('active')) {
+            // But don't close it if the click was on the toggle button itself
+            if (!document.getElementById('menu-toggle').contains(e.target)) {
                 s.classList.remove('active');
             }
-        });
-    };
+        }
+    });
+
+    // 2. Custom Modal Logic
+    const modal = document.getElementById('custom-modal');
+    // If the modal is visible and the click was exactly on the dark overlay
+    if (modal.style.display === 'flex' && e.target === modal) {
+        modal.style.display = 'none';
+    }
+});
 
     // --- TAB & MODAL LOGIC ---
     function showTab(tabId) {

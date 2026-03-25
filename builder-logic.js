@@ -466,6 +466,17 @@ function closeEditModal() {
     pendingItem = null;
     editingItem = null;
 }
+// --- BUILDER MODAL BACKDROP LOGIC ---
+window.addEventListener('click', function(event) {
+    const editModal = document.getElementById('editModal');
+    
+    // Check if the click was exactly on the modal background
+    if (event.target === editModal) {
+        // If we are in the middle of picking choices, we reset pendingItem
+        // to prevent data bugs, then close.
+        closeEditModal();
+    }
+});
 
 // --- FINAL CONFIRMATION & SUMMARY MODAL ---
 
