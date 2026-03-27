@@ -359,19 +359,21 @@ function renderMenu(cat) {
     }
 
     items.forEach(item => { 
-        grid.innerHTML += `
-            <div class="menu-item-card">
-                 <div class="card-img-wrapper" style="width: 100%; height: 120px; overflow: hidden; border-radius:12px 12px 0 0;">
-                    <img src="${item.image}" 
-                         alt="${item.name}"
-                         style="width: 100%; height: 100%; object-fit: cover;" 
-                         onerror="this.src='https://placehold.co/400x300?text=Image+Missing'">                
-                </div>
-                <div style="padding:10px;">
-                    <h4 style="font-size:0.9rem; margin-bottom:5px;">${item.name}</h4>
-                    <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
-                </div>
-            </div>`; 
+      grid.innerHTML += `
+    <div class="menu-item-card">
+        <div class="card-img-wrapper" 
+             onclick="openImageLightbox('${item.image}')" 
+             style="width: 100%; height: 120px; overflow: hidden; border-radius:12px 12px 0 0; cursor: pointer;">
+            <img src="${item.image}" 
+                 alt="${item.name}"
+                 style="width: 100%; height: 100%; object-fit: cover;" 
+                 onerror="this.src='https://placehold.co/400x300?text=Image+Missing'">                
+        </div>
+        <div style="padding:10px;">
+            <h4 style="font-size:0.9rem; margin-bottom:5px;">${item.name}</h4>
+            <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
+        </div>
+    </div>`;
     });
 }
 
@@ -557,3 +559,14 @@ function proceedToCheckout() {
 }
 
 loadMenu();
+
+function openImageLightbox(src) {
+    const lightbox = document.getElementById('image-lightbox');
+    const img = document.getElementById('lightbox-img');
+    img.src = src;
+    lightbox.style.display = 'flex'; // Shows the modal
+}
+
+function closeImageLightbox() {
+    document.getElementById('image-lightbox').style.display = 'none'; // Hides the modal
+}
