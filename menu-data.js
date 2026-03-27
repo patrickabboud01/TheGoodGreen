@@ -107,11 +107,11 @@ const rawMenuData = [
     },
     { 
         category: "dinner", 
-        name: "Pumpkin Soup", 
+        name: "Veggie Noodles", 
         protein: 6, 
-        image: "images/menu items/pump.png",
-        fixed_ingredients: "Pumpkin", 
-        removable_ingredients: "Vegetable Broth;Onions", 
+        image: "images/menu items/noodles.png",
+        fixed_ingredients: "Noodles", 
+        removable_ingredients: "Carrots;Garlic;BellPepper;Soy Sauce; Seaseme Seeds", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -186,40 +186,24 @@ const rawMenuData = [
     // --- PROTEIN ---
     { 
         category: "protein", 
-        name: "Protein Shake Plain + Cookie", 
+        name: "Protein Shake Plain 35g", 
         protein: 50, 
         image: "images/menu items/shakes.png",
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
-        choice_title: "Milk Type", 
-        choice_options: "Oat;Soy;Almond",
-        choice_type: "single",
-        choice_title_2: "Cookie Flavor",
-        choice_options_2: "Chocolate;Double Choc;Oatmeal",
-        choice_type_2: "single"
+        choice_title: "Shake Flavor", 
+        choice_options: "Plain;Chocolate;Berries",
+        choice_type: "single"
     },
     { 
         category: "protein", 
-        name: "Protein Shake Chocolate + Cookie", 
+        name: "Protein Cookie 15g", 
         protein: 50, 
-        image: "images/menu items/shakes.png",
-        fixed_ingredients: "Vegan Protein Blend (Choc)", 
+        image: "images/menu items/cookies.png",
+        fixed_ingredients: "Oats,Banana;Pea Protein Powder;Soy Milk;Peanut Butter;Maple", 
         removable_ingredients: "", 
-        choice_title: "Milk Type", 
-        choice_options: "Oat;Soy;Almond", 
-        choice_type: "single",
-        choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
-    { 
-        category: "protein", 
-        name: "Protein Shake Berries + Cookie", 
-        protein: 50, 
-        image: "images/menu items/shakes.png",
-        fixed_ingredients: "Vegan Protein Blend (Berry)", 
-        removable_ingredients: "", 
-        choice_title: "Milk Type", 
-        choice_options: "Oat;Soy;Almond", 
-        choice_type: "single",
-        choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+        choice_title: "Cookie Flavor", 
+        choice_options: "Plain;berries;Chocolate", 
+         choice_type: "single"
     }
 ];
