@@ -109,6 +109,21 @@
             font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
+        .duration-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* This centers the buttons horizontally */
+    gap: 12px;
+    width: 100%;
+}
+
+/* Ensure buttons take up a consistent width or auto-center */
+.duration-options .btn-outline, 
+.duration-options .btn-primary {
+    width: 100%;
+    max-width: 300px; /* Optional: keeps buttons from getting too wide on PC */
+    margin: 0 auto;
+}
     </style>
 </head>
 <body>
