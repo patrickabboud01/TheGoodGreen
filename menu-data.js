@@ -203,7 +203,7 @@ const rawMenuData = [
         fixed_ingredients: "Oats,Banana;Pea Protein Powder;Soy Milk;Peanut Butter;Maple", 
         removable_ingredients: "", 
         choice_title: "Cookie Flavor", 
-        choice_options: "Plain;berries;Chocolate", 
+        choice_options: "Plain;berries;Chocolate;Chocolate & Berries", 
          choice_type: "single"
     }
 ];
