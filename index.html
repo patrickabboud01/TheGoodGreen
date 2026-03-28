@@ -10,8 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* Essential Modal Styles */
+        /* --- 1. MODAL & CENTERING SYSTEM --- */
         .auth-overlay {
+            /* Start hidden */
             display: none; 
             position: fixed; 
             top: 0; left: 0; width: 100%; height: 100%;
@@ -21,6 +22,13 @@
             justify-content: center;
             backdrop-filter: blur(5px);
         }
+
+        /* Centering Fix: Force Flexbox when JS tries to show the modal */
+        .auth-overlay[style*="display: flex"], 
+        .auth-overlay[style*="display: block"] {
+            display: flex !important;
+        }
+
         .auth-modal-box {
             background: white; 
             padding: 40px; 
@@ -30,16 +38,22 @@
             position: relative;
             animation: popIn 0.3s ease-out;
             text-align: center;
+            /* Force children to center */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         @keyframes popIn {
             0% { transform: scale(0.95); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
+
         .close-btn {
             position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
         }
 
-        /* Sidebar Styling */
+        /* --- 2. SIDEBAR STYLING --- */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; transition: 0.3s; z-index: 100000; padding: 20px;
@@ -58,14 +72,13 @@
             font-weight: 400; color: #5d8039; padding: 8px 0;
             display: block; text-decoration: none; transition: 0.2s;
         }
-        .sidebar-links li a:hover { color: #5d8039; }
         .auth-btn-sidebar {
             margin-top: 20px; border-top: 1px solid #eee;
             padding-top: 15px; display: block; font-weight: 700;
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
 
-        /* Custom Alert (Snackbar) */
+        /* --- 3. CUSTOM ALERT --- */
         #custom-alert {
             visibility: hidden; min-width: 280px; background-color: #5d8039;
             color: #fff; text-align: center; border-radius: 12px; padding: 16px;
@@ -77,11 +90,9 @@
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        /* Utility classes for forms */
-        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
 
-        /* Refined Footer Styles */
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
             text-align: center; border-top: 5px solid #f4f1ea;
@@ -95,40 +106,35 @@
             flex-direction: column; align-items: center; gap: 8px;
             font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
         }
-        .footer-icon i { font-size: 1.6rem; }
-        .site-footer p {
-            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
-        }
-        
-        
     </style>
 </head>
 <body>
 
 <div id="custom-alert">Message goes here</div>
 
-<div id="auth-modal" class="auth-overlay">
+<div id="auth-modal" class="auth-overlay" style="display: none;">
     <div class="auth-modal-box">
         <button onclick="closeAuthModal()" class="close-btn">&times;</button>
-        <img src="images/longlogo.png" alt="Logo" style="height: 40px; margin-bottom: 20px;">
-        <h2 style="color: #5d8039;">Welcome!</h2>
+        <img src="images/longlogo.png" alt="Logo" style="height: 40px; margin: 0 auto 20px auto; display: block;">
+        
+        <h2 style="color: #5d8039; margin-bottom: 10px;">Welcome!</h2>
         <p style="margin-bottom: 25px; color: #666;">How would you like to proceed?</p>
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-            <button onclick="openEntryModal('login')" class="btn-primary" style="width:100%;">Log In</button>
-            <button onclick="closeAuthModal()" class="btn-outline" style="width:100%; border:1px solid #ccc;">Continue as Guest</button>
-            <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-weight:700; cursor:pointer; margin-top:10px;">
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
+            <button onclick="openEntryModal('login')" class="btn-primary" style="width:100%; max-width: 300px;">Log In</button>
+            <button onclick="closeAuthModal()" class="btn-outline" style="width:100%; max-width: 300px; border:1px solid #ccc;">Continue as Guest</button>
+            <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-weight:700; cursor:pointer; margin-top:10px; width: 100%; text-align: center;">
                 Create an account now
             </button>
         </div>
     </div>
 </div>
 
-<div id="entry-modal" class="auth-overlay">
-    <div class="auth-modal-box" style="text-align: left;">
+<div id="entry-modal" class="auth-overlay" style="display: none;">
+    <div class="auth-modal-box">
         <button onclick="closeEntryModal()" class="close-btn">&times;</button>
         
-        <div id="login-form-area">
+        <div id="login-form-area" style="width: 100%;">
             <h2 style="color: #5d8039; margin-bottom: 20px;">Log In</h2>
             <div class="form-group">
                 <input type="email" id="login-email" class="form-input" placeholder="Email Address">
@@ -140,7 +146,7 @@
             </div>
         </div>
 
-        <div id="signup-form-area" style="display:none;">
+        <div id="signup-form-area" style="display:none; width: 100%;">
             <h2 style="color: #5d8039; margin-bottom: 15px;">Sign Up</h2>
             <div class="form-group">
                 <input type="text" id="reg-name" class="form-input" placeholder="Full Name">
@@ -186,59 +192,30 @@
 </header>
 
 <main>
-<div id="auto-gallery" class="gallery-container">
-    <div class="gallery-wrapper" id="gallery-wrapper">
-        </div>
-    <div class="gallery-overlay"></div>
-</div>
+    <div id="auto-gallery" class="gallery-container">
+        <div class="gallery-wrapper" id="gallery-wrapper"></div>
+        <div class="gallery-overlay"></div>
+    </div>
 
-<style>
-    
-   .gallery-container {
-    position: relative;
-    width: 95%;
-    max-width: 1366px; 
-    aspect-ratio: 1366 / 768; 
-    margin: 20px auto;
-    overflow: hidden;
-    border-radius: 25px; 
-    margin-top: 10px;
-    
-    /* FIX 1: Explicitly kill the background and any borders */
-    background: none !important; 
-    background-color: transparent !important;
-    border: none !important;
-    outline: none !important;
-}
-
-.gallery-wrapper img {
-    position: absolute;
-    top: 0; 
-    left: 0;
-    width: 100%; 
-    height: 100%;
-    object-fit: cover;     
-    opacity: 0;
-    transition: opacity 1.2s ease-in-out;
-    z-index: 1;
-}
-
-.gallery-wrapper img.active {
-    opacity: 1;
-    z-index: 2;
-}
-</style>
-
+    <style>
+        .gallery-container {
+            position: relative; width: 95%; max-width: 1366px; 
+            aspect-ratio: 1366 / 768; margin: 20px auto 10px;
+            overflow: hidden; border-radius: 25px; background: none !important; 
+        }
+        .gallery-wrapper img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transition: opacity 1.2s ease-in-out;
+            z-index: 1;
+        }
+        .gallery-wrapper img.active { opacity: 1; z-index: 2; }
+    </style>
 
     <section class="hero-home">
-        <div class="container" style="max-width: 800px; text-align: center; margin-top: 0px;">
-           
-          <h1 style="font-size: 1.2rem; color: #5d8039;">YOUR PERSONAL </br>PLANT-BASED KITCHEN</h1>
-        <!--  <P style="font-size: 0.95rem;">YOUR PERSONAL PLANT-BASED KITCHEN</P> -->
-        <!--  <div class="badge" style="margin-bottom: 20px;">100% Dairy & Meat Free Kitchen</div> -->
-            
+        <div class="container" style="max-width: 800px; text-align: center;">
+            <h1 style="font-size: 1.2rem; color: #5d8039;">YOUR PERSONAL <br>PLANT-BASED KITCHEN</h1>
             <p style="font-size: 0.8rem; color: #888; margin :10px 0 30px; line-height: 1.6;">
-                We are a premium, 100% plant-based meal subscription service that removes the friction of vegan living. Unlike standard delivery, we operate as your Personal Kitchen.</span>
+                We are a premium, 100% plant-based meal subscription service that removes the friction of vegan living.
             </p>
             <div class="hero-btns">
                 <a href="#how-it-works" class="btn-outline">How It Works</a>
@@ -250,19 +227,19 @@
     <section id="how-it-works" style="background: white; padding: 60px 0; border-top: 1px solid #eee;">
         <div class="container">
             <h2 style="text-align: center; color: #5d8039; margin-bottom: 40px;">Three Simple Steps</h2>
-            <div class="plan-grid">
-                <div class="step-card" style="text-align:center;">
-                    <div style="font-size: 2.5rem; margin-bottom: 15px;"><img src="images/icons-03.png" alt="Logo" style="height: 70px; margin-bottom: 0px;"></div>
+            <div class="plan-grid" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap;">
+                <div class="step-card" style="text-align:center; max-width: 250px;">
+                    <img src="images/icons-03.png" alt="Icon" style="height: 70px;">
                     <h4>1. Pick a Package</h4>
                     <p style="font-size: 0.85rem; color: #777;">Choose the number of daily items you need.</p>
                 </div>
-                <div class="step-card" style="text-align:center;">
-                    <div style="font-size: 2.5rem; margin-bottom: 15px;"><img src="images/icons-02.png" alt="Logo" style="height: 60px; margin-bottom: 0px;"></div>
+                <div class="step-card" style="text-align:center; max-width: 250px;">
+                    <img src="images/icons-02.png" alt="Icon" style="height: 60px;">
                     <h4>2. Choose Your Duration</h4>
                     <p style="font-size: 0.85rem; color: #777;">Select a duration commitment.</p>
                 </div>
-                <div class="step-card" style="text-align:center;">
-                    <div style="font-size: 2.5rem; margin-bottom: 15px;"><img src="images/icons-01.png" alt="Logo" style="height: 60px; margin-bottom: 20px;"></div>
+                <div class="step-card" style="text-align:center; max-width: 250px;">
+                    <img src="images/icons-01.png" alt="Icon" style="height: 60px;">
                     <h4>3. Build Your Plan</h4>
                     <p style="font-size: 0.85rem; color: #777;">Select every meal and customize ingredients.</p>
                 </div>
@@ -287,199 +264,134 @@
 </footer>
 
 <script>
-// --- 1. CONFIG ---
-const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
-const K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
-const sbClient = supabase.createClient(U, K);
+    // Supabase Config
+    const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(U, K);
 
-// --- 2. NOTIFICATION SYSTEM ---
-function showAlert(message) {
-    const alertBox = document.getElementById("custom-alert");
-    alertBox.innerText = message;
-    alertBox.classList.add("show");
-    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
-}
-
-// --- 3. AUTH UI LOGIC ---
-function updateAuthUI() {
-    const authBtn = document.getElementById('auth-btn');
-    const greeting = document.getElementById('user-greeting');
-    const userStr = localStorage.getItem('current_user');
-
-    if (userStr) {
-        const user = JSON.parse(userStr);
-        const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
-        greeting.innerText = `Hi, ${firstName}`;
-        authBtn.innerText = "Logout";
-        authBtn.style.color = "#d9534f";
-    } else {
-        greeting.innerText = "Hi, Guest";
-        authBtn.innerText = "Login / Sign Up";
-        authBtn.style.color = "#2d5a27";
+    function showAlert(msg) {
+        const box = document.getElementById("custom-alert");
+        box.innerText = msg; box.classList.add("show");
+        setTimeout(() => box.classList.remove("show"), 3000);
     }
-}
 
-function handleAuthAction() {
-    const user = localStorage.getItem('current_user');
-    if (user) {
-        localStorage.removeItem('current_user');
-        sessionStorage.removeItem('auth_choice_made');
-        location.reload();
-    } else {
-        openEntryModal('login');
+    function updateAuthUI() {
+        const authBtn = document.getElementById('auth-btn');
+        const greeting = document.getElementById('user-greeting');
+        const userStr = localStorage.getItem('current_user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            greeting.innerText = `Hi, ${user.full_name?.split(' ')[0] || 'User'}`;
+            authBtn.innerText = "Logout";
+        } else {
+            greeting.innerText = "Hi, Guest";
+            authBtn.innerText = "Login / Sign Up";
+        }
     }
-}
 
-function openEntryModal(mode) {
-    document.getElementById('auth-modal').style.display = 'none';
-    document.getElementById('entry-modal').style.display = 'flex';
-    const loginArea = document.getElementById('login-form-area');
-    const signupArea = document.getElementById('signup-form-area');
-    if (mode === 'login') {
-        loginArea.style.display = 'block';
-        signupArea.style.display = 'none';
-    } else {
-        loginArea.style.display = 'none';
-        signupArea.style.display = 'block';
+    function handleAuthAction() {
+        if (localStorage.getItem('current_user')) {
+            localStorage.removeItem('current_user');
+            sessionStorage.removeItem('auth_choice_made');
+            location.reload();
+        } else {
+            openEntryModal('login');
+        }
     }
-}
 
-function closeAuthModal() {
-    document.getElementById('auth-modal').style.display = 'none';
-    sessionStorage.setItem('auth_choice_made', 'true');
-}
+    function openEntryModal(mode) {
+        document.getElementById('auth-modal').style.display = 'none';
+        document.getElementById('entry-modal').style.display = 'flex';
+        document.getElementById('login-form-area').style.display = (mode === 'login') ? 'block' : 'none';
+        document.getElementById('signup-form-area').style.display = (mode === 'signup') ? 'block' : 'none';
+    }
 
-function closeEntryModal() {
-    document.getElementById('entry-modal').style.display = 'none';
-}
+    function closeAuthModal() {
+        document.getElementById('auth-modal').style.display = 'none';
+        sessionStorage.setItem('auth_choice_made', 'true');
+    }
 
-// --- 4. SUPABASE ACTIONS ---
-async function handleLogin() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const { data, error } = await sbClient
-        .from('profiles')
-        .select('*')
-        .eq('email', email)
-        .eq('password', password)
-        .single();
+    function closeEntryModal() {
+        document.getElementById('entry-modal').style.display = 'none';
+    }
 
-    if (error || !data) {
-        showAlert("Invalid email or password.");
-    } else {
+    async function handleLogin() {
+        const e = document.getElementById('login-email').value;
+        const p = document.getElementById('login-password').value;
+        const { data, error } = await sbClient.from('profiles').select('*').eq('email', e).eq('password', p).single();
+        if (error || !data) return showAlert("Invalid credentials.");
         localStorage.setItem('current_user', JSON.stringify(data));
         sessionStorage.setItem('auth_choice_made', 'true');
-        location.reload(); 
+        location.reload();
     }
-}
 
-async function handleSignup() {
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    if(!email || !password || !name) return showAlert("Missing fields!");
-
-    const { data, error } = await sbClient
-        .from('profiles')
-        .insert([{ 
-            full_name: name, 
-            email, 
-            phone_number: document.getElementById('reg-phone').value, 
-            address: document.getElementById('reg-address').value, 
-            password 
-        }])
-        .select();
-
-    if (error) {
-        showAlert("Signup failed: " + error.message);
-    } else {
+    async function handleSignup() {
+        const n = document.getElementById('reg-name').value;
+        const e = document.getElementById('reg-email').value;
+        const p = document.getElementById('reg-password').value;
+        if(!e || !p || !n) return showAlert("Missing fields!");
+        const { data, error } = await sbClient.from('profiles').insert([{ 
+            full_name: n, email: e, password: p,
+            phone_number: document.getElementById('reg-phone').value,
+            address: document.getElementById('reg-address').value
+        }]).select();
+        if (error) return showAlert("Signup failed.");
         localStorage.setItem('current_user', JSON.stringify(data[0]));
         sessionStorage.setItem('auth_choice_made', 'true');
         location.reload();
     }
-}
 
-// --- 5. INITIALIZATION & PROTECTED ROUTES ---
-window.onload = () => {
-    updateAuthUI();
-    const urlParams = new URLSearchParams(window.location.search);
-    const user = localStorage.getItem('current_user');
-    const alreadySeen = sessionStorage.getItem('auth_choice_made');
+    window.onload = () => {
+        updateAuthUI();
+        const user = localStorage.getItem('current_user');
+        const alreadySeen = sessionStorage.getItem('auth_choice_made');
+        const urlParams = new URLSearchParams(window.location.search);
 
-    // Forced Modal Logic
-    if (!user) {
-        if (urlParams.get('action') === 'login') {
-            openEntryModal('login');
-        } else if (!alreadySeen) {
-            setTimeout(() => {
-                if (!localStorage.getItem('current_user')) {
-                    document.getElementById('auth-modal').style.display = 'flex';
-                }
-            }, 1200);
-        }
-    }
-};
-
-function protectedRedirect(targetUrl) {
-    if (localStorage.getItem('current_user')) {
-        window.location.href = targetUrl;
-    } else {
-        showAlert("Please log in to continue.");
-        setTimeout(() => {
-            window.location.href = "index.html?action=login";
-        }, 1500);
-    }
-}
-
-// Sidebar Logic
-const toggle = document.getElementById('menu-toggle');
-const sidebar = document.getElementById('sidebar');
-const closeBtn = document.getElementById('close-sidebar');
-
-if(toggle && sidebar && closeBtn) {
-    toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
-    closeBtn.onclick = () => sidebar.classList.remove('active');
-    document.onclick = (e) => {
-        if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
-            sidebar.classList.remove('active');
+        if (!user) {
+            if (urlParams.get('action') === 'login') {
+                openEntryModal('login');
+            } else if (!alreadySeen) {
+                setTimeout(() => {
+                    if (!localStorage.getItem('current_user')) {
+                        document.getElementById('auth-modal').style.display = 'flex';
+                    }
+                }, 1200);
+            }
         }
     };
-}
 
-// gallery images script
-(function() {
-    
-        // 1. CONFIGURATION
-        const imageFolder = "images/gallery/"; // The path to your folder
-        const images = ["1.jpeg", "2.jpeg", "3.jpeg","4.jpeg", "5.jpeg", "6.jpeg"]; // List your filenames
-        const displayTime = 3000; // 3 seconds per photo
+    function protectedRedirect(url) {
+        if (localStorage.getItem('current_user')) window.location.href = url;
+        else { showAlert("Please log in."); setTimeout(() => openEntryModal('login'), 1500); }
+    }
 
+    // Sidebar & Gallery Logic
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+    toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
+    closeBtn.onclick = () => sidebar.classList.remove('active');
+    document.onclick = (e) => { if (!sidebar.contains(e.target)) sidebar.classList.remove('active'); };
+
+    (function() {
+        const images = ["1.jpeg", "2.jpeg", "3.jpeg","4.jpeg", "5.jpeg", "6.jpeg"];
         const wrapper = document.getElementById('gallery-wrapper');
-        let currentIndex = 0;
-
-        // 2. INJECT IMAGES
-        images.forEach((imgName, index) => {
+        let idx = 0;
+        images.forEach((imgName, i) => {
             const img = document.createElement('img');
-            img.src = imageFolder + imgName;
-            if (index === 0) img.classList.add('active');
+            img.src = "images/gallery/" + imgName;
+            if (i === 0) img.classList.add('active');
             wrapper.appendChild(img);
         });
-
-        const allImages = wrapper.querySelectorAll('img');
-
-        // 3. LOOP LOGIC
-        function nextImage() {
-            allImages[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % allImages.length;
-            allImages[currentIndex].classList.add('active');
-        }
-
-        // Start the loop
-        if (allImages.length > 0) {
-            setInterval(nextImage, displayTime);
+        const all = wrapper.querySelectorAll('img');
+        if (all.length > 0) {
+            setInterval(() => {
+                all[idx].classList.remove('active');
+                idx = (idx + 1) % all.length;
+                all[idx].classList.add('active');
+            }, 3000);
         }
     })();
-// end of gallery
 </script>
 </body>
 </html>
