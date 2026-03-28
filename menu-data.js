@@ -182,6 +182,24 @@ const rawMenuData = [
         removable_ingredients: "Peanut Butter", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
+    { 
+        category: "snack", 
+        name: "Fresh Orange Juice", 
+        protein: 5, 
+        image: "images/menu items/orngejuice.png",
+        fixed_ingredients: "Fresh Orange", 
+        removable_ingredients: "", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+    { 
+        category: "snack", 
+        name: "Mixed Nuts", 
+        protein: 5, 
+        image: "images/menu items/nuts.png",
+        fixed_ingredients: "Almonds;Pumpkin Seeds;Wallnuts;Raisin", 
+        removable_ingredients: "Peanut Butter", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
 
     // --- PROTEIN ---
     { 
