@@ -324,28 +324,32 @@ function loadMenu() {
 }
 
 function renderMenu(cat) {
-    const grid = document.getElementById('menu-grid'); 
+    const grid = document.getElementById('menu-grid');
     if (!grid) return;
     grid.innerHTML = "";
-    
+
     const selectedCat = cat.toLowerCase().trim();
 
+    // --- FIX: Highlighting Logic ---
     document.querySelectorAll('.cat-btn').forEach(btn => {
         const btnText = btn.innerText.toLowerCase().trim();
-        const isMatch = (btnText === selectedCat);
-        const isLunchDinnerMatch = (selectedCat === 'lunch/dinner' && (btnText.includes('lunch') || btnText.includes('dinner') || btnText.includes('main')));
+        
+        // This checks for exact matches OR if "Main Meals" is clicked for lunch/dinner
+        const isMatch = (btnText === selectedCat) || 
+                        (selectedCat === 'lunch/dinner' && (btnText.includes('main') || btnText.includes('meal'))) ||
+                        (selectedCat === 'snack' && btnText.includes('snack')) ||
+                        (selectedCat === 'protein' && (btnText.includes('extra') || btnText.includes('pro')));
 
-        if (isMatch || isLunchDinnerMatch) {
+        if (isMatch) {
             btn.classList.add('active');
-            btn.style.backgroundColor = "#5d8039"; 
+            btn.style.backgroundColor = "#5d8039"; // Force Green
             btn.style.color = "white";
         } else {
             btn.classList.remove('active');
-            btn.style.backgroundColor = ""; 
+            btn.style.backgroundColor = ""; // Reset
             btn.style.color = "";
         }
     });
-
     const items = menuData.filter(m => {
         if (selectedCat === 'lunch/dinner') {
             return m.category === 'lunch' || m.category === 'dinner';

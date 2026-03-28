@@ -111,7 +111,7 @@ const rawMenuData = [
         protein: 6, 
         image: "images/menu items/noodles.png",
         fixed_ingredients: "Noodles", 
-        removable_ingredients: "Carrots;Garlic;BellPepper;Soy Sauce; Seaseme Seeds", 
+        removable_ingredients: "Carrots;Garlic;BellPepper;Cabbage;Soy Sauce; Seaseme Seeds", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
