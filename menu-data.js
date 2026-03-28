@@ -197,7 +197,7 @@ const rawMenuData = [
         protein: 5, 
         image: "images/menu items/nuts.png",
         fixed_ingredients: "Almonds;Pumpkin Seeds;Wallnuts;Raisin", 
-        removable_ingredients: "Peanut Butter", 
+        removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
 
