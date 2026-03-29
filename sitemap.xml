@@ -85,60 +85,24 @@
 </head>
 <body>
 
-    <div class="quote-card">
-        <h3>Nutrition Plan</h3>
-        <p>Ready to hit your goals? Get a custom quote sent to your phone.</p>
-        <button id="openModalBtn">Request a Quote</button>
-    </div>
-
-    <div id="quoteModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2 style="margin-top:0">Quote Details</h2>
-            <form id="quote-form">
-                <input type="text" name="user_name" placeholder="Your Name" required>
-                <input type="tel" name="user_phone" placeholder="Your Phone Number" required>
-                <input type="number" name="kcal_goal" placeholder="Daily Kcal Goal (e.g. 2500)" required>
-                <input type="number" name="protein_goal" placeholder="Protein Goal in Grams" required>
-                
-                <button type="submit" class="submit-btn">Get your quote on WhatsApp</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        const modal = document.getElementById("quoteModal");
-        const btn = document.getElementById("openModalBtn");
-        const closeX = document.querySelector(".close-btn");
-        const form = document.getElementById("quote-form");
-
-        // UI Interactions
-        btn.onclick = () => modal.style.display = "block";
-        closeX.onclick = () => modal.style.display = "none";
-        window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
-
-        // Form Logic
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            // 1. Send data to EmailJS
-            // REPLACE 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID'
-            emailjs.sendForm('service_ku8gtez', 'template_tlc5mia', this)
-                .then(() => {
-                    alert("Details sent! Redirecting to WhatsApp...");
-                    
-                    // 2. Extract values for WhatsApp
-                    const phone = form.user_phone.value;
-                    const name = form.user_name.value;
-                    const kcal = form.kcal_goal.value;
-                    const protein = form.protein_goal.value;
-
-                    // Message structure
-                    const msg = `Hello! My name is ${name}. I am looking for a quote. My goals are ${kcal} kcal and ${protein}g of protein.`;
-                    
-                });
-        });
-    </script>
+   <?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://thegoodgreen.com/</loc>
+    <lastmod>2026-03-29</lastmod>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://thegoodgreen.com/packages.html</loc>
+    <lastmod>2026-03-29</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://thegoodgreen.com/menu.html</loc>
+    <lastmod>2026-03-29</lastmod>
+    <priority>0.80</priority>
+  </url>
+</urlset>
 
 </body>
 </html>
