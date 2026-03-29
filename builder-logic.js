@@ -508,7 +508,7 @@ function showOrderReview() {
 
     const loops = displayDays;
     for (let i = 1; i <= loops; i++) {
-        const actualIdx = i + dayOffset;
+        const actualIdx = i + (typeof dayOffset !== 'undefined' ? dayOffset : 0);
         const dayMeals = fullState[actualIdx] || [];
         
         html += `
@@ -539,11 +539,20 @@ function showOrderReview() {
         html += `</div>`;
     }
 
-    html += `</div>`;
+    html += `</div>`; // Close scroll area
+
+    // --- UPDATED BUTTON SECTION ---
     html += `
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <button class="btn-primary" onclick="proceedToCheckout()" style="width: 100%; padding: 15px; font-weight:bold;">Looks Good, Checkout</button>
-            <button onclick="closeEditModal()" style="background: none; border: none; color: #888; font-size: 0.85rem; cursor: pointer; text-decoration: underline;">Wait, let me change something</button>
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%;">
+            <button class="btn-primary" onclick="proceedToCheckout()" 
+                style="width: 100%; max-width: 300px; padding: 15px; font-weight:bold; cursor:pointer;">
+                Looks Good, Checkout
+            </button>
+           
+            <button onclick="closeEditModal()" 
+                style="background: none; border: none; color: #888; font-size: 0.85rem; cursor: pointer; text-decoration: underline; width: fit-content;">
+                Wait, let me change something
+            </button>
         </div>
     `;
 
