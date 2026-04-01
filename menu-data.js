@@ -219,9 +219,29 @@ const rawMenuData = [
         image: "images/menu items/shakes.png",
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
-        choice_title: "Shake Flavor", 
+        choice_title: "Cookie Flavor", 
         choice_options: "Plain;Chocolate;Berries",
         choice_type: "single"
     },
-
+  { 
+        category: "protein", 
+        name: "Protein Shake Chocolate 35g + Protein Cookie 10g", 
+        protein: 50, 
+        image: "images/menu items/shakes.png",
+        fixed_ingredients: "Vegan Protein Blend", 
+        removable_ingredients: "", 
+        choice_title: "Cookie Flavor", 
+        choice_options: "Plain;Chocolate;Berries",
+        choice_type: "single"
+    },  { 
+        category: "protein", 
+        name: "Protein Shake Berries 35g + Protein Cookie 10g", 
+        protein: 50, 
+        image: "images/menu items/shakes.png",
+        fixed_ingredients: "Vegan Protein Blend", 
+        removable_ingredients: "", 
+        choice_title: "Cookie Flavor", 
+        choice_options: "Plain;Chocolate;Berries",
+        choice_type: "single"
+    },
 ];
