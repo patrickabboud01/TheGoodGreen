@@ -214,7 +214,7 @@ const rawMenuData = [
     // --- PROTEIN ---
     { 
         category: "protein", 
-        name: "Protein Shake Plain 35g", 
+        name: "Protein Shake Plain 35g + Protein Cookie 10g", 
         protein: 50, 
         image: "images/menu items/shakes.png",
         fixed_ingredients: "Vegan Protein Blend", 
@@ -223,15 +223,5 @@ const rawMenuData = [
         choice_options: "Plain;Chocolate;Berries",
         choice_type: "single"
     },
-    { 
-        category: "protein", 
-        name: "Protein Cookie 15g", 
-        protein: 50, 
-        image: "images/menu items/cookies.png",
-        fixed_ingredients: "Oats,Banana;Pea Protein Powder;Soy Milk;Peanut Butter;Maple", 
-        removable_ingredients: "", 
-        choice_title: "Cookie Flavor", 
-        choice_options: "Plain;berries;Chocolate;Chocolate & Berries", 
-         choice_type: "single"
-    }
+
 ];
