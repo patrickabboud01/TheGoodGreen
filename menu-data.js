@@ -47,6 +47,17 @@ const rawMenuData = [
         removable_ingredients: "Sautéed Mushrooms;Herbs", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
+        { 
+        category: "breakfast", 
+        name: "Croissant", 
+        protein: 5, 
+        image: "images/menu items/Croissant.png",
+        fixed_ingredients: "Croissant dough", 
+        removable_ingredients: "", 
+        choice_title: "Filling", 
+        choice_options: "Plain;Chocolat;Zaatar", 
+        choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
     { 
         category: "breakfast", 
         name: "Cornflakes & Milk", 
@@ -209,7 +220,8 @@ const rawMenuData = [
         fixed_ingredients: "Almonds;Pumpkin Seeds;Wallnuts;Raisin", 
         removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
+    }, 
+
 
     // --- PROTEIN ---
     { 
