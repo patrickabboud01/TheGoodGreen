@@ -385,7 +385,7 @@ function renderMenu(cat) {
     <div style="width: 1px; height: 12px; background-color: #ddd;"></div>
     
     <p style="font-size: 0.75rem; color: #888; margin: 0; display: flex; align-items: center; gap: 4px;">
-        <i class="fas fa-fire" style="font-size: 0.7rem;"></i> ${item.Kcal} Kcal
+        <i class="fas fa-fire" style="font-size: 0.7rem;"></i> ${item.Kcal} Kcal*
     </p>
 </div>
 

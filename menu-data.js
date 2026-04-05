@@ -21,7 +21,7 @@ const rawMenuData = [
         name: "Hummus & Crackers", 
         protein: 15, 
         Kcal : 400,
-        image: "images/menu items/hummus.png",
+        image: "images/menu items/hummus1.png",
         fixed_ingredients: "Crackers;Hummus", 
         removable_ingredients: "Cucumber;Pumpkin Seeds", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
