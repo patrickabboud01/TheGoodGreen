@@ -314,6 +314,7 @@ function loadMenu() {
             category: (item.category || "lunch").toLowerCase().trim(), 
             name: item.name, 
             protein: item.protein, 
+            Kcal: item.Kcal, 
             image: item.image,
             fixedIngredients: item.fixed_ingredients ? item.fixed_ingredients.split(';') : [],
             removableIngredients: item.removable_ingredients ? item.removable_ingredients.split(';') : [],
@@ -375,8 +376,21 @@ function renderMenu(cat) {
         </div>
         <div style="padding:10px;">
             <h4 style="font-size:0.9rem; margin-bottom:5px;">${item.name}</h4>
-            <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
-        </div>
+           
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; white-space: nowrap;">
+    <p style="font-size: 0.75rem; color: #5d8039; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 4px;">
+        <i class="fas fa-dumbbell" style="font-size: 0.7rem;"></i> ${item.protein} g Protein
+    </p>
+    
+    <div style="width: 1px; height: 12px; background-color: #ddd;"></div>
+    
+    <p style="font-size: 0.75rem; color: #888; margin: 0; display: flex; align-items: center; gap: 4px;">
+        <i class="fas fa-fire" style="font-size: 0.7rem;"></i> ${item.Kcal} Kcal
+    </p>
+</div>
+
+                <button class="btn-confirm-mini" onclick="addItem(${item.id})">Add</button>
+            </div>
     </div>`;
     });
 }
@@ -447,7 +461,7 @@ function showToast(m) {
 function applyCategoryRestrictions() {
     const cleanPlanName = planName.toLowerCase().trim();
     const restrictions = {
-        "solo": ["snack", "snacks", "protein", "extra pro"],
+        "solo": ["snack", "snacks", "protein", "extra pro","breakfast"],
         "duo": ["snack", "snacks", "protein", "extra pro"],
         "trio": ["protein", "extra pro"],
         "protein": ["breakfast", "snack", "snacks", "main meals"]
