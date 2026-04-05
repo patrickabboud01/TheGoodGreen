@@ -3,8 +3,8 @@ const rawMenuData = [
     { 
         category: "breakfast", 
         name: "Oatmeal Bowl", 
-        protein: 12, 
-        Kcal : 100,
+        protein: 18, 
+        Kcal : 425-525,
         image: "images/menu items/oats.png",
         fixed_ingredients: "Oats;Milk", 
         removable_ingredients: "Dark Chocolate;Peanut Butter", 
@@ -19,7 +19,8 @@ const rawMenuData = [
     { 
         category: "breakfast", 
         name: "Hummus & Crackers", 
-        protein: 8, 
+        protein: 15, 
+        Kcal : 400,
         image: "images/menu items/hummus.png",
         fixed_ingredients: "Crackers;Hummus", 
         removable_ingredients: "Cucumber;Pumpkin Seeds", 
@@ -28,7 +29,8 @@ const rawMenuData = [
     { 
         category: "breakfast", 
         name: "Pancakes", 
-        protein: 10, 
+        protein: 8, 
+        Kcal : 330-500,
         image: "images/menu items/pankakes.png",
         fixed_ingredients: "Vegan Pancakes mix", 
         removable_ingredients: "", 
@@ -42,7 +44,8 @@ const rawMenuData = [
     { 
         category: "breakfast", 
         name: "Avocado Toast", 
-        protein: 9, 
+        protein: 7, 
+        Kcal: 250,
         image: "images/menu items/avocado toast.png",
         fixed_ingredients: "Garlic Infused Toast;Avocado", 
         removable_ingredients: "Sautéed Mushrooms;Herbs", 
@@ -51,8 +54,9 @@ const rawMenuData = [
         { 
         category: "breakfast", 
         name: "Croissant", 
-        protein: 5, 
-        image: "images/menu items/Croissant.png",
+        protein: 9, 
+        Kcal: 400-500 ,
+        image: "images/menu items/croissant1.png",
         fixed_ingredients: "Croissant dough", 
         removable_ingredients: "", 
         choice_title: "Filling", 
@@ -62,7 +66,8 @@ const rawMenuData = [
     { 
         category: "breakfast", 
         name: "Cornflakes & Milk", 
-        protein: 7, 
+        protein: 15, 
+        Kcal: 400,
         image: "images/menu items/milk.png",
         fixed_ingredients: "Cornflakes;Milk",
         removable_ingredients: "", 
@@ -76,7 +81,8 @@ const rawMenuData = [
      { 
         category: "lunch", 
         name: "Lahm Baajin", 
-        protein: 18, 
+        protein: 26,
+        Kcal: 600, 
         image: "images/menu items/lahm.png",
         fixed_ingredients: "Flat Bread;Soy Chunks;Spices;Pomegranate Molasses;Onions;Lemon;Olive Oil", 
         removable_ingredients: "", 
@@ -85,7 +91,8 @@ const rawMenuData = [
     { 
         category: "lunch", 
         name: "Rice & Steamed Veggies with Soy Sauce", 
-        protein: 18, 
+        protein: 10, 
+        Kcal: 380,
         image: "images/menu items/veggies with rice.png",
         fixed_ingredients: "Rice;Soy Sauce", 
         removable_ingredients: "Potato;Carrotss;Broccoli;Zucchini", 
@@ -95,6 +102,7 @@ const rawMenuData = [
         category: "lunch", 
         name: "Quinoa & Veggie Bowl", 
         protein: 15, 
+        Kcal: 400,
         image: "images/menu items/quinoa.png",
         fixed_ingredients: "Quinoa", 
         removable_ingredients: "Carrots;Bell Peppers;Zucchini;Potatoes;Chickpeas", 
@@ -103,8 +111,8 @@ const rawMenuData = [
     { 
         category: "lunch", 
         name: "Falafel Burger", 
-        protein: 16, 
-        Kcal : 400,
+        protein: 21, 
+        Kcal : 600,
         image: "images/menu items/burger.png",
         fixed_ingredients: "Bun;Falafel Patty", 
         removable_ingredients: "Tahini;Lettuce;Tomato", 
@@ -113,7 +121,8 @@ const rawMenuData = [
     { 
         category: "lunch", 
         name: "Lentil Soup", 
-        protein: 12, 
+        protein: 22, 
+        Kcal: 350,
         image: "images/menu items/lentille soupe.png",
         fixed_ingredients: "Red Lentils;Garlic", 
         removable_ingredients: "Carrots;Potato", 
@@ -122,7 +131,8 @@ const rawMenuData = [
     { 
         category: "dinner", 
         name: "Himalayan Dal Bhat Soup", 
-        protein: 14, 
+        protein: 19,
+        Kcal: 450, 
         image: "images/menu items/dal baht.png",
         fixed_ingredients: "Lentils;Rice", 
         removable_ingredients: "potato;carrot;zucchini;Chilly sauce", 
@@ -131,7 +141,8 @@ const rawMenuData = [
     { 
         category: "dinner", 
         name: "Veggie Noodles", 
-        protein: 6, 
+        protein: 12,
+        Kcal: 400, 
         image: "images/menu items/pasta noodles.png",
         fixed_ingredients: "Noodles", 
         removable_ingredients: "Carrots;Garlic;BellPepper;Cabbage;Soy Sauce; Seaseme Seeds", 
@@ -140,7 +151,8 @@ const rawMenuData = [
     { 
         category: "dinner", 
         name: "Veggie Soup", 
-        protein: 8, 
+        protein: 6, 
+        Kcal : 150,
         image: "images/menu items/veggie soup.png",
         fixed_ingredients: "", 
         removable_ingredients: "Shariyeh;Rice;Zucchini;Carrots;Potato;Broccoli", 
@@ -149,7 +161,8 @@ const rawMenuData = [
     { 
         category: "dinner", 
         name: "Fattoush & Grilled Potatoes", 
-        protein: 7, 
+        protein: 9, 
+        Kcal: 450,
         image: "images/menu items/fattoush.png",
         fixed_ingredients: "Fattoush;Grilled Potatoes", 
         removable_ingredients: "Pomegranate Molasses", 
@@ -158,7 +171,8 @@ const rawMenuData = [
     { 
         category: "dinner", 
         name: "Tabbouleh & Grilled Potatoes", 
-        protein: 6, 
+        protein: 8,
+        Kcal: 350, 
         image: "images/menu items/tabbouleh.png",
         fixed_ingredients: "Tabbouleh;Grilled Potatoes", 
         removable_ingredients: "", 
@@ -167,7 +181,8 @@ const rawMenuData = [
     { 
         category: "dinner", 
         name: "Pasta Salad & Grilled Potatoes", 
-        protein: 11, 
+        protein: 22,
+        Kcal: 650,
         image: "images/menu items/pasta salad.png",
         fixed_ingredients: "Pasta;Grilled Potatoes", 
         removable_ingredients: "Black Beans;Olives;Cucumber;Carrots;Tomato;Corn", 
@@ -182,6 +197,7 @@ const rawMenuData = [
         category: "snack", 
         name: "Lazy Cake", 
         protein: 5, 
+        Kcal: 400,
         image: "images/menu items/lazy cake.png",
         fixed_ingredients: "Cacao;Biscuits,Coconut Oil, Vgean Milk", 
         removable_ingredients: "", 
@@ -190,7 +206,8 @@ const rawMenuData = [
     { 
         category: "snack", 
         name: "Fruit Salad", 
-        protein: 2, 
+        protein: 2,
+        Kcal: 130, 
         image: "images/menu items/saladde de fruit.png",
         fixed_ingredients: "Fresh Seasonal Fruits", 
         removable_ingredients: "", 
@@ -200,6 +217,7 @@ const rawMenuData = [
         category: "snack", 
         name: "Oat Cookie Chocolate", 
         protein: 5, 
+        Kcal: 190-220,
         image: "images/menu items/cookies.png",
         fixed_ingredients: "Banana;Oats;Chocolate Flakes", 
         removable_ingredients: "Peanut Butter", 
@@ -208,7 +226,8 @@ const rawMenuData = [
     { 
         category: "snack", 
         name: "Fresh Orange Juice", 
-        protein: 5, 
+        protein: 1, 
+        Kcal: 120,
         image: "images/menu items/orange juice.png",
         fixed_ingredients: "Fresh Orange", 
         removable_ingredients: "", 
@@ -217,7 +236,8 @@ const rawMenuData = [
     { 
         category: "snack", 
         name: "Mixed Nuts", 
-        protein: 5, 
+        protein: 12,
+        Kcal : 440,
         image: "images/menu items/nuts.png",
         fixed_ingredients: "Almonds;Pumpkin Seeds;Wallnuts;Raisin", 
         removable_ingredients: "", 
@@ -228,7 +248,7 @@ const rawMenuData = [
     // --- PROTEIN ---
     { 
         category: "protein", 
-        name: "Protein Shake Plain 35g + Protein Cookie 10g", 
+        name: "Protein Shake Plain 35g + Protein Cookie 15g", 
         protein: 50, 
         image: "images/menu items/shakes.png",
         fixed_ingredients: "Vegan Protein Blend", 
@@ -239,7 +259,7 @@ const rawMenuData = [
     },
   { 
         category: "protein", 
-        name: "Protein Shake Chocolate 35g + Protein Cookie 10g", 
+        name: "Protein Shake Chocolate 35g + Protein Cookie 15g", 
         protein: 50, 
         image: "images/menu items/shakes.png",
         fixed_ingredients: "Vegan Protein Blend", 
@@ -249,7 +269,7 @@ const rawMenuData = [
         choice_type: "single"
     },  { 
         category: "protein", 
-        name: "Protein Shake Berries 35g + Protein Cookie 10g", 
+        name: "Protein Shake Berries 35g + Protein Cookie 15g", 
         protein: 50, 
         image: "images/menu items/shakes.png",
         fixed_ingredients: "Vegan Protein Blend", 
