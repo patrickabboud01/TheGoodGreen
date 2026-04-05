@@ -1,101 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu | The Good Green</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Visual Menu | The Good Green</title>
+    
+    <script src="menu-data.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-        /* --- GLOBAL RESET --- */
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden; /* Crucial: Prevents side-scrolling */
-            font-family: 'Montserrat', sans-serif;
-            background-color: #fff;
+        :root {
+            --brand-green: #2d5a27;
+            --light-green: #5d8039;
+            --bg-cream: white;
+            --text-dark: #333;
         }
 
-        /* --- STICKY HEADER --- */
+        body {
+            background-color: white;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
         header {
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 1000;
-            background: white;
-            width: 100%;
-            height: 85px; 
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 0 20px;
         }
 
-        .navbar { width: 100%; }
-
-        /* --- THE EDGE-TO-EDGE SCROLL FIX --- */
-        .menu-display {
-            width: 100vw;       /* Exactly the width of the screen */
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw; /* These 3 lines force it out of any containers */
-            margin-right: -50vw;
+        .logo img {
+            height: 45px;
             display: block;
         }
 
-        .menu-display picture img {
-            width: 100vw;       /* Force image to screen width */
-            height: auto;       /* Keep aspect ratio */
-            display: block;
-            margin: 0;
-            padding: 0;
+        /* --- MAIN CONTENT --- */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
         }
 
-        /* Mobile Adjustments */
-        @media (max-width: 1024px) {
-            header { height: 70px; }
-            /* On mobile, we usually don't need the negative margin trick */
-            .menu-display {
-                width: 100%;
-                margin: 0;
-                left: 0;
-            }
-            .menu-display picture img {
-                width: 100%;
-            }
+        .category-section {
+            margin-bottom: 60px;
         }
 
-        /* Sidebar Styling */
-        .sidebar {
-            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
-            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
-            font-size: 0.9rem; text-align: left;
+        .category-header {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            color: #5d8039;
+            margin-bottom: 25px;
+            text-transform: capitalize;
+            border-bottom: 2px solid #e0ddd5;
+            padding-bottom: 10px;
         }
-        .sidebar.active { right: 0; }
-        .user-greeting {
-            padding: 30px 0 15px; margin-bottom: 15px;
-            border-bottom: 1px solid #f4f1ea;
-            font-weight: 700; color: #2d5a27; font-size: 1rem;
+
+        /* --- GRID SYSTEM --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
         }
-        .sidebar-links { list-style: none; padding: 0; margin: 0; }
-        .sidebar-links li { margin-bottom: 10px; }
-        .sidebar-links li a {
-            font-weight: 400; color: #444; padding: 8px 0;
-            display: block; text-decoration: none; transition: 0.2s;
+
+        .menu-card {
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
         }
-        .sidebar-links li a:hover { color: #2d5a27; }
-        .auth-btn-sidebar {
-            margin-top: 20px; border-top: 1px solid #eee;
-            padding-top: 15px; display: block; font-weight: 700;
-            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+
+      
+
+       /* 1. The Container now handles the rounding and "overflow" */
+        .img-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background-color: white;
+            border-radius: 25px; /* Use pixels for a consistent 'Squircle' look */
+            overflow: hidden;    /* This "cuts" the image edges cleanly */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: zoom-in;
         }
-        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27; }
-            
-        /* Footer Styling */
+
+        /* 2. The Image fills the container */
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 'cover' fills the box like your Breakfast image */
+            transition: 0.3s;
+            border-radius: 0;   /* Remove radius from here */
+            margin-bottom: 0;   /* Remove margin from here */
+        }
+        
+
+        .menu-card:hover .img-container img {
+            transform: scale(1.05);
+        }
+
+        .item-name {
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .item-ingredients {
+            font-size: 0.8rem;
+            color: #777;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            min-height: 38px;
+        }
+
+        /* --- MACRO TABLE --- */
+        .macro-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 1px solid #dcd9d0;
+            padding-top: 12px;
+            margin-top: auto;
+        }
+
+        .macro-item { display: flex; flex-direction: column; }
+        .macro-val { font-weight: 700; font-size: 0.95rem; color: #333; }
+        .macro-label { font-size: 0.6rem; text-transform: uppercase; color: #999; font-weight: 600; }
+
+        /* --- LIGHTBOX --- */
+        #lightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            cursor: zoom-out;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #2d312b;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-logo img { height: 35px; margin-bottom: 15px; filter: brightness(0) invert(1); }
+        .footer-text { font-size: 0.8rem; opacity: 0.7; }
+
+        /* --- MOBILE OPTIMIZATION --- */
+        @media (max-width: 600px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .category-header { font-size: 1.6rem; }
+            .item-name { font-size: 0.8rem; }
+            .item-ingredients { font-size: 0.7rem; min-height: 30px; }
+            .macro-val { font-size: 0.8rem; }
+            .macro-label { font-size: 0.5rem; }
+        }
+/* Refined Footer Styles */
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
-            text-align: center; border-top: 5px solid #f4f1ea;
+            text-align: center; border-top: 5px solid white;
         }
         .footer-links {
             display: flex; flex-direction: row; justify-content: center;
@@ -111,52 +209,159 @@
             font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
+        .duration-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* This centers the buttons horizontally */
+    gap: 12px;
+    width: 100%;
+}
+
+/* Ensure buttons take up a consistent width or auto-center */
+.duration-options .btn-outline, 
+.duration-options .btn-primary {
+    width: 100%;
+    max-width: 300px; /* Optional: keeps buttons from getting too wide on PC */
+    margin: 0 auto;
+}
+/* Layout Fixes */
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0; padding: 0;
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    background-color: white;
+}
+
+header {
+    background: white;
+    position: fixed;
+    top: 0; width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-logo { height: 40px; }
+
+/* Sidebar & Overlay */
+.sidebar {
+    position: fixed; 
+    top: 0; right: -280px; 
+    width: 280px; height: 100%;
+    background: white; 
+    transition: transform 0.3s ease-in-out; 
+    z-index: 10000; 
+    padding: 60px 20px 20px 20px;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.sidebar.active { transform: translateX(-280px); }
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 9999;
+}
+
+/* Hamburger Icon */
+.menu-toggle {
+    cursor: pointer;
+    width: 30px; height: 20px;
+    display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.menu-toggle span {
+    display: block; height: 3px; width: 100%;
+    background: #5d8039; border-radius: 3px;
+}
+
+/* Sidebar Internal Elements */
+.user-greeting {
+    font-weight: 700; color: #5d8039;
+    margin-bottom: 20px; padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-links { list-style: none; padding: 0; }
+.sidebar-links li { margin-bottom: 15px; }
+.sidebar-links li a { text-decoration: none; color: #444; display: block; }
+
+.auth-btn-sidebar {
+    margin-top: 20px; padding-top: 15px;
+    border-top: 1px solid #eee;
+    color: #5d8039; font-weight: 700; cursor: pointer;
+}
+
+/* Content Padding (Crucial so header doesn't cover text) */
+main {
+    padding-top: 100px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+/* This is what "pushes" the menu down so the title is visible */
+main.content-wrapper {
+    padding-top: 120px; /* Adjust this if your header gets taller/shorter */
+    
+    /* These keep the menu centered and neat */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
     </style>
 </head>
 <body>
 
+    <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="" alt="Enlarged View">
+    </div>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
 <header>
     <nav class="navbar">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px; width: 100%;">
-            <div class="logo-area">
-                <a href="index.html">
-                    <img src="images/longlogo.png" alt="Logo" class="main-logo" style="height: 45px; width: auto;">
-                </a>
-            </div>
-            <div class="menu-toggle" id="menu-toggle" style="cursor: pointer; font-size: 1.5rem; color: #2d5a27;">
-                <i class="fa-solid fa-bars"></i>
-            </div>
-
-            <div class="sidebar" id="sidebar">
-                <div class="close-sidebar" id="close-sidebar">&times;</div>
-                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-                <ul class="sidebar-links">
-                    <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
-                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
-                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
-                    <li><a href="packages.html">Packages</a></li>
-                    <li><a href="menu.html">Menu</a></li>
-                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
-                </ul>
-            </div>
+        <div class="logo-area">
+            <a href="index.html">
+                <img src="images/longlogo.png" alt="Logo" class="main-logo">
+            </a>
+        </div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span></span><span></span><span></span>
         </div>
     </nav>
 </header>
 
-<div class="menu-display">
-    <picture>
-        <source media="(min-width: 1025px)" srcset="images/menupc.jpeg">
-        <img src="images/menuphone.jpeg" alt="The Good Green Menu">
-    </picture>
+<div class="sidebar" id="sidebar">
+    <div id="close-sidebar" style="position: absolute; top: 20px; right: 20px; font-size: 2rem; cursor: pointer;">&times;</div>
+    <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+    <ul class="sidebar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="plan-status.html">Continue your plan</a></li>
+        <li><a href="user-account.html">My Account</a></li>
+        <li><a href="packages.html">Packages</a></li>
+        <li><a href="menu.html">Menu</a></li>
+    </ul>
+    <div id="auth-btn" class="auth-btn-sidebar">Login</div>
 </div>
+</header>
 
-<main class="container-menu-page" style="padding: 60px 0; text-align: center; width:100%;">
-    <div style="padding-bottom: 40px;">
-        <a href="packages.html" class="btn-primary" style="display: inline-block; width: auto; padding: 18px 45px; text-decoration: none; background-color: #5d8039; color: white; border-radius: 5px; font-weight: 600; font-family: 'Montserrat', sans-serif;">Ready to Customize Your Plan?</a>
-    </div>
-</main>
+    <main class="content-wrapper" id="menu-container">
+        </main>
 
-<footer class="site-footer" style="width: 100%;">
+   <footer class="site-footer">
     <div class="footer-links">
         <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
             <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
@@ -171,64 +376,165 @@
     <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 
-<script>
-    // Existing Sidebar & Auth scripts...
-    function updateAuthUI() {
-        const authBtn = document.getElementById('auth-btn');
-        const greeting = document.getElementById('user-greeting');
-        const userStr = localStorage.getItem('current_user');
+    <script>
+        function renderVisualMenu() {
+            const container = document.getElementById('menu-container');
+            
+            // 1. Group items by category from menu-data.js
+            const groups = rawMenuData.reduce((acc, item) => {
+                const cat = item.category.toLowerCase();
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(item);
+                return acc;
+            }, {});
 
-        if (userStr && greeting && authBtn) {
-            const user = JSON.parse(userStr);
-            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
-            greeting.innerText = `Hi, ${firstName}`;
-            authBtn.innerText = "Logout";
-            authBtn.style.color = "#d9534f";
-        } else if (greeting && authBtn) {
-            greeting.innerText = "Hi, Guest";
-            authBtn.innerText = "Login / Sign Up";
-            authBtn.style.color = "#2d5a27";
+            container.innerHTML = '';
+
+            // 2. Build HTML for each Category
+            for (const category in groups) {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+
+                const displayTitle = (category === 'lunch' || category === 'dinner') ? 'Main Meals' : category;
+                section.innerHTML = `<h2 class="category-header">${displayTitle}</h2>`;
+                
+                const grid = document.createElement('div');
+                grid.className = 'menu-grid';
+
+                groups[category].forEach(item => {
+                    const ingredients = [item.fixed_ingredients, item.removable_ingredients]
+                        .filter(Boolean).join('; ').replace(/;/g, ', ');
+
+                    grid.innerHTML += `
+                        <div class="menu-card">
+                            <div class="img-container" onclick="openImage('${item.image}')">
+                                <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/400?text=Delicious+Vegan+Meal'">
+                            </div>
+                            <div class="item-info">
+                                <h3 class="item-name">${item.name}</h3>
+                                <p class="item-ingredients">${ingredients}</p>
+                                
+                                <div class="macro-row">
+                                    <div class="macro-item">
+                                        <span class="macro-val">${item.Kcal || '--'}</span>
+                                        <span class="macro-label">Kcal</span>
+                                    </div>
+                                    <div class="macro-item">
+                                        <span class="macro-val">${item.protein}g</span>
+                                        <span class="macro-label">Protein</span>
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                section.appendChild(grid);
+                container.appendChild(section);
+            }
         }
-    }
 
-    function handleAuthAction() {
-        if (localStorage.getItem('current_user')) {
-            localStorage.removeItem('current_user');
-            window.location.href = 'index.html';
-        } else {
-            window.location.href = 'index.html?action=login';
+        // Lightbox function
+        function openImage(src) {
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightbox-img');
+            lbImg.src = src;
+            lb.style.display = 'flex';
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        updateAuthUI();
-        const toggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const closeBtn = document.getElementById('close-sidebar');
+        window.onload = renderVisualMenu;
 
-        if(toggle && sidebar && closeBtn) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebar.classList.add('active');
-            });
-            closeBtn.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-            });
-            document.addEventListener('click', (e) => {
-                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                }
-            });
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const authBtn = document.getElementById('auth-btn');
+
+    // Toggle Sidebar Open
+    toggle.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        overlay.style.display = 'block';
     });
 
-    function protectedRedirect(page) {
-        if (localStorage.getItem('current_user')) {
-            window.location.href = page;
-        } else {
-            window.location.href = 'index.html?action=login';
-        }
+    // Toggle Sidebar Closed
+    const closeMenu = () => {
+        sidebar.classList.remove('active');
+        overlay.style.display = 'none';
+    };
+
+    closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+
+    // Personalized Greeting
+    const userStr = localStorage.getItem('current_user');
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        document.getElementById('user-greeting').innerText = `Hi, ${user.full_name.split(' ')[0]}`;
+        authBtn.innerText = "Logout";
+        authBtn.style.color = "#d9534f";
     }
-</script>
+
+    // Auth Button Action
+    authBtn.addEventListener('click', function() {
+        if (localStorage.getItem('current_user')) {
+            if (confirm("Logout?")) {
+                localStorage.removeItem('current_user');
+                window.location.reload();
+            }
+        } else {
+            window.location.href = "index.html?action=login";
+        }
+    });
+});
+
+    </script>
+
+    <a href="packages.html" class="floating-btn">
+    <span>Choose Plan</span>
+    <i class="fa-solid fa-arrow-right"></i>
+    </a>
+    <style>
+    .floating-btn {
+    position: fixed;
+    right: 30px;
+    bottom: 30px; /* Default position */
+    background-color: #5d8039;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 2000; /* High z-index to stay above everything */
+    transition: transform 0.2s, background-color 0.2s;
+}
+    </style>
+    <script>
+        window.addEventListener('scroll', function() {
+    const btn = document.querySelector('.floating-btn');
+    const footer = document.querySelector('.site-footer');
+    
+    // 1. Get the top of the footer relative to the viewport
+    const footerRect = footer.getBoundingClientRect();
+    const footerTop = footerRect.top;
+    const windowHeight = window.innerHeight;
+
+    // 2. Check if the footer is visible on screen
+    if (footerTop < windowHeight) {
+        // Calculate how much of the footer is showing
+        const overflow = windowHeight - footerTop;
+        // Set bottom to: the height of the footer showing + 20px extra gap
+        btn.style.bottom = (overflow + 20) + "px";
+    } else {
+        // Footer is not on screen, reset to default 30px from bottom
+        btn.style.bottom = "30px";
+    }
+});
+    </script>
 </body>
 </html>
