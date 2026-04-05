@@ -158,16 +158,7 @@ const rawMenuData = [
         removable_ingredients: "Shariyeh;Rice;Zucchini;Carrots;Potato;Broccoli", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
-    { 
-        category: "dinner", 
-        name: "Fattoush & Grilled Potatoes", 
-        protein: 9, 
-        Kcal: 450,
-        image: "images/menu items/fattoush.png",
-        fixed_ingredients: "Fattoush;Grilled Potatoes", 
-        removable_ingredients: "Pomegranate Molasses", 
-        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
+    
     { 
         category: "dinner", 
         name: "Tabbouleh & Grilled Potatoes", 
@@ -191,7 +182,16 @@ const rawMenuData = [
         choice_type: "single", 
         choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
-
+    { 
+        category: "dinner", 
+        name: "Fattoush & Grilled Potatoes", 
+        protein: 9, 
+        Kcal: 450,
+        image: "images/menu items/fattoush.png",
+        fixed_ingredients: "Fattoush;Grilled Potatoes", 
+        removable_ingredients: "Pomegranate Molasses", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
     // --- SNACKS ---
     { 
         category: "snack", 
