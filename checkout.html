@@ -11,7 +11,40 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
-        /* --- CUSTOM ALERT MODAL STYLES --- */
+        /* --- 1. AUTH MODAL & OVERLAY STYLES --- */
+        .auth-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); 
+            z-index: 999999; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-modal-box {
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 420px; 
+            position: relative;
+            animation: popIn 0.3s ease-out;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; margin-bottom: 10px; }
+
+        /* --- 2. CUSTOM ALERT MODAL STYLES --- */
         .custom-alert-overlay {
             display: none; 
             position: fixed; 
@@ -133,6 +166,54 @@
 
 <body class="checkout-body">
 
+<div id="auth-modal" class="auth-overlay">
+    <div class="auth-modal-box">
+        <button onclick="closeAuthModal()" class="close-btn">&times;</button>
+        <img src="images/longlogo.png" alt="Logo" style="height: 40px; margin: 0 auto 20px auto; display: block;">
+        <h2 style="color: #5d8039; margin-bottom: 10px;">Welcome!</h2>
+        <p style="margin-bottom: 25px; color: #666;">How would you like to proceed?</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
+            <button onclick="openEntryModal('login')" class="btn-primary" style="width:100%; max-width: 300px;">Log In</button>
+            <button onclick="closeAuthModal()" class="btn-outline" style="width:100%; max-width: 300px; border:1px solid #ccc;">Continue as Guest</button>
+            <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-weight:700; cursor:pointer; margin-top:10px; width: 100%; text-align: center;">
+                Create an account now
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="entry-modal" class="auth-overlay">
+    <div class="auth-modal-box">
+        <button onclick="closeEntryModal()" class="close-btn">&times;</button>
+        <div id="login-form-area" style="width: 100%;">
+            <h2 style="color: #5d8039; margin-bottom: 20px;">Log In</h2>
+            <div class="form-group">
+                <input type="email" id="login-email" class="form-input" placeholder="Email Address">
+                <input type="password" id="login-password" class="form-input" placeholder="Password">
+                <button onclick="handleLogin()" class="btn-primary" style="width:100%;">Enter Kitchen</button>
+                <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-size: 0.85rem; cursor:pointer; margin-top:10px;">
+                    Don't have an account? <strong>Create one</strong>
+                </button>
+            </div>
+        </div>
+
+        <div id="signup-form-area" style="display:none; width: 100%;">
+            <h2 style="color: #5d8039; margin-bottom: 15px;">Sign Up</h2>
+            <div class="form-group">
+                <input type="text" id="reg-name" class="form-input" placeholder="Full Name">
+                <input type="email" id="reg-email" class="form-input" placeholder="Email">
+                <input type="tel" id="reg-phone" class="form-input" placeholder="Phone Number">
+                <textarea id="reg-address" class="form-input" placeholder="Delivery Address" rows="2"></textarea>
+                <input type="password" id="reg-password" class="form-input" placeholder="Password">
+                <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Create Account</button>
+                <button onclick="openEntryModal('login')" style="background:none; border:none; color: #5d8039; font-size: 0.85rem; cursor:pointer; margin-top:10px;">
+                    Already have an account? <strong>Log In</strong>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="custom-alert" class="custom-alert-overlay">
     <div class="custom-alert-box">
         <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
@@ -203,6 +284,7 @@
     let durationKey = "1"; 
     let finalPrice = 0;
     let discountAmount = 0;
+    let pendingUrl = "";
 
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
@@ -215,6 +297,49 @@
         "THE TRIO": { "1": 22, "6": 100, "24": 340 },
         "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
     };
+
+    // --- AUTH LOGIC (SAME AS INDEX.HTML) ---
+    function openEntryModal(mode) {
+        document.getElementById('auth-modal').style.display = 'none';
+        document.getElementById('entry-modal').style.display = 'flex';
+        document.getElementById('login-form-area').style.display = (mode === 'login') ? 'block' : 'none';
+        document.getElementById('signup-form-area').style.display = (mode === 'signup') ? 'block' : 'none';
+    }
+
+    function closeAuthModal() {
+        document.getElementById('auth-modal').style.display = 'none';
+        sessionStorage.setItem('auth_choice_made', 'true');
+    }
+
+    function closeEntryModal() {
+        document.getElementById('entry-modal').style.display = 'none';
+    }
+
+    async function handleLogin() {
+        const e = document.getElementById('login-email').value;
+        const p = document.getElementById('login-password').value;
+        const { data, error } = await sbClient.from('profiles').select('*').eq('email', e).eq('password', p).single();
+        if (error || !data) return alert("Invalid credentials.");
+        localStorage.setItem('current_user', JSON.stringify(data));
+        sessionStorage.setItem('auth_choice_made', 'true');
+        location.reload();
+    }
+
+    async function handleSignup() {
+        const n = document.getElementById('reg-name').value;
+        const e = document.getElementById('reg-email').value;
+        const p = document.getElementById('reg-password').value;
+        if(!e || !p || !n) return alert("Missing fields!");
+        const { data, error } = await sbClient.from('profiles').insert([{ 
+            full_name: n, email: e, password: p,
+            phone_number: document.getElementById('reg-phone').value,
+            address: document.getElementById('reg-address').value
+        }]).select();
+        if (error) return alert("Signup failed.");
+        localStorage.setItem('current_user', JSON.stringify(data[0]));
+        sessionStorage.setItem('auth_choice_made', 'true');
+        location.reload();
+    }
 
     function triggerCustomAlert(url) {
         pendingUrl = url;
@@ -259,7 +384,8 @@
                 window.location.href = 'index.html';
             }
         } else {
-            triggerCustomAlert('index.html?action=login');
+            // OPEN MODAL INSTEAD OF REDIRECT
+            openEntryModal('login');
         }
     }
 
@@ -318,7 +444,7 @@
                 <div class="checkout-badge">${durationKey}-Day Plan</div>
                 <h2>${finalName}</h2>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice}</span>
+                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(1)}</span>
                 </div>`;
         }
 
@@ -333,9 +459,15 @@
             const code = document.getElementById('promo_code').value.trim().toUpperCase();
             const msg = document.getElementById('promo-msg');
             
+            // Check if user is logged in
             if (!user.email) {
                 msg.style.color = "red";
                 msg.innerText = "Please login to use a promo code.";
+                
+                // Open the modal immediately
+                setTimeout(() => {
+                    openEntryModal('login');
+                }, 800);
                 return;
             }
 
@@ -357,16 +489,15 @@
             }
 
             if (code === "TGG20") {
-                
-                discountAmount = Math.round(finalPrice * 0.20* 10) / 10;
+                discountAmount = Math.round(finalPrice * 0.20 * 10) / 10;
                 msg.style.color = "#5d8039";
-                msg.innerText = `Success! $${discountAmount} discount applied.`;
-                document.getElementById('display-price').innerText = `$${finalPrice - discountAmount}`;
+                msg.innerText = `Success! $${discountAmount.toFixed(1)} discount applied.`;
+                document.getElementById('display-price').innerText = `$${(finalPrice - discountAmount).toFixed(1)}`;
             } else {
                 msg.style.color = "red";
                 msg.innerText = "Invalid promo code.";
                 discountAmount = 0;
-                document.getElementById('display-price').innerText = `$${finalPrice}`;
+                document.getElementById('display-price').innerText = `$${finalPrice.toFixed(1)}`;
             }
         };
 
@@ -385,7 +516,7 @@
                     customer_phone: document.getElementById('user_phone').value,
                     customer_address: document.getElementById('user_address').value,
                     plan_name: isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`,
-                    total_price: actualPaidPrice
+                    total_price: parseFloat(actualPaidPrice.toFixed(1))
                 }]).select();
 
                 if (orderError) throw orderError;
@@ -421,7 +552,7 @@
                 }
 
                 // Email Logic
-                let emailPriceDisplay = actualPaidPrice.toString();
+                let emailPriceDisplay = actualPaidPrice.toFixed(1);
                 const currentWeekNum = (profile && profile["24planweek"]) ? profile["24planweek"] : 0;
 
                 await emailjs.send("service_rfcp52l", "template_oglmmp8", { 
