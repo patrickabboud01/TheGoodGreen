@@ -160,6 +160,67 @@
 </script>
 <body>
 
+    <style>/* Promo Banner Styles */
+.promo-banner {
+    width: 100%;
+    background-color: #5d8039; /* Your brand green */
+    color: white;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: fixed; /* Keeps it at the top while scrolling */
+    top: 0;
+    left: 0;
+    z-index: 100001; /* Above the navbar */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.ticker-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.ticker-content {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%; /* Start the text from the right */
+    animation: ticker 25s linear infinite;
+}
+
+@keyframes ticker {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+}
+
+/* IMPORTANT: Adjust Header/Main Padding */
+/* Since the banner is fixed at the top, we must push everything else down */
+header, .navbar {
+    top: 40px !important; /* Matches the banner height */
+}
+
+body {
+    padding-top: 40px; /* Ensures the first section isn't hidden */
+}</style>
+<div class="promo-banner">
+    <div class="ticker-wrapper">
+        <div class="ticker-content">
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; 
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; 
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; 
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;
+            GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong>
+        </div>
+    </div>
+</div>
 <div id="custom-alert">Message goes here</div>
 
 <div id="auth-modal" class="auth-overlay" style="display: none;">

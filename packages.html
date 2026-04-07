@@ -297,7 +297,7 @@
         </div>
         <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
         <table class="pricing-table">
-            <thead><tr><th>Duration</th><th>Price</th></tr></thead>
+            <thead><tr><th>Duration</th><th>Price per day</th></tr></thead>
             <tbody id="pricing-body"></tbody>
         </table>
         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd;">
@@ -381,11 +381,11 @@
     let currentItemsPerDay = 0;
 
     const planDetails = {
-        "THE SOLO": { description: "One high-quality meal daily.", features: ["Lunch or Dinner", "Freshly Prepared"], prices: { "1": "8.5", "5": "42", "24": "200" }, items: 1 },
-        "THE DUO": { description: "Covers your two main meals.", features: ["Lunch or Dinner & Breakfast", "Freshly Prepared"], prices: { "1": "17", "5": "85", "24": "300" }, items: 2 },
-        "THE TRIO": { description: "Total nutrition morning to night.", features: ["Breakfast, Lunch & Dinner", "Freshly Prepared"], prices: { "1": "22", "5": "100", "24": "340" }, items: 3 },
-        "THE FULL PLAN": { description: "3 Meals + 2 Healthy Snacks.", features: ["Full Day Coverage", "Freshly Prepared"], prices: { "1": "25", "5": "110", "24": "400" }, items: 5 },
-        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1": "10", "5": "40", "24": "150" }, items: 2 }
+        "THE SOLO": { description: "One high-quality meal daily.", features: ["Lunch or Dinner", "Freshly Prepared"], prices: { "1": "8.5", "5": "8.4", "24": "8.3" }, items: 1 },
+        "THE DUO": { description: "Covers your two main meals.", features: ["Lunch or Dinner & Breakfast", "Freshly Prepared"], prices: { "1": "17", "5": "17", "24": "12.5" }, items: 2 },
+        "THE TRIO": { description: "Total nutrition morning to night.", features: ["Breakfast, Lunch & Dinner", "Freshly Prepared"], prices: { "1": "22", "5": "20", "24": "14" }, items: 3 },
+        "THE FULL PLAN": { description: "3 Meals + 2 Healthy Snacks.", features: ["Full Day Coverage", "Freshly Prepared"], prices: { "1": "25", "5": "22", "24": "16.6" }, items: 5 },
+        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1": "10", "5": "8", "24": "6.25" }, items: 2 }
     };
 
     function openDurationModal(planName, items) {
@@ -395,26 +395,39 @@
         document.getElementById('durationModal').style.display = 'flex';
     }
 
-    function openPricingModal(planName) {
-        currentSelectedPlan = planName;
-        const data = planDetails[planName];
-        currentItemsPerDay = data.items;
-        document.getElementById('modal-plan-name').innerText = planName;
-        document.getElementById('modal-plan-description').innerText = data.description;
-        
-        const tbody = document.getElementById('pricing-body');
-        tbody.innerHTML = "";
-        
-        // Match the keys exactly to how they are stored in the object
-        const displayKeys = {"1": "1 Day", "5": "1 Week (5 Days)", "24": "Full Month (24 Days)"};
-        for (const [key, label] of Object.entries(displayKeys)) {
-            tbody.innerHTML += `<tr><td>${label}</td><td class="price-tag">$${data.prices[key]}</td></tr>`;
-        }
+   function openPricingModal(planName) {
+    currentSelectedPlan = planName;
+    const data = planDetails[planName];
+    currentItemsPerDay = data.items;
+    
+    document.getElementById('modal-plan-name').innerText = planName;
+    document.getElementById('modal-plan-description').innerText = data.description;
+    
+    const tbody = document.getElementById('pricing-body');
+    tbody.innerHTML = "";
+    
+    // We use an Array here because Objects will always auto-sort "1" before "24"
+    const displayOptions = [
+        { key: "24", label: "Full Month (24 Days)" },
+        { key: "5", label: "1 Week (5 Days)" },
+        { key: "1", label: "1 Day" }
+    ];
 
-        document.getElementById('modal-features').innerHTML = data.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
-        document.getElementById('pricingModal').style.display = "flex";
-    }
+    displayOptions.forEach(option => {
+        const price = data.prices[option.key];
+        tbody.innerHTML += `
+            <tr>
+                <td>${option.label}</td>
+                <td class="price-tag">$${price}</td>
+            </tr>`;
+    });
 
+    document.getElementById('modal-features').innerHTML = data.features.map(f => 
+        `<li><i class="fas fa-check-circle"></i> ${f}</li>`
+    ).join('');
+    
+    document.getElementById('pricingModal').style.display = "flex";
+}
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function goToBuilder(days) {

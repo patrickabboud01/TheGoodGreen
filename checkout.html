@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Good Green | Checkout</title>
@@ -52,7 +52,7 @@
             font-weight: 600;
         }
         .btn-confirm-discard {
-            background: #d9534f; /* Soft red for warning */
+            background: #d9534f;
             color: white;
             border: none;
             padding: 12px;
@@ -67,7 +67,7 @@
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; transition: 0.3s; z-index: 100000; padding: 20px;
             box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
-            font-size: 0.9rem; /* Smaller, less aggressive font */
+            font-size: 0.9rem;
         }
         .sidebar.active { right: 0; }
         
@@ -90,7 +90,7 @@
             padding-top: 15px; display: block; font-weight: 700;
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
-         /* Refined Footer Styles */
+        
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
             text-align: center; border-top: 5px solid #f4f1ea;
@@ -109,40 +109,28 @@
             font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
-        /* --- FIX HEADER OVERLAP --- */
-.checkout-main {
-    padding-top: 100px; /* Adjust this number to match your header's height */
-    min-height: 80vh;   /* Ensures footer stays down */
-}
 
-/* Specific adjustment for PC/Desktop */
-@media (min-width: 992px) {
-    .checkout-main {
-        padding-top: 140px; /* Space for the header */
-        width: 100%;       /* Force it to take full width */
-        max-width: none;   /* Remove the 800px limit */
-        margin: 0;         /* Remove centering margin */
-    }
+        .checkout-main {
+            padding-top: 100px;
+            min-height: 80vh;
+        }
 
-    /* This ensures the inner cards also stretch to the edges */
-    .checkout-card {
-        width: 100%;
-        max-width: none;
-        border-radius: 0; /* Optional: set to 0 if you want sharp edges against the screen */
-    }
-}
-
+        @media (min-width: 992px) {
+            .checkout-main {
+                padding-top: 140px;
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+            .checkout-card {
+                width: 100%;
+                max-width: none;
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B4KZQ9CKM1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-B4KZQ9CKM1');
-</script>
 <body class="checkout-body">
 
 <div id="custom-alert" class="custom-alert-overlay">
@@ -188,6 +176,18 @@
 <main class="checkout-main">
     <div class="checkout-header"><h1>Finalize Your Order</h1></div>
     <section id="order-details" class="checkout-card summary-card"></section>
+
+    <div class="checkout-card" style="margin-bottom: 20px;">
+        <div class="form-group" id="promo-container">
+            <label>Promo Code</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="promo_code" placeholder="Enter code" style="flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
+                <button type="button" id="apply-promo" class="btn-primary" style="padding: 10px 20px; white-space: nowrap;">Apply</button>
+            </div>
+            <small id="promo-msg" style="display: block; margin-top: 5px; font-weight: 600;"></small>
+        </div>
+    </div>
+
     <div class="checkout-card">
         <form id="checkout-form">
             <div class="form-group"><label>Full Name</label><input type="text" id="user_name" required></div>
@@ -198,17 +198,24 @@
     </div>
 </main>
 
-
-
 <script>
-    // --- SUPABASE & EMAILJS CONFIG ---
+    // --- GLOBAL SCOPE VARIABLES ---
+    let durationKey = "1"; 
+    let finalPrice = 0;
+    let discountAmount = 0;
+
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
     const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
     const sbClient = supabase.createClient(sbUrl, sbKey);
 
-    // --- CUSTOM MODAL LOGIC ---
-    let pendingUrl = "";
+    const planPriceBook = {
+        "THE SOLO": { "1": 8.5, "6": 42, "24": 200 },
+        "THE DUO": { "1": 17, "6": 85, "24": 300 },
+        "THE TRIO": { "1": 22, "6": 100, "24": 340 },
+        "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
+    };
+
     function triggerCustomAlert(url) {
         pendingUrl = url;
         document.getElementById('custom-alert').style.display = 'flex';
@@ -224,7 +231,6 @@
         if (pendingUrl) window.location.href = pendingUrl;
     };
 
-    // --- AUTH UI LOGIC ---
     function updateAuthUI() {
         const authBtn = document.getElementById('auth-btn');
         const greeting = document.getElementById('user-greeting');
@@ -257,18 +263,9 @@
         }
     }
 
-    // --- CHECKOUT & SIDEBAR LOGIC ---
-    const planPriceBook = {
-        "THE SOLO": { "1": 12, "6": 50, "24": 200 },
-        "THE DUO": { "1": 17, "6": 85, "24": 300 },
-        "THE TRIO": { "1": 22, "6": 100, "24": 340 },
-        "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
-    };
-
     window.onload = async function() {
         updateAuthUI();
         
-        // Sidebar Toggle Handlers
         const toggle = document.getElementById('menu-toggle');
         const sidebar = document.getElementById('sidebar');
         const closeBtn = document.getElementById('close-sidebar');
@@ -304,8 +301,8 @@
         let finalName = mealsPerDay > 3.5 ? "THE FULL PLAN" : mealsPerDay > 2.5 ? "THE TRIO" : mealsPerDay > 1.5 ? "THE DUO" : "THE SOLO";
 
         let requestedDays = parseInt(urlParams.get('days')) || dayKeys.length;
-        let durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
-        let finalPrice = planPriceBook[finalName][durationKey];
+        durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
+        finalPrice = planPriceBook[finalName][durationKey];
 
         if (isSubscriptionRefill && profile?.plan24days) {
             document.getElementById('order-details').innerHTML = `
@@ -321,7 +318,7 @@
                 <div class="checkout-badge">${durationKey}-Day Plan</div>
                 <h2>${finalName}</h2>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Total:</span><span style="font-size: 2rem; color: #5d8039;">$${finalPrice}</span>
+                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice}</span>
                 </div>`;
         }
 
@@ -331,110 +328,124 @@
             document.getElementById('user_address').value = user.address || '';
         }
 
-document.getElementById('checkout-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true; 
-    btn.innerText = "Processing...";
+        // --- PROMO CODE LOGIC ---
+        document.getElementById('apply-promo').onclick = async function() {
+            const code = document.getElementById('promo_code').value.trim().toUpperCase();
+            const msg = document.getElementById('promo-msg');
+            
+            if (!user.email) {
+                msg.style.color = "red";
+                msg.innerText = "Please login to use a promo code.";
+                return;
+            }
 
-    try {
-        // 1. Create the main order
-        const { data: orderData, error: orderError } = await sbClient.from('orders').insert([{
-            customer_name: document.getElementById('user_name').value,
-            customer_phone: document.getElementById('user_phone').value,
-            customer_address: document.getElementById('user_address').value,
-            plan_name: isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`,
-            total_price: isSubscriptionRefill ? 0 : finalPrice
-        }]).select();
+            if (durationKey === "24") {
+                msg.style.color = "red";
+                msg.innerText = "Promo codes are not valid for 24-day plans.";
+                return;
+            }
 
-        if (orderError) throw orderError;
+            const { count } = await sbClient
+                .from('orders')
+                .select('*', { count: 'exact', head: true })
+                .eq('customer_phone', user.phone_number);
 
-        // 2. Prepare the items
-        const itemsToInsert = [];
-        const orderId = orderData[0].id;
+            if (count > 0) {
+                msg.style.color = "red";
+                msg.innerText = "This code is for new customers only.";
+                return;
+            }
 
-        dayKeys.forEach(day => {
-            fullState[day].forEach(m => {
-                itemsToInsert.push({
-                    order_id: orderId,
-                    day_number: parseInt(day),
-                    meal_name: m.name,
-                    // Check your Supabase column name: is it 'choice' or 'selected_options'?
-                    // Based on your previous error, 'choice' is likely the correct one.
-                    choice: m.selectedChoices?.join(', ') || '', 
-                    removed_ingredients: m.removedIngredients?.join(', ') || '',
-                    special_instructions: m.instructions || m.specialInstructions || ""
+            if (code === "TGG20") {
+                
+                discountAmount = Math.round(finalPrice * 0.20* 10) / 10;
+                msg.style.color = "#5d8039";
+                msg.innerText = `Success! $${discountAmount} discount applied.`;
+                document.getElementById('display-price').innerText = `$${finalPrice - discountAmount}`;
+            } else {
+                msg.style.color = "red";
+                msg.innerText = "Invalid promo code.";
+                discountAmount = 0;
+                document.getElementById('display-price').innerText = `$${finalPrice}`;
+            }
+        };
+
+        // --- FORM SUBMIT LOGIC ---
+        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true; 
+            btn.innerText = "Processing...";
+
+            try {
+                const actualPaidPrice = isSubscriptionRefill ? 0 : (finalPrice - discountAmount);
+
+                const { data: orderData, error: orderError } = await sbClient.from('orders').insert([{
+                    customer_name: document.getElementById('user_name').value,
+                    customer_phone: document.getElementById('user_phone').value,
+                    customer_address: document.getElementById('user_address').value,
+                    plan_name: isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`,
+                    total_price: actualPaidPrice
+                }]).select();
+
+                if (orderError) throw orderError;
+
+                const itemsToInsert = [];
+                const orderId = orderData[0].id;
+
+                dayKeys.forEach(day => {
+                    fullState[day].forEach(m => {
+                        itemsToInsert.push({
+                            order_id: orderId,
+                            day_number: parseInt(day),
+                            meal_name: m.name,
+                            choice: m.selectedChoices?.join(', ') || '', 
+                            removed_ingredients: m.removedIngredients?.join(', ') || '',
+                            special_instructions: m.instructions || m.specialInstructions || ""
+                        });
+                    });
                 });
-            });
+
+                const { error: itemsError } = await sbClient.from('order_items').insert(itemsToInsert);
+                if (itemsError) throw itemsError;
+
+                if (isSubscriptionRefill || durationKey === "24") {
+                    let curWeek = isSubscriptionRefill ? (profile["24planweek"] || 0) : 0;
+                    let nextWeek = curWeek + 1;
+                    let stillActive = nextWeek < 4;
+                    await sbClient.from('profiles').update({
+                        "plan24days": stillActive,
+                        "24planweek": stillActive ? nextWeek : 0,
+                        "active_package_name": stillActive ? (profile?.active_package_name || finalName) : null
+                    }).eq('email', user.email);
+                }
+
+                // Email Logic
+                let emailPriceDisplay = actualPaidPrice.toString();
+                const currentWeekNum = (profile && profile["24planweek"]) ? profile["24planweek"] : 0;
+
+                await emailjs.send("service_rfcp52l", "template_oglmmp8", { 
+                    customer_name: document.getElementById('user_name').value,
+                    customer_phone: document.getElementById('user_phone').value,
+                    customer_address: document.getElementById('user_address').value,
+                    plan_name: (durationKey === "24") ? `${finalName} - Week ${currentWeekNum + 1}` : `${finalName} (${durationKey} Day)`,
+                    total_price: emailPriceDisplay, 
+                    order_id: orderId 
+                });
+
+                localStorage.removeItem('finalOrder');
+                window.location.href = "thanks.html";
+
+            } catch (err) { 
+                console.error("Checkout Error:", err);
+                alert("Error: " + err.message); 
+                btn.disabled = false; 
+                btn.innerText = "Confirm Order";
+            }
         });
-
-        // 3. Insert the detailed items
-        const { error: itemsError } = await sbClient.from('order_items').insert(itemsToInsert);
-        
-        // If this fails, it's usually because 'choice' or 'special_instructions' 
-        // doesn't exist in your Supabase table yet.
-        if (itemsError) throw itemsError;
-
-        // 4. Update Subscription status (If 24-day plan)
-        if (isSubscriptionRefill || durationKey === "24") {
-            let curWeek = isSubscriptionRefill ? (profile["24planweek"] || 0) : 0;
-            let nextWeek = curWeek + 1;
-            let stillActive = nextWeek < 4;
-            await sbClient.from('profiles').update({
-                "plan24days": stillActive,
-                "24planweek": stillActive ? nextWeek : 0,
-                "active_package_name": stillActive ? (profile?.active_package_name || finalName) : null
-            }).eq('email', user.email);
-        }
-
-      // 5. Send confirmation email
-// We determine price based on the week number to avoid any database update race conditions
-let emailPriceDisplay = "0.00"; 
-const currentWeekNum = (profile && profile["24planweek"]) ? profile["24planweek"] : 0;
-
-// LOGIC: 
-// If it's a 24-day plan AND week is 1 (index 0), charge them.
-// If it's a 1-day or 6-day plan, charge them.
-// If it's week 2, 3, or 4 (index 1, 2, 3), it's FREE ($0).
-
-if (durationKey === "24" && currentWeekNum > 0) {
-    // This is Week 2, 3, or 4 of a 24-day plan
-    emailPriceDisplay = "0.00";
-} else if (isSubscriptionRefill) {
-    // Safety check for the "isSub" flag
-    emailPriceDisplay = "0.00";
-} else {
-    // This is a NEW purchase (Week 1, or a 1/6 day plan)
-    const priceFromBook = planPriceBook[finalName][durationKey];
-    emailPriceDisplay = priceFromBook.toString();
-}
-
-// THE SEND BLOCK
-await emailjs.send("service_rfcp52l", "template_oglmmp8", { 
-    customer_name: document.getElementById('user_name').value,
-    customer_phone: document.getElementById('user_phone').value,
-    customer_address: document.getElementById('user_address').value,
-    plan_name: (durationKey === "24") ? `${finalName} - Week ${currentWeekNum + 1}` : `${finalName} (${durationKey} Day)`,
-    total_price: emailPriceDisplay, 
-    order_id: orderId 
-});
-
-        // 6. Cleanup and Redirect
-        localStorage.removeItem('finalOrder');
-        window.location.href = "thanks.html";
-
-    } catch (err) { 
-        console.error("Checkout Error:", err);
-        alert("Database Error: " + err.message + ". Please ensure your order_items table has 'choice' and 'special_instructions' columns."); 
-        btn.disabled = false; 
-        btn.innerText = "Confirm Order";
-    }
-});
     };
-   
 </script>
-<div id="custom-alert">Message goes here</div>
-</body>
+
 <footer class="site-footer">
     <div class="footer-links">
         <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
@@ -449,4 +460,5 @@ await emailjs.send("service_rfcp52l", "template_oglmmp8", {
     </div>
     <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
+</body>
 </html>
