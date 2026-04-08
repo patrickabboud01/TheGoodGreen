@@ -377,63 +377,69 @@ main.content-wrapper {
 </footer>
 
     <script>
-        function renderVisualMenu() {
-            const container = document.getElementById('menu-container');
-            
-            // 1. Group items by category from menu-data.js
-            const groups = rawMenuData.reduce((acc, item) => {
-                const cat = item.category.toLowerCase();
-                if (!acc[cat]) acc[cat] = [];
-                acc[cat].push(item);
-                return acc;
-            }, {});
+       function renderVisualMenu() {
+    const container = document.getElementById('menu-container');
+    
+    // 1. Group items by category, merging lunch and dinner
+    const groups = rawMenuData.reduce((acc, item) => {
+        let cat = item.category.toLowerCase();
+        
+        // Merge lunch and dinner into a single group
+        if (cat === 'lunch' || cat === 'dinner') {
+            cat = 'main meals';
+        }
+        
+        if (!acc[cat]) acc[cat] = [];
+        acc[cat].push(item);
+        return acc;
+    }, {});
 
-            container.innerHTML = '';
+    container.innerHTML = '';
 
-            // 2. Build HTML for each Category
-            for (const category in groups) {
-                const section = document.createElement('div');
-                section.className = 'category-section';
+    // 2. Build HTML for each Category
+    for (const category in groups) {
+        const section = document.createElement('div');
+        section.className = 'category-section';
 
-                const displayTitle = (category === 'lunch' || category === 'dinner') ? 'Main Meals' : category;
-                section.innerHTML = `<h2 class="category-header">${displayTitle}</h2>`;
-                
-                const grid = document.createElement('div');
-                grid.className = 'menu-grid';
+        // Use the category name directly as the title
+        // Since we renamed them to 'main meals' above, it will display correctly
+        section.innerHTML = `<h2 class="category-header" style="text-transform: capitalize;">${category}</h2>`;
+        
+        const grid = document.createElement('div');
+        grid.className = 'menu-grid';
 
-                groups[category].forEach(item => {
-                    const ingredients = [item.fixed_ingredients, item.removable_ingredients]
-                        .filter(Boolean).join('; ').replace(/;/g, ', ');
+        groups[category].forEach(item => {
+            const ingredients = [item.fixed_ingredients, item.removable_ingredients]
+                .filter(Boolean).join('; ').replace(/;/g, ', ');
 
-                    grid.innerHTML += `
-                        <div class="menu-card">
-                            <div class="img-container" onclick="openImage('${item.image}')">
-                                <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/400?text=Delicious+Vegan+Meal'">
+            grid.innerHTML += `
+                <div class="menu-card">
+                    <div class="img-container" onclick="openImage('${item.image}')">
+                        <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/400?text=Delicious+Vegan+Meal'">
+                    </div>
+                    <div class="item-info">
+                        <h3 class="item-name">${item.name}</h3>
+                        <p class="item-ingredients">${ingredients}</p>
+                        
+                        <div class="macro-row">
+                            <div class="macro-item">
+                                <span class="macro-val">${item.Kcal || '--'}</span>
+                                <span class="macro-label">Kcal</span>
                             </div>
-                            <div class="item-info">
-                                <h3 class="item-name">${item.name}</h3>
-                                <p class="item-ingredients">${ingredients}</p>
-                                
-                                <div class="macro-row">
-                                    <div class="macro-item">
-                                        <span class="macro-val">${item.Kcal || '--'}</span>
-                                        <span class="macro-label">Kcal</span>
-                                    </div>
-                                    <div class="macro-item">
-                                        <span class="macro-val">${item.protein}g</span>
-                                        <span class="macro-label">Protein</span>
-                                    </div>
-                                  
-                                </div>
+                            <div class="macro-item">
+                                <span class="macro-val">${item.protein}g</span>
+                                <span class="macro-label">Protein</span>
                             </div>
                         </div>
-                    `;
-                });
+                    </div>
+                </div>
+            `;
+        });
 
-                section.appendChild(grid);
-                container.appendChild(section);
-            }
-        }
+        section.appendChild(grid);
+        container.appendChild(section);
+    }
+}
 
         // Lightbox function
         function openImage(src) {
