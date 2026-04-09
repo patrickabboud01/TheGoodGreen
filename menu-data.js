@@ -108,6 +108,16 @@ const rawMenuData = [
         removable_ingredients: "Carrots;Bell Peppers;Zucchini;Potatoes;Chickpeas", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
+        { 
+        category: "lunch", 
+        name: "Kebbeh bl sayniyeh & salad", 
+        protein: 17, 
+        Kcal: 450,
+        image: "images/menu items/kebbeh.jpeg",
+        fixed_ingredients: "Borghoul ; Soy Mince ; Spices ; Salad ; Salad Dressing", 
+        removable_ingredients: "Fried Almonds", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
     { 
         category: "lunch", 
         name: "Falafel Burger", 
