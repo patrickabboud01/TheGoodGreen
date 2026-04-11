@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Menu | The Good Green</title>
-    
+   <!-- <link rel="stylesheet" href="style.css">-->
     <script src="menu-data.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -274,17 +274,7 @@ header {
     z-index: 9999;
 }
 
-/* Hamburger Icon */
-.menu-toggle {
-    cursor: pointer;
-    width: 30px; height: 20px;
-    display: flex; flex-direction: column; justify-content: space-between;
-}
 
-.menu-toggle span {
-    display: block; height: 3px; width: 100%;
-    background: #5d8039; border-radius: 3px;
-}
 
 /* Sidebar Internal Elements */
 .user-greeting {
@@ -321,6 +311,31 @@ main.content-wrapper {
     padding-left: 20px;
     padding-right: 20px;
 }
+/* Hamburger Icon Styles */
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: var(--brand-green);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Optional: Hide on desktop if you only want it on mobile */
+@media (min-width: 769px) {
+    /* .menu-toggle { display: none; } */
+}
+
     </style>
 </head>
 <body>
@@ -338,24 +353,24 @@ main.content-wrapper {
                 <img src="images/longlogo.png" alt="Logo" class="main-logo">
             </a>
         </div>
+        
         <div class="menu-toggle" id="menu-toggle">
-            <span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
+            <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+            <ul class="sidebar-links">
+                <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
+                <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
+                <li><a href="packages.html">Packages</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="#" id="auth-btn" class="auth-btn-sidebar">Login</a></li>
+            </ul>
         </div>
     </nav>
-</header>
-
-<div class="sidebar" id="sidebar">
-    <div id="close-sidebar" style="position: absolute; top: 20px; right: 20px; font-size: 2rem; cursor: pointer;">&times;</div>
-    <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-    <ul class="sidebar-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="plan-status.html">Continue your plan</a></li>
-        <li><a href="user-account.html">My Account</a></li>
-        <li><a href="packages.html">Packages</a></li>
-        <li><a href="menu.html">Menu</a></li>
-    </ul>
-    <div id="auth-btn" class="auth-btn-sidebar">Login</div>
-</div>
 </header>
 
     <main class="content-wrapper" id="menu-container">
@@ -451,29 +466,47 @@ main.content-wrapper {
 
         window.onload = renderVisualMenu;
 
-        document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const toggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
     const closeBtn = document.getElementById('close-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
     const authBtn = document.getElementById('auth-btn');
 
-    // Toggle Sidebar Open
-    toggle.addEventListener('click', () => {
+    // 1. Toggle Sidebar Open
+    toggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevents the 'click outside' logic from firing immediately
         sidebar.classList.add('active');
-        overlay.style.display = 'block';
+       // overlay.style.display = 'block'; 
     });
 
-    // Toggle Sidebar Closed
+    // 2. X Button: Back to Menu Page
+    closeBtn.addEventListener('click', () => {
+        window.location.href = "menu.html";
+    });
+
+    // 3. Close Sidebar Function
     const closeMenu = () => {
         sidebar.classList.remove('active');
         overlay.style.display = 'none';
     };
 
-    closeBtn.addEventListener('click', closeMenu);
+    // 4. Click Outside Logic
+    // If user clicks the overlay OR anywhere else on the document
+    document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnToggle = toggle.contains(event.target);
+
+        // If the click is not inside the sidebar and not on the hamburger icon
+        if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('active')) {
+            closeMenu();
+        }
+    });
+
+    // Handle clicking the overlay specifically (optional but good for mobile)
     overlay.addEventListener('click', closeMenu);
 
-    // Personalized Greeting
+    // --- User Info & Auth (English) ---
     const userStr = localStorage.getItem('current_user');
     if (userStr) {
         const user = JSON.parse(userStr);
@@ -482,7 +515,6 @@ main.content-wrapper {
         authBtn.style.color = "#d9534f";
     }
 
-    // Auth Button Action
     authBtn.addEventListener('click', function() {
         if (localStorage.getItem('current_user')) {
             if (confirm("Logout?")) {
@@ -494,7 +526,6 @@ main.content-wrapper {
         }
     });
 });
-
     </script>
 
     <a href="packages.html" class="floating-btn">
@@ -541,6 +572,15 @@ main.content-wrapper {
         btn.style.bottom = "30px";
     }
 });
+
+function protectedRedirect(url) {
+    if (localStorage.getItem('current_user')) {
+        window.location.href = url;
+    } else {
+        
+        window.location.href = "index.html?action=login";
+    }
+} 
     </script>
 </body>
 </html>
