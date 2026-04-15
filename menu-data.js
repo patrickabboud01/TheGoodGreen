@@ -184,7 +184,7 @@ const rawMenuData = [
         name: "Scrambled Egg Sandwich", 
         protein: 25,
         Kcal: 500, 
-        image: "images/menu items/EggSandwich.png",
+        image: "images/menu items/EggSandwich.jpg",
         fixed_ingredients: "Chickpea Flour ; Pain Demie ; Spices", 
         removable_ingredients: "Tomato ; Lettuce", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
