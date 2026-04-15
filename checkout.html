@@ -148,6 +148,22 @@
             min-height: 80vh;
         }
 
+        /* NEW: Summary List Styles */
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .summary-list li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
         @media (min-width: 992px) {
             .checkout-main {
                 padding-top: 140px;
@@ -259,14 +275,15 @@
     <section id="order-details" class="checkout-card summary-card"></section>
 
     <div class="checkout-card" style="margin-bottom: 20px;">
-        <div class="form-group" id="promo-container">
-            <label>Promo Code</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="promo_code" placeholder="Enter code" style="flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
-                <button type="button" id="apply-promo" class="btn-primary" style="padding: 10px 20px; white-space: nowrap;">Apply</button>
-            </div>
-            <small id="promo-msg" style="display: block; margin-top: 5px; font-weight: 600;"></small>
-        </div>
+       <div class="form-group" id="promo-container">
+         <label>Promo Code</label>
+         <div class="promo-flex-wrapper">
+         <input type="text" id="promo_code" placeholder="Enter code">
+         <p></p>
+          <button type="button" id="apply-promo" class="btn-primary">Apply</button>
+      </div>
+    <small id="promo-msg" style="display: block; margin-top: 5px; font-weight: 600;"></small>
+</div>
     </div>
 
     <div class="checkout-card">
@@ -285,6 +302,7 @@
     let finalPrice = 0;
     let discountAmount = 0;
     let pendingUrl = "";
+    let isSingleOrder = false;
 
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
@@ -298,7 +316,7 @@
         "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
     };
 
-    // --- AUTH LOGIC (SAME AS INDEX.HTML) ---
+    // --- AUTH LOGIC ---
     function openEntryModal(mode) {
         document.getElementById('auth-modal').style.display = 'none';
         document.getElementById('entry-modal').style.display = 'flex';
@@ -381,10 +399,10 @@
                 localStorage.removeItem('current_user');
                 sessionStorage.removeItem('auth_choice_made');
                 localStorage.removeItem('finalOrder');
+                localStorage.removeItem('single_order_cart');
                 window.location.href = 'index.html';
             }
         } else {
-            // OPEN MODAL INSTEAD OF REDIRECT
             openEntryModal('login');
         }
     }
@@ -408,11 +426,15 @@
 
         const user = JSON.parse(localStorage.getItem('current_user') || '{}');
         const rawOrder = localStorage.getItem('finalOrder');
+        const singleOrderCart = JSON.parse(localStorage.getItem('single_order_cart') || '[]');
         const urlParams = new URLSearchParams(window.location.search);
         const isSubscriptionRefill = urlParams.get('isSub') === 'true';
-        
-        if (!rawOrder) { window.location.href = "builder.html"; return; }
-        const fullState = JSON.parse(rawOrder);
+
+        // REDIRECT IF BOTH ARE EMPTY
+        if (!rawOrder && singleOrderCart.length === 0) { 
+            window.location.href = "builder.html"; 
+            return; 
+        }
 
         let profile = null;
         if (user.email) {
@@ -420,34 +442,58 @@
             profile = data;
         }
 
-        let dayKeys = Object.keys(fullState).filter(day => fullState[day].length > 0);
-        let totalMeals = 0;
-        dayKeys.forEach(d => totalMeals += fullState[d].length);
-        const mealsPerDay = totalMeals / (dayKeys.length || 1);
-        let finalName = mealsPerDay > 3.5 ? "THE FULL PLAN" : mealsPerDay > 2.5 ? "THE TRIO" : mealsPerDay > 1.5 ? "THE DUO" : "THE SOLO";
+        // --- RENDER LOGIC: SINGLE MENU VS PLAN ---
+        if (singleOrderCart.length > 0) {
+            isSingleOrder = true;
+            let itemsHtml = '<ul class="summary-list">';
+            singleOrderCart.forEach(item => {
+                let subtotal = item.price * item.qty;
+                finalPrice += subtotal;
+                itemsHtml += `<li><span>${item.qty}x ${item.name}</span> <span>$${subtotal.toFixed(2)}</span></li>`;
+            });
+            itemsHtml += '</ul>';
 
-        let requestedDays = parseInt(urlParams.get('days')) || dayKeys.length;
-        durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
-        finalPrice = planPriceBook[finalName][durationKey];
-
-        if (isSubscriptionRefill && profile?.plan24days) {
             document.getElementById('order-details').innerHTML = `
-                <div class="checkout-badge">Subscription Refill</div>
-                <h2>${profile.active_package_name}</h2>
-                <p>Week ${profile["24planweek"] + 1} Selection</p>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Due Today:</span><span style="font-size: 2rem; color: #5d8039;">$0.00</span>
+                <div class="checkout-badge">Single Order</div>
+                <h2>Order Summary</h2>
+                ${itemsHtml}
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #eee; padding-top: 15px;">
+                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(2)}</span>
                 </div>`;
-            document.getElementById('submit-btn').innerText = `Confirm Week ${profile["24planweek"] + 1}`;
         } else {
-            document.getElementById('order-details').innerHTML = `
-                <div class="checkout-badge">${durationKey}-Day Plan</div>
-                <h2>${finalName}</h2>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(1)}</span>
-                </div>`;
+            // ORIGINAL MEAL PLAN LOGIC
+            const fullState = JSON.parse(rawOrder);
+            let dayKeys = Object.keys(fullState).filter(day => fullState[day].length > 0);
+            let totalMeals = 0;
+            dayKeys.forEach(d => totalMeals += fullState[d].length);
+            const mealsPerDay = totalMeals / (dayKeys.length || 1);
+            let finalName = mealsPerDay > 3.5 ? "THE FULL PLAN" : mealsPerDay > 2.5 ? "THE TRIO" : mealsPerDay > 1.5 ? "THE DUO" : "THE SOLO";
+
+            let requestedDays = parseInt(urlParams.get('days')) || dayKeys.length;
+            durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
+            finalPrice = planPriceBook[finalName][durationKey];
+
+            if (isSubscriptionRefill && profile?.plan24days) {
+                document.getElementById('order-details').innerHTML = `
+                    <div class="checkout-badge">Subscription Refill</div>
+                    <h2>${profile.active_package_name}</h2>
+                    <p>Week ${profile["24planweek"] + 1} Selection</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Due Today:</span><span style="font-size: 2rem; color: #5d8039;">$0.00</span>
+                    </div>`;
+                document.getElementById('submit-btn').innerText = `Confirm Week ${profile["24planweek"] + 1}`;
+                finalPrice = 0; 
+            } else {
+                document.getElementById('order-details').innerHTML = `
+                    <div class="checkout-badge">${durationKey}-Day Plan</div>
+                    <h2>${finalName}</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(1)}</span>
+                    </div>`;
+            }
         }
 
+        // AUTO-FILL USER DATA
         if (user.full_name) {
             document.getElementById('user_name').value = user.full_name;
             document.getElementById('user_phone').value = user.phone_number || '';
@@ -459,32 +505,19 @@
             const code = document.getElementById('promo_code').value.trim().toUpperCase();
             const msg = document.getElementById('promo-msg');
             
-            // Check if user is logged in
             if (!user.email) {
-                msg.style.color = "red";
-                msg.innerText = "Please login to use a promo code.";
-                
-                // Open the modal immediately
-                setTimeout(() => {
-                    openEntryModal('login');
-                }, 800);
+                msg.style.color = "red"; msg.innerText = "Please login to use a promo code.";
+                setTimeout(() => openEntryModal('login'), 800);
                 return;
             }
-
             if (durationKey === "24") {
-                msg.style.color = "red";
-                msg.innerText = "Promo codes are not valid for 24-day plans.";
+                msg.style.color = "red"; msg.innerText = "Promo codes are not valid for 24-day plans.";
                 return;
             }
 
-            const { count } = await sbClient
-                .from('orders')
-                .select('*', { count: 'exact', head: true })
-                .eq('customer_phone', user.phone_number);
-
+            const { count } = await sbClient.from('orders').select('*', { count: 'exact', head: true }).eq('customer_phone', user.phone_number);
             if (count > 0) {
-                msg.style.color = "red";
-                msg.innerText = "This code is for new customers only.";
+                msg.style.color = "red"; msg.innerText = "This code is for new customers only.";
                 return;
             }
 
@@ -494,8 +527,7 @@
                 msg.innerText = `Success! $${discountAmount.toFixed(1)} discount applied.`;
                 document.getElementById('display-price').innerText = `$${(finalPrice - discountAmount).toFixed(1)}`;
             } else {
-                msg.style.color = "red";
-                msg.innerText = "Invalid promo code.";
+                msg.style.color = "red"; msg.innerText = "Invalid promo code.";
                 discountAmount = 0;
                 document.getElementById('display-price').innerText = `$${finalPrice.toFixed(1)}`;
             }
@@ -510,37 +542,58 @@
 
             try {
                 const actualPaidPrice = isSubscriptionRefill ? 0 : (finalPrice - discountAmount);
+                let orderPlanName = "";
+
+                if (isSingleOrder) {
+                    orderPlanName = "Single Menu Items";
+                } else {
+                    orderPlanName = isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`;
+                }
 
                 const { data: orderData, error: orderError } = await sbClient.from('orders').insert([{
                     customer_name: document.getElementById('user_name').value,
                     customer_phone: document.getElementById('user_phone').value,
                     customer_address: document.getElementById('user_address').value,
-                    plan_name: isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`,
-                    total_price: parseFloat(actualPaidPrice.toFixed(1))
+                    plan_name: orderPlanName,
+                    total_price: parseFloat(actualPaidPrice.toFixed(2))
                 }]).select();
 
                 if (orderError) throw orderError;
-
-                const itemsToInsert = [];
                 const orderId = orderData[0].id;
+                const itemsToInsert = [];
 
-                dayKeys.forEach(day => {
-                    fullState[day].forEach(m => {
+                if (isSingleOrder) {
+                    singleOrderCart.forEach(item => {
                         itemsToInsert.push({
                             order_id: orderId,
-                            day_number: parseInt(day),
-                            meal_name: m.name,
-                            choice: m.selectedChoices?.join(', ') || '', 
-                            removed_ingredients: m.removedIngredients?.join(', ') || '',
-                            special_instructions: m.instructions || m.specialInstructions || ""
+                            day_number: 1,
+                            meal_name: item.name,
+                            choice: `Qty: ${item.qty}`,
+                            removed_ingredients: '',
+                            special_instructions: "Single Menu Order"
                         });
                     });
-                });
+                } else {
+                    const fullState = JSON.parse(rawOrder);
+                    Object.keys(fullState).forEach(day => {
+                        fullState[day].forEach(m => {
+                            itemsToInsert.push({
+                                order_id: orderId,
+                                day_number: parseInt(day),
+                                meal_name: m.name,
+                                choice: m.selectedChoices?.join(', ') || '', 
+                                removed_ingredients: m.removedIngredients?.join(', ') || '',
+                                special_instructions: m.instructions || m.specialInstructions || ""
+                            });
+                        });
+                    });
+                }
 
                 const { error: itemsError } = await sbClient.from('order_items').insert(itemsToInsert);
                 if (itemsError) throw itemsError;
 
-                if (isSubscriptionRefill || durationKey === "24") {
+                // Update 24-day subscription progress if applicable
+                if (!isSingleOrder && (isSubscriptionRefill || durationKey === "24")) {
                     let curWeek = isSubscriptionRefill ? (profile["24planweek"] || 0) : 0;
                     let nextWeek = curWeek + 1;
                     let stillActive = nextWeek < 4;
@@ -551,20 +604,19 @@
                     }).eq('email', user.email);
                 }
 
-                // Email Logic
-                let emailPriceDisplay = actualPaidPrice.toFixed(1);
-                const currentWeekNum = (profile && profile["24planweek"]) ? profile["24planweek"] : 0;
-
+                // EmailJS Logic
                 await emailjs.send("service_rfcp52l", "template_oglmmp8", { 
                     customer_name: document.getElementById('user_name').value,
                     customer_phone: document.getElementById('user_phone').value,
                     customer_address: document.getElementById('user_address').value,
-                    plan_name: (durationKey === "24") ? `${finalName} - Week ${currentWeekNum + 1}` : `${finalName} (${durationKey} Day)`,
-                    total_price: emailPriceDisplay, 
+                    plan_name: orderPlanName,
+                    total_price: actualPaidPrice.toFixed(2), 
                     order_id: orderId 
                 });
 
+                // CLEAR BOTH CARTS ON SUCCESS
                 localStorage.removeItem('finalOrder');
+                localStorage.removeItem('single_order_cart');
                 window.location.href = "thanks.html";
 
             } catch (err) { 

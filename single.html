@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Now | The Good Green</title>
+    <script src="single-data.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+          .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        /* --- BRAND COLORS & BASE --- */
+        :root { 
+            --brand-green: #2d5a27; 
+            --light-green: #5d8039; 
+            --text-dark: #333; 
+            --bg-cream: #f9fbf8;
+        }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            margin: 0; 
+            color: var(--text-dark); 
+            overflow-x: hidden; 
+            background-color: white; 
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        header {
+            background-color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        /* --- MENU TOGGLE (HAMBURGER) --- */
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 10001;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: var(--brand-green);
+            transition: 0.3s;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+            z-index: 10000;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar.active {
+            transform: translateX(-280px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 9999;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .sidebar-links li {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .sidebar-links a:hover {
+            color: var(--light-green);
+        }
+
+        .user-greeting {
+            font-weight: 700;
+            color: var(--light-green);
+            margin-bottom: 10px;
+        }
+
+        /* --- CONTENT WRAPPER --- */
+        main.content-wrapper { 
+            padding-top: 120px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding-left: 20px; 
+            padding-right: 20px; 
+            min-height: 80vh; 
+        }
+
+        .category-header { 
+            font-size: 2.2rem; 
+            color: var(--light-green); 
+            border-bottom: 2px solid #e0ddd5; 
+            padding-bottom: 10px; 
+            margin-bottom: 25px; 
+            text-transform: capitalize; 
+        }
+
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 30px; 
+        }
+
+        /* --- CARDS & ITEMS --- */
+        .img-container { 
+            width: 100%; 
+            aspect-ratio: 1/1; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            position: relative; 
+            margin-bottom: 15px; 
+        }
+
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .price-tag { 
+            position: absolute; 
+            top: 15px; 
+            left: 15px; 
+            background: var(--brand-green); 
+            color: white; 
+            padding: 5px 12px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+        }
+
+        .item-name { font-weight: 700; text-transform: uppercase; margin: 0 0 8px 0; }
+
+        .order-action { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-top: 1px solid #eee; 
+            padding-top: 10px; 
+        }
+
+        /* --- COMING SOON CARD --- */
+        .coming-soon-container { display: flex; justify-content: center; align-items: center; min-height: 60vh; width: 100%; }
+        .cs-card { 
+            background: white; 
+            border-radius: 30px; 
+            padding: 60px 40px; 
+            text-align: center; 
+            border: 2px dashed var(--light-green); 
+            max-width: 500px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+
+        /* --- COUNTER BUTTONS --- */
+        .qty-controls { display: flex; align-items: center; gap: 12px; }
+        .add-btn { background: var(--light-green); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .qty-btn { background: white; color: var(--light-green); border: 1.5px solid var(--light-green); width: 32px; height: 32px; border-radius: 50%; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .qty-text { font-weight: 700; color: var(--brand-green); min-width: 20px; text-align: center; }
+
+        /* --- MODAL STYLES --- */
+        .modal { display: none; position: fixed; z-index: 11000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content { background-color: white; border-radius: 25px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; padding: 30px; position: relative; box-shadow: 0 5px 30px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; }
+        .checkout-now-btn { display: block; width: 100%; background: var(--brand-green); color: white; text-align: center; padding: 15px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top: 20px; }
+
+        /* --- FOOTER & FLOATING BTN --- */
+        .floating-btn { position: fixed; right: 30px; bottom: 30px; background: #5d8039; color: white; padding: 15px 25px; border-radius: 50px; text-decoration: none; font-weight: 700; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; cursor: pointer; transition: bottom 0.2s; border:none; }
+        .floating-btn.disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div id="cart-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="margin:0; color:var(--brand-green)">Your Cart</h2>
+            <span style="font-size:1.5rem; cursor:pointer;" onclick="closeCart()">&times;</span>
+        </div>
+        <div id="cart-items-list"></div>
+        <div id="cart-summary" style="margin-top:20px; text-align:right;">
+            <h3 id="modal-total">Total: $0.00</h3>
+        </div>
+        <a href="checkout.html" class="checkout-now-btn">Proceed to Checkout</a>
+    </div>
+</div>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
+        <div class="menu-toggle" id="menu-toggle"><span></span><span></span><span></span><span></span></div>
+        
+        <div class="sidebar" id="sidebar">
+            <div id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--brand-green);">&times;</div>
+            <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+            <ul class="sidebar-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html">Meal Plan Menu</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="content-wrapper" id="single-container"></main>
+<style>
+    /* --- REPLACE YOUR OLD .footer-icon WITH THIS --- */
+.footer-icon-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* Space between the icon and the text */
+    text-decoration: none;
+    transition: transform 0.2s;
+    min-width: 100px; /* Optional: ensures even spacing */
+}
+
+/* Icons are large and white */
+.footer-icon-block i {
+    color: white;
+    font-size: 1.6rem; /* Adjust size if needed */
+}
+
+/* Handles are small and white */
+.social-handle {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* HOVER EFFECT */
+.footer-icon-block:hover {
+    transform: translateY(-3px);
+}
+</style>
+<footer class="site-footer">
+    <div class="footer-links">
+        
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon-block">
+            <i class="fa-brands fa-instagram"></i>
+            <span class="social-handle">thegoodgreenlb</span>
+        </a>
+
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon-block">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span class="social-handle">+961 81 15 39 17</span>
+        </a>
+
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon-block">
+            <i class="fa-brands fa-facebook-f"></i>
+            <span class="social-handle">thegoodgreen</span>
+        </a>
+
+    </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<button class="floating-btn" id="float-cart" onclick="openCart()">
+    <span>View Cart: $0.00</span> <i class="fa-solid fa-cart-shopping"></i>
+</button>
+
+<script>
+    // Master Switch
+    const isComingSoon = true; 
+
+    let cart = JSON.parse(localStorage.getItem('single_order_cart')) || [];
+
+    function initPage() {
+        const container = document.getElementById('single-container');
+        const floatBtn = document.getElementById('float-cart');
+
+        if (isComingSoon) {
+            container.innerHTML = `
+                <div class="coming-soon-container">
+                    <div class="cs-card">
+                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3.5rem; color: var(--light-green); margin-bottom: 25px; display: block;"></i>
+                        <h1 style="color: var(--brand-green); margin-bottom: 15px;">Single Orders Coming Soon</h1>
+                        <p style="color: #666; line-height: 1.6;">We are perfecting our daily individual menu. Check back soon for plant-powered goodness delivered to your door!</p>
+                    </div>
+                </div>`;
+            floatBtn.classList.add('disabled');
+            floatBtn.innerHTML = `<span>Coming Soon</span> <i class="fa-solid fa-lock"></i>`;
+            floatBtn.onclick = null;
+        } else {
+            renderMenu();
+        }
+    }
+
+    // --- CART & MENU LOGIC ---
+    function openCart() {
+        renderCartModal();
+        document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCart() {
+        document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function updateCartTotal() {
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        document.getElementById('float-cart').querySelector('span').innerText = `View Cart: $${total.toFixed(2)}`;
+        document.getElementById('modal-total').innerText = `Total: $${total.toFixed(2)}`;
+        localStorage.setItem('single_order_cart', JSON.stringify(cart));
+    }
+
+    function renderMenu() {
+        const container = document.getElementById('single-container');
+        container.innerHTML = '';
+        const groups = singleMenuData.reduce((acc, item) => {
+            if (!acc[item.category]) acc[item.category] = [];
+            acc[item.category].push(item);
+            return acc;
+        }, {});
+
+        for (const cat in groups) {
+            const section = document.createElement('div');
+            section.innerHTML = `<h2 class="category-header">${cat}</h2>`;
+            const grid = document.createElement('div');
+            grid.className = 'menu-grid';
+
+            groups[cat].forEach(item => {
+                const safeName = item.name.replace(/\s+/g, '-');
+                grid.innerHTML += `
+                    <div class="menu-card">
+                        <div class="img-container">
+                            <div class="price-tag">$${item.price.toFixed(2)}</div>
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <h3 class="item-name">${item.name}</h3>
+                        <div class="order-action">
+                            <span style="font-size:0.8rem; color:#999;">${item.Kcal} Kcal</span>
+                            <div class="qty-controls" id="controls-${safeName}"></div>
+                        </div>
+                    </div>`;
+            });
+            section.appendChild(grid);
+            container.appendChild(section);
+            groups[cat].forEach(item => updateControls(item.name, item.price));
+        }
+        updateCartTotal();
+    }
+
+    function renderCartModal() {
+        const list = document.getElementById('cart-items-list');
+        list.innerHTML = '';
+        if (cart.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#999;">Your cart is empty.</p>';
+            return;
+        }
+        cart.forEach(item => {
+            list.innerHTML += `
+                <div class="cart-item-row">
+                    <div style="flex:1;">
+                        <h4 style="margin:0; text-transform:uppercase;">${item.name}</h4>
+                        <p style="margin:5px 0; color:var(--light-green); font-weight:700;">$${(item.price * item.qty).toFixed(2)}</p>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="removeFromCart('${item.name}', ${item.price}); renderCartModal();">-</button>
+                        <span class="qty-text">${item.qty}</span>
+                        <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}); renderCartModal();">+</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function addToCart(name, price) {
+        const existing = cart.find(i => i.name === name);
+        if (existing) existing.qty++;
+        else cart.push({ name, price, qty: 1 });
+        updateControls(name, price);
+        updateCartTotal();
+    }
+
+    function removeFromCart(name, price) {
+        const existing = cart.find(i => i.name === name);
+        if (existing) {
+            existing.qty--;
+            if (existing.qty <= 0) cart = cart.filter(i => i.name !== name);
+        }
+        updateControls(name, price);
+        updateCartTotal();
+    }
+
+    function updateControls(name, price) {
+        const safeName = name.replace(/\s+/g, '-');
+        const div = document.getElementById(`controls-${safeName}`);
+        if (!div) return;
+        const cartItem = cart.find(i => i.name === name);
+        if (cartItem && cartItem.qty > 0) {
+            div.innerHTML = `
+                <button class="qty-btn" onclick="removeFromCart('${name}', ${price})">-</button>
+                <span class="qty-text">${cartItem.qty}x</span>
+                <button class="qty-btn" onclick="addToCart('${name}', ${price})">+</button>`;
+        } else {
+            div.innerHTML = `<button class="add-btn" onclick="addToCart('${name}', ${price})">Add</button>`;
+        }
+    }
+
+    // --- SIDEBAR & GLOBAL ---
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const closeBtn = document.getElementById('close-sidebar');
+
+    toggle.onclick = (e) => { 
+        e.stopPropagation();
+        sidebar.classList.add('active'); 
+       // overlay.style.display = 'block'; 
+    };
+
+    const hideSidebar = () => { 
+        sidebar.classList.remove('active'); 
+        overlay.style.display = 'none'; 
+    };
+
+    overlay.onclick = hideSidebar;
+    closeBtn.onclick = hideSidebar;
+
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('float-cart');
+        const footer = document.querySelector('.site-footer');
+        if(!footer) return;
+        const footerRect = footer.getBoundingClientRect();
+        btn.style.bottom = (footerRect.top < window.innerHeight) ? (window.innerHeight - footerRect.top + 20) + "px" : "30px";
+    });
+
+    window.onclick = (event) => { if (event.target == document.getElementById('cart-modal')) closeCart(); };
+
+    function protectedRedirect(url) {
+        if (localStorage.getItem('current_user')) window.location.href = url;
+        else alert("Please log in to access this page.");
+    }
+    // Close sidebar when clicking outside of it
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggle = document.getElementById('menu-toggle');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    // Check if the sidebar is currently open
+    if (sidebar.classList.contains('active')) {
+        
+        // If the click happened OUTSIDE the sidebar AND OUTSIDE the toggle button
+        if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+            sidebar.classList.remove('active');
+            
+            // Also hide the overlay if you are using one
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+    }
+});
+
+    window.onload = initPage;
+</script>
+</body>
+</html>
