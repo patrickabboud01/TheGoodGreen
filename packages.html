@@ -52,7 +52,7 @@
             .sidebar-links li { margin-bottom: 0; }
             .auth-btn-sidebar {
                 margin-top: 0; border: none; padding: 8px 20px !important;
-                background-color: #5d8039; color: white !important; border-radius: 5px;
+                background-color: white; color: #5d8039 !important; border-radius: 5px;
             }
             .navbar .container {
                 display: flex; justify-content: space-between; align-items: center;
@@ -76,7 +76,8 @@
         .plan-feature-list li { margin-bottom: 5px; }
         .price-tag { font-weight: 700; color: #5d8039; }
         .mb-10 { margin-bottom: 10px; }
-        .card-price-hint { font-size: 1rem; font-weight: 700; color: #2d5a27; margin: 8px 0 16px; }
+        .card-price-hint { font-size: 1rem; font-weight: 700; color: #5d8039; margin: 8px 0 16px; }
+        .card-price-hint-orange { font-size: 1rem; font-weight: 700; color: #d66f33; margin: 8px 0 16px; }
 
         @media (max-width: 640px) {
             section#plans { padding: 30px 0 !important; }
@@ -179,8 +180,8 @@
                 <h3>THE TRIO</h3>
                 <p style="color: #888; font-size: 0.9rem;">Breakfast, Lunch & Dinner</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">3 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
-                <p class="card-price-hint">From $14 / day</p>
-                <button class="btn-primary mb-10" onclick="openDurationModal('THE TRIO', 3)">Select Package</button>
+                <p class="card-price-hint-orange">From $14 / day</p>
+                <button class="btn-primary-orange mb-10" onclick="openDurationModal('THE TRIO', 3)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('THE TRIO')">View Details & Prices</button>
             </div>
 

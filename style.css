@@ -133,6 +133,27 @@ section { padding: 60px 0; }
     color: #5d8039;
 }
 
+.btn-primary-orange, .btn-outline {
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size:medium;
+}
+
+.btn-primary-orange {
+    background: transparent;
+    border: 2.5px solid #d66f33;
+    color: #d66f33;
+}
+
 .btn-outline {
     background: transparent;
     border: 2.5px solid #5d8039;
