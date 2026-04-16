@@ -110,7 +110,7 @@
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
         .sidebar-links li { margin-bottom: 10px; }
         .sidebar-links li a {
-            font-weight: 400; color: #5d8039; padding: 8px 0;
+            font-weight: 400; color: #5d8039; padding: 14px 16px;
             display: block; text-decoration: none; transition: 0.2s;
         }
         .auth-btn-sidebar {
@@ -203,7 +203,7 @@ header, .navbar {
 }
 
 body {
-    padding-top: 40px; /* Ensures the first section isn't hidden */
+    padding-top: 0; /* Hero is full height */
 }</style>
 <div class="promo-banner">
     <div class="ticker-wrapper">
@@ -303,58 +303,85 @@ body {
 </header>
 
 <main>
-    <div id="auto-gallery" class="gallery-container">
+    <section id="hero">
         <div class="gallery-wrapper" id="gallery-wrapper"></div>
-        <div class="gallery-overlay"></div>
-    </div>
-
-    <style>
-        .gallery-container {
-            position: relative; width: 95%; max-width: 1366px; 
-            aspect-ratio: 1366 / 768; margin: 20px auto 10px;
-            overflow: hidden; border-radius: 25px; background: none !important; 
-        }
-        .gallery-wrapper img {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; opacity: 0; transition: opacity 1.2s ease-in-out;
-            z-index: 1;
-        }
-        .gallery-wrapper img.active { opacity: 1; z-index: 2; }
-    </style>
-
-    <section class="hero-home">
-        <div class="container" style="max-width: 800px; text-align: center;">
-            <h1 style="font-size: 1.2rem; color: #5d8039;">YOUR PERSONAL <br>PLANT-BASED KITCHEN</h1>
-            <p style="font-size: 0.8rem; color: #888; margin :10px 0 30px; line-height: 1.6;">
-                We are a premium, 100% plant-based meal subscription service that removes the friction of vegan living.
-            </p>
+        <div class="hero-overlay">
+            <h1>Eat Well. Feel Better.</h1>
+            <p>Premium plant-based meal plans delivered in Lebanon</p>
             <div class="hero-btns">
-                <a href="#how-it-works" class="btn-outline">How It Works</a>
-                <a href="menu.html" class="btn-primary">Meal Plan Menu</a>                
-                <a href="packages.html" class="btn-primary">Explore Plans</a>    
-                <a href="single.html" class="btn-primary">Single Order Menu</a> 
+                <a href="packages.html" class="btn-outline btn-outline-white">Explore Plans</a>
+                <a href="menu.html" class="btn-outline btn-outline-white">View Menu</a>
+                <a href="single.html" class="btn-outline btn-outline-white">Single Order</a>
             </div>
         </div>
     </section>
 
-    <section id="how-it-works" style="background: white; padding: 60px 0; border-top: 1px solid #eee;">
+    <style>
+        #hero {
+            position: relative; width: 100%; height: 100vh; max-height: 700px; min-height: 420px;
+            overflow: hidden; margin: 0;
+        }
+        .gallery-wrapper {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+        }
+        .gallery-wrapper img {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transition: opacity 1s ease;
+            z-index: 1;
+        }
+        .gallery-wrapper img.active { opacity: 1; z-index: 2; }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; z-index: 3;
+        }
+       .hero-overlay h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: white; 
+            font-weight: 700; 
+            /* Reduced margin-bottom from 10px to 0 or 5px */
+            margin-bottom: 2px; 
+            /* Tighten line-height to remove extra vertical space */
+            line-height: 1.1; 
+        }
+
+        .hero-overlay p {
+            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            color: rgba(255,255,255,0.88); 
+            /* Ensure there is no top margin pushing it away from the H1 */
+            margin-top: 0; 
+            margin-bottom: 30px;
+        }
+        .hero-btns {
+            display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+        }
+        .btn-outline-white {
+            border: 2px solid white; color: white; background: transparent;
+            padding: 14px 28px; border-radius: 8px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-outline-white:hover { background: white; color: #2d5a27; }
+    </style>
+
+    <section id="how-it-works" style="background: white; padding: 60px 0; border-top: 1px solid #eee; scroll-margin-top: 100px;">
         <div class="container">
             <h2 style="text-align: center; color: #5d8039; margin-bottom: 40px;">Three Simple Steps</h2>
             <div class="plan-grid" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap;">
-                <div class="step-card" style="text-align:center; max-width: 250px;">
+                <div class="step-card" style="text-align:center;">
                     <img src="images/icons-03.png" alt="Icon" style="height: 70px;">
                     <h4>1. Pick a Package</h4>
-                    <p style="font-size: 0.85rem; color: #777;">Choose the number of daily items you need.</p>
+                    <p style="font-size: 0.95rem; color: #777;">Choose the number of daily items you need.</p>
                 </div>
-                <div class="step-card" style="text-align:center; max-width: 250px;">
+                <div class="step-card" style="text-align:center;">
                     <img src="images/icons-02.png" alt="Icon" style="height: 60px;">
                     <h4>2. Choose Your Duration</h4>
-                    <p style="font-size: 0.85rem; color: #777;">Select a duration commitment.</p>
+                    <p style="font-size: 0.95rem; color: #777;">Select a duration commitment.</p>
                 </div>
-                <div class="step-card" style="text-align:center; max-width: 250px;">
+                <div class="step-card" style="text-align:center;">
                     <img src="images/icons-01.png" alt="Icon" style="height: 60px;">
                     <h4>3. Build Your Plan</h4>
-                    <p style="font-size: 0.85rem; color: #777;">Select every meal and customize ingredients.</p>
+                    <p style="font-size: 0.95rem; color: #777;">Select every meal and customize ingredients.</p>
                     
                 </div>
             </div>
@@ -365,7 +392,16 @@ body {
 <section class="reviews-section" style="padding: 60px 20px; background: #fdfdfd; text-align: center;">
     <h2 style="color: #2d5a27; margin-bottom: 30px;">What Our Community Says</h2>
     
-    <div class="reviews-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 1200px; margin: 0 auto;">
+    <div class="reviews-container" style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; -webkit-overflow-scrolling: touch; max-width: 1200px; margin: 0 auto;">
+        <style>
+            .reviews-container::-webkit-scrollbar { display: none; }
+            .reviews-container { -ms-overflow-style: none; scrollbar-width: none; }
+            .review-card { min-width: 280px; max-width: 300px; scroll-snap-align: start; flex-shrink: 0; }
+            @media (min-width: 768px) {
+                .reviews-container { overflow-x: visible; flex-wrap: wrap; justify-content: center; }
+                .review-card { min-width: 0; }
+            }
+        </style>
         
         <div class="review-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 300px; border: 1px solid #eee;">
             <div style="color: #ffc107; margin-bottom: 10px;">★★★★★</div>
@@ -498,7 +534,7 @@ Food: 5/5  |  Service: 5/5  |  Atmosphere: 5/5"</p>
                     if (!localStorage.getItem('current_user')) {
                         document.getElementById('auth-modal').style.display = 'flex';
                     }
-                }, 1200);
+                }, 2800);
             }
         }
     };

@@ -72,12 +72,12 @@
     text-align: center !important; 
 }
 
-.plan-feature-list { 
-    margin: 0 auto; 
-    padding: 0; 
-    list-style: none; 
-    font-size: 0.85rem; 
-    color: #666; 
+.plan-feature-list {
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+    color: #666;
     display: inline-block; /* Allows the list to be centered as a block */
     text-align: left;      /* Keeps the text lines aligned with each other inside the center */
 }
@@ -86,10 +86,45 @@
     margin-bottom: 5px; 
 }
 
-.price-tag { 
-    font-weight: 700; 
-    color: #5d8039; 
+.price-tag {
+    font-weight: 700;
+    color: #5d8039;
 }
+
+/* Missing utility class */
+.mb-10 { margin-bottom: 10px; }
+
+/* Plan card price hint */
+.card-price-hint {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2d5a27;
+    margin: 8px 0 16px;
+}
+
+/* Mobile responsive plan section */
+@media (max-width: 640px) {
+    section#plans { padding: 30px 0 !important; }
+    section#plans h2 { margin-bottom: 24px !important; }
+    .plan-card { padding: 28px 18px !important; }
+}
+
+/* Desktop card centering */
+
+/* Button styling fixes */
+.btn-details {
+    padding: 10px 0;
+    display: inline-block;
+    font-size: 0.9rem;
+}
+
+/* NUTRITION PLAN featured styling */
+.plan-card.featured-dashed {
+    border: 2px dashed #5d8039;
+    background: #f9fff4;
+    position: relative;
+}
+
 /* Refined Footer Styles */
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
@@ -106,7 +141,7 @@
         }
         .footer-icon i { font-size: 1.6rem; }
         .site-footer p {
-            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            font-size: 0.8rem; opacity: 0.6; margin: 0; padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
         .duration-options {
@@ -174,6 +209,7 @@
                 <h3>THE SOLO</h3>
                 <p style="color: #888; font-size: 0.9rem;">One Hearty Meal</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">1 Meal <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $8.30 / day</p>
                 <button class="btn-outline mb-10" onclick="openDurationModal('THE SOLO', 1)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('THE SOLO')">View Details & Prices</button>
             </div>
@@ -182,6 +218,7 @@
                 <h3>THE DUO</h3>
                 <p style="color: #888; font-size: 0.9rem;">Lunch & Dinner</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $12.5 / day</p>
                 <button class="btn-outline mb-10" onclick="openDurationModal('THE DUO', 2)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('THE DUO')">View Details & Prices</button>
             </div>
@@ -191,6 +228,7 @@
                 <h3>THE TRIO</h3>
                 <p style="color: #888; font-size: 0.9rem;">Breakfast, Lunch & Dinner</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">3 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $14 / day</p>
                 <button class="btn-primary mb-10" onclick="openDurationModal('THE TRIO', 3)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('THE TRIO')">View Details & Prices</button>
             </div>
@@ -199,6 +237,7 @@
                 <h3>THE FULL PLAN</h3>
                 <p style="color: #888; font-size: 0.9rem;">3 Meals + 2 Snacks</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">5 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $16.6 / day</p>
                 <button class="btn-outline mb-10" onclick="openDurationModal('THE FULL PLAN', 5)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('THE FULL PLAN')">View Details & Prices</button>
             </div>
@@ -207,26 +246,33 @@
                 <h3>PROTEIN BOOSTER</h3>
                 <p style="color: #888; font-size: 0.9rem;">Max Protein Focus</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $6.25 / day</p>
                 <button class="btn-outline mb-10" onclick="openDurationModal('PROTEIN BOOSTER', 1)">Select Package</button>
                 <button class="btn-details" onclick="openPricingModal('PROTEIN BOOSTER')">View Details & Prices</button>
             </div>
 
-           <div class="plan-card" style="border: 2px dashed #5d8039; background: #f9fff4; position: relative;">
+           <div class="plan-card featured-dashed">
                 <h3 style="color: #5d8039;">NUTRITION PLAN</h3>
                 <p style="color: #888; font-size: 0.9rem;">Custom Kcal & Protein</p>
                 <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">Tailored <small style="font-weight: 400; font-size: 0.8rem;">/ Goal</small></div>
                 <button class="btn-primary mb-10" id="openModalBtn">Request a Quote</button>
-                <p style="font-size: 0.75rem; color: #5d8039; margin: 0;">For specific medical or athletic goals</p>
+                <p style="font-size: 0.85rem; color: #5d8039; margin: 0;">For specific medical or athletic goals</p>
             </div>
     
-            
-            <div id="quoteModal" class="modal">
-    <div class="modal-content" style="max-width: 400px; padding: 30px; background: white; border-radius: 25px; position: relative; border: none;">
-        <span class="close-btn" style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #ccc;">&times;</span>
         
+    
+        </div>
+    </section>
+</main>
+
+<!-- Quote Modal (moved out of grid) -->
+<div id="quoteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; padding: 30px; background: white; border-radius: 25px; position: relative; border: none; max-height: 88vh; overflow-y: auto;">
+        <span class="close-btn" style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #ccc;">&times;</span>
+
         <h3 style="color: #5d8039; text-align: center; margin-bottom: 10px;">Get Your Quote</h3>
         <p style="text-align: center; font-size: 0.85rem; color: #666; margin-bottom: 25px;">Enter your targets and we'll reach out on WhatsApp.</p>
-        
+
         <form id="quote-form" class="quote-form">
             <style>
                 .quote-form input {
@@ -243,25 +289,19 @@
                 }
                 .submit-btn:hover { background: #4a662e; transform: translateY(-2px); }
             </style>
-            
+
             <input type="text" name="user_name" placeholder="Full Name" required>
             <input type="tel" name="user_phone" placeholder="WhatsApp Number" required>
             <input type="number" name="kcal_goal" placeholder="Daily Kcal Goal (e.g. 2200)" required>
             <input type="number" name="protein_goal" placeholder="Protein Goal (Grams)" required>
-            
+
             <button type="submit" class="submit-btn">Send Quote Request</button>
         </form>
     </div>
 </div>
-    
-        
-    
-        </div>
-    </section>
-</main>
 
 <div id="durationModal" class="modal">
-    <div class="modal-content" style="position: relative; padding: 40px 20px 20px 20px; max-width: 400px; background: white; border-radius: 25px;">
+    <div class="modal-content" style="position: relative; padding: 40px 20px 20px 20px; max-width: 400px; background: white; border-radius: 25px; max-height: 88vh; overflow-y: auto;">
         
 <button onclick="closeModal('durationModal')" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 22px; font-weight: bold; line-height: 1; padding: 5px;">
             ✕
@@ -280,14 +320,14 @@
         </div>
 
         <button onclick="closeModal('durationModal')" 
-                style="background: none; border: none; color: #888; cursor: pointer; margin-top: 20px; width: 100%; font-size: 0.85rem; text-decoration: underline;">
+                style="background: none; border: none; color: #888; cursor: pointer; margin-top: 20px; width: 100%; font-size: 0.9rem; text-decoration: underline; padding: 12px;">
             Cancel
         </button>
     </div>
 </div>
 
 <div id="pricingModal" class="modal">
-    <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px;">
+    <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px; max-height: 88vh; overflow-y: auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
            <h3 id="modal-plan-name" 
     style="color: #5d8039; margin: 0; text-align: center; width: 100%;">
@@ -296,10 +336,12 @@
             <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
         </div>
         <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
         <table class="pricing-table">
             <thead><tr><th>Duration</th><th>Price per day</th></tr></thead>
             <tbody id="pricing-body"></tbody>
         </table>
+        </div>
         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd;">
             <h4 style="font-size: 0.9rem; margin-bottom: 10px;">What's Included:</h4>
             <ul id="modal-features" class="plan-feature-list"></ul>
@@ -494,19 +536,6 @@ if (closeQuoteBtn) {
     }
 }
 
-// Close modal if user clicks outside the white box
-window.onclick = function(event) {
-    if (event.target == quoteModal) {
-        quoteModal.style.display = "none";
-    }
-    // Also handle your other modals
-    if (event.target == document.getElementById('durationModal')) {
-        closeModal('durationModal');
-    }
-    if (event.target == document.getElementById('pricingModal')) {
-        closeModal('pricingModal');
-    }
-}
 // --- GLOBAL MODAL BACKDROP CLICK HANDLER ---
 window.addEventListener('click', function(event) {
     // List of all your modal IDs

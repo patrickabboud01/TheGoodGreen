@@ -298,11 +298,12 @@
 
 <script>
     // --- GLOBAL SCOPE VARIABLES ---
-    let durationKey = "1"; 
+    let durationKey = "1";
     let finalPrice = 0;
     let discountAmount = 0;
     let pendingUrl = "";
     let isSingleOrder = false;
+    let finalName = ""; // Track plan name for order submission
 
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
@@ -467,7 +468,7 @@
             let totalMeals = 0;
             dayKeys.forEach(d => totalMeals += fullState[d].length);
             const mealsPerDay = totalMeals / (dayKeys.length || 1);
-            let finalName = mealsPerDay > 3.5 ? "THE FULL PLAN" : mealsPerDay > 2.5 ? "THE TRIO" : mealsPerDay > 1.5 ? "THE DUO" : "THE SOLO";
+            finalName = mealsPerDay > 3.5 ? "THE FULL PLAN" : mealsPerDay > 2.5 ? "THE TRIO" : mealsPerDay > 1.5 ? "THE DUO" : "THE SOLO";
 
             let requestedDays = parseInt(urlParams.get('days')) || dayKeys.length;
             durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
@@ -605,14 +606,18 @@
                 }
 
                 // EmailJS Logic
-                await emailjs.send("service_rfcp52l", "template_oglmmp8", { 
+                const emailData = {
                     customer_name: document.getElementById('user_name').value,
                     customer_phone: document.getElementById('user_phone').value,
                     customer_address: document.getElementById('user_address').value,
                     plan_name: orderPlanName,
-                    total_price: actualPaidPrice.toFixed(2), 
-                    order_id: orderId 
-                });
+                    original_price: finalPrice.toFixed(2),
+                    discount_amount: discountAmount > 0 ? discountAmount.toFixed(2) : "0.00",
+                    total_price: actualPaidPrice.toFixed(2),
+                    order_id: orderId
+                };
+                console.log("Email data being sent:", emailData);
+                await emailjs.send("service_rfcp52l", "template_oglmmp8", emailData);
 
                 // CLEAR BOTH CARTS ON SUCCESS
                 localStorage.removeItem('finalOrder');
