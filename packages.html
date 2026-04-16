@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script type="text/javascript">
-    (function() {
-        emailjs.init("O38XtdcMyAkWnvsoU"); // Using the ID from your previous snippet
-    })();
-</script>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("O38XtdcMyAkWnvsoU"); 
+        })();
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Packages | The Good Green</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
+        /* --- UNIVERSAL NAVIGATION STYLING --- */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
             background: white; transition: 0.3s; z-index: 100000; padding: 20px;
@@ -40,92 +41,53 @@
             font-size: 0.85rem; cursor: pointer; text-decoration: none;
         }
 
+        /* DESKTOP TRANSFORMATION (PC) */
+        @media (min-width: 769px) {
+            .menu-toggle, .close-sidebar, .user-greeting { display: none !important; }
+            .sidebar {
+                position: static; width: auto; height: auto; background: transparent;
+                box-shadow: none; padding: 0; display: block;
+            }
+            .sidebar-links { display: flex; flex-direction: row; gap: 20px; align-items: center; }
+            .sidebar-links li { margin-bottom: 0; }
+            .auth-btn-sidebar {
+                margin-top: 0; border: none; padding: 8px 20px !important;
+                background-color: #5d8039; color: white !important; border-radius: 5px;
+            }
+            .navbar .container {
+                display: flex; justify-content: space-between; align-items: center;
+            }
+        }
 
-/* Pricing Styles */
-/* Pricing Styles */
-.pricing-table {
-    width: 100%; 
-    border-collapse: collapse; 
-    background: white;
-    border-radius: 10px; 
-    overflow: hidden; 
-    margin-top: 15px;
-}
+        /* Pricing Styles */
+        .pricing-table {
+            width: 100%; border-collapse: collapse; background: white;
+            border-radius: 10px; overflow: hidden; margin-top: 15px;
+        }
+        .pricing-table th { background: #5d8039; color: white; padding: 15px; text-align: left; }
+        .pricing-table td { padding: 15px; border-bottom: 1px solid #eee; color: #333; text-align: left; }
 
-.pricing-table th { 
-    background: #5d8039; 
-    color: white; 
-    padding: 15px; 
-    text-align: left; 
-}
+        .pricing-table td:has(.plan-feature-list), .feature-column { text-align: center !important; }
 
-.pricing-table td { 
-    padding: 15px; 
-    border-bottom: 1px solid #eee; 
-    color: #333; 
-    text-align: left; /* Keeps general data like 'Name' or 'Price' on the left */
-}
+        .plan-feature-list {
+            margin: 0 auto; padding: 0; list-style: none; font-size: 0.9rem;
+            color: #666; display: inline-block; text-align: left;
+        }
+        .plan-feature-list li { margin-bottom: 5px; }
+        .price-tag { font-weight: 700; color: #5d8039; }
+        .mb-10 { margin-bottom: 10px; }
+        .card-price-hint { font-size: 1rem; font-weight: 700; color: #2d5a27; margin: 8px 0 16px; }
 
-/* THE FIX: Specifically centering the list within its cell */
-.pricing-table td:has(.plan-feature-list), 
-.feature-column {
-    text-align: center !important; 
-}
+        @media (max-width: 640px) {
+            section#plans { padding: 30px 0 !important; }
+            section#plans h2 { margin-bottom: 24px !important; }
+            .plan-card { padding: 28px 18px !important; }
+        }
 
-.plan-feature-list {
-    margin: 0 auto;
-    padding: 0;
-    list-style: none;
-    font-size: 0.9rem;
-    color: #666;
-    display: inline-block; /* Allows the list to be centered as a block */
-    text-align: left;      /* Keeps the text lines aligned with each other inside the center */
-}
+        .btn-details { padding: 10px 0; display: inline-block; font-size: 0.9rem; }
+        .plan-card.featured-dashed { border: 2px dashed #5d8039; background: #f9fff4; position: relative; }
 
-.plan-feature-list li { 
-    margin-bottom: 5px; 
-}
-
-.price-tag {
-    font-weight: 700;
-    color: #5d8039;
-}
-
-/* Missing utility class */
-.mb-10 { margin-bottom: 10px; }
-
-/* Plan card price hint */
-.card-price-hint {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #2d5a27;
-    margin: 8px 0 16px;
-}
-
-/* Mobile responsive plan section */
-@media (max-width: 640px) {
-    section#plans { padding: 30px 0 !important; }
-    section#plans h2 { margin-bottom: 24px !important; }
-    .plan-card { padding: 28px 18px !important; }
-}
-
-/* Desktop card centering */
-
-/* Button styling fixes */
-.btn-details {
-    padding: 10px 0;
-    display: inline-block;
-    font-size: 0.9rem;
-}
-
-/* NUTRITION PLAN featured styling */
-.plan-card.featured-dashed {
-    border: 2px dashed #5d8039;
-    background: #f9fff4;
-    position: relative;
-}
-
-/* Refined Footer Styles */
+        /* Refined Footer Styles */
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
             text-align: center; border-top: 5px solid #f4f1ea;
@@ -144,32 +106,21 @@
             font-size: 0.8rem; opacity: 0.6; margin: 0; padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
         }
-        .duration-options {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* This centers the buttons horizontally */
-    gap: 12px;
-    width: 100%;
-}
-
-/* Ensure buttons take up a consistent width or auto-center */
-.duration-options .btn-outline, 
-.duration-options .btn-primary {
-    width: 100%;
-    max-width: 300px; /* Optional: keeps buttons from getting too wide on PC */
-    margin: 0 auto;
-}
+        .duration-options { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+        .duration-options .btn-outline, .duration-options .btn-primary {
+            width: 100%; max-width: 300px; margin: 0 auto;
+        }
     </style>
 </head>
-<!-- Google tag (gtag.js) -->
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-B4KZQ9CKM1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-B4KZQ9CKM1');
 </script>
+
 <body>
 
 <header>
@@ -180,6 +131,7 @@
                     <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
+            
             <div class="menu-toggle" id="menu-toggle">
                 <span></span><span></span><span></span><span></span>
             </div>
@@ -188,7 +140,7 @@
                 <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                 <ul class="sidebar-links">
-                    <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
+                    <li><a href="index.html">Home</a></li>
                     <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
                     <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
                     <li><a href="packages.html">Packages</a></li>
@@ -199,7 +151,6 @@
         </div>
     </nav>
 </header>
-
 
 <main>
     <section id="plans" class="container" style="padding: 60px 0;">
@@ -258,21 +209,15 @@
                 <button class="btn-primary mb-10" id="openModalBtn">Request a Quote</button>
                 <p style="font-size: 0.85rem; color: #5d8039; margin: 0;">For specific medical or athletic goals</p>
             </div>
-    
-        
-    
         </div>
     </section>
 </main>
 
-<!-- Quote Modal (moved out of grid) -->
 <div id="quoteModal" class="modal">
     <div class="modal-content" style="max-width: 400px; padding: 30px; background: white; border-radius: 25px; position: relative; border: none; max-height: 88vh; overflow-y: auto;">
         <span class="close-btn" style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #ccc;">&times;</span>
-
         <h3 style="color: #5d8039; text-align: center; margin-bottom: 10px;">Get Your Quote</h3>
         <p style="text-align: center; font-size: 0.85rem; color: #666; margin-bottom: 25px;">Enter your targets and we'll reach out on WhatsApp.</p>
-
         <form id="quote-form" class="quote-form">
             <style>
                 .quote-form input {
@@ -289,12 +234,10 @@
                 }
                 .submit-btn:hover { background: #4a662e; transform: translateY(-2px); }
             </style>
-
             <input type="text" name="user_name" placeholder="Full Name" required>
             <input type="tel" name="user_phone" placeholder="WhatsApp Number" required>
             <input type="number" name="kcal_goal" placeholder="Daily Kcal Goal (e.g. 2200)" required>
             <input type="number" name="protein_goal" placeholder="Protein Goal (Grams)" required>
-
             <button type="submit" class="submit-btn">Send Quote Request</button>
         </form>
     </div>
@@ -302,41 +245,26 @@
 
 <div id="durationModal" class="modal">
     <div class="modal-content" style="position: relative; padding: 40px 20px 20px 20px; max-width: 400px; background: white; border-radius: 25px; max-height: 88vh; overflow-y: auto;">
-        
-<button onclick="closeModal('durationModal')" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 22px; font-weight: bold; line-height: 1; padding: 5px;">
-            ✕
-        </button>
-
+        <button onclick="closeModal('durationModal')" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 22px; font-weight: bold; line-height: 1; padding: 5px;">✕</button>
         <h3 id="selected-plan-title" style="color: #5d8039; margin-bottom: 10px; text-align: center;"></h3>
-        
-        <p style="margin-bottom: 25px; text-align: center; color: #666; font-size: 0.95rem;">
-            How long would you like your plan to last?
-        </p>
-        
-        <div class="duration-options" style="display: flex; flex-direction: column; gap: 10px;">
+        <p style="margin-bottom: 25px; text-align: center; color: #666; font-size: 0.95rem;">How long would you like your plan to last?</p>
+        <div class="duration-options">
             <button onclick="goToBuilder(1)" class="btn-outline">1 Day</button>
             <button onclick="goToBuilder(5)" class="btn-outline">1 Week (5 Days)</button>
             <button onclick="goToBuilder(24)" class="btn-primary">Full Month (24 Days)</button>
         </div>
-
-        <button onclick="closeModal('durationModal')" 
-                style="background: none; border: none; color: #888; cursor: pointer; margin-top: 20px; width: 100%; font-size: 0.9rem; text-decoration: underline; padding: 12px;">
-            Cancel
-        </button>
+        <button onclick="closeModal('durationModal')" style="background: none; border: none; color: #888; cursor: pointer; margin-top: 20px; width: 100%; font-size: 0.9rem; text-decoration: underline; padding: 12px;">Cancel</button>
     </div>
 </div>
 
 <div id="pricingModal" class="modal">
     <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px; max-height: 88vh; overflow-y: auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-           <h3 id="modal-plan-name" 
-    style="color: #5d8039; margin: 0; text-align: center; width: 100%;">
-    Plan Details
-</h3>
+           <h3 id="modal-plan-name" style="color: #5d8039; margin: 0; text-align: center; width: 100%;">Plan Details</h3>
             <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
         </div>
         <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
-        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <div style="overflow-x: auto;">
         <table class="pricing-table">
             <thead><tr><th>Duration</th><th>Price per day</th></tr></thead>
             <tbody id="pricing-body"></tbody>
@@ -364,16 +292,8 @@
     </div>
     <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
-<script>
-    // --- GLOBAL REDIRECT & AUTH ---
-    function protectedRedirect(url) {
-        if (!localStorage.getItem('current_user')) {
-            window.location.href = 'index.html?action=login';
-        } else {
-            window.location.href = url;
-        }
-    }
 
+<script>
     function updateAuthUI() {
         const authBtn = document.getElementById('auth-btn');
         const greeting = document.getElementById('user-greeting');
@@ -397,7 +317,14 @@
         }
     }
 
-    // --- SIDEBAR LOGIC ---
+    function protectedRedirect(url) {
+        if (!localStorage.getItem('current_user')) {
+            window.location.href = 'index.html?action=login';
+        } else {
+            window.location.href = url;
+        }
+    }
+
     const menuToggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
     const closeSidebar = document.getElementById('close-sidebar');
@@ -413,12 +340,11 @@
     }
 
     document.addEventListener('click', (e) => {
-        if (sidebar && !sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+        if (window.innerWidth <= 768 && sidebar && !sidebar.contains(e.target) && sidebar.classList.contains('active')) {
             sidebar.classList.remove('active');
         }
     });
 
-    // --- PLAN & PRICING DATA ---
     let currentSelectedPlan = "";
     let currentItemsPerDay = 0;
 
@@ -437,39 +363,27 @@
         document.getElementById('durationModal').style.display = 'flex';
     }
 
-   function openPricingModal(planName) {
-    currentSelectedPlan = planName;
-    const data = planDetails[planName];
-    currentItemsPerDay = data.items;
-    
-    document.getElementById('modal-plan-name').innerText = planName;
-    document.getElementById('modal-plan-description').innerText = data.description;
-    
-    const tbody = document.getElementById('pricing-body');
-    tbody.innerHTML = "";
-    
-    // We use an Array here because Objects will always auto-sort "1" before "24"
-    const displayOptions = [
-        { key: "24", label: "Full Month (24 Days)" },
-        { key: "5", label: "1 Week (5 Days)" },
-        { key: "1", label: "1 Day" }
-    ];
+    function openPricingModal(planName) {
+        currentSelectedPlan = planName;
+        const data = planDetails[planName];
+        currentItemsPerDay = data.items;
+        document.getElementById('modal-plan-name').innerText = planName;
+        document.getElementById('modal-plan-description').innerText = data.description;
+        const tbody = document.getElementById('pricing-body');
+        tbody.innerHTML = "";
+        const displayOptions = [
+            { key: "24", label: "Full Month (24 Days)" },
+            { key: "5", label: "1 Week (5 Days)" },
+            { key: "1", label: "1 Day" }
+        ];
+        displayOptions.forEach(option => {
+            const price = data.prices[option.key];
+            tbody.innerHTML += `<tr><td>${option.label}</td><td class="price-tag">$${price}</td></tr>`;
+        });
+        document.getElementById('modal-features').innerHTML = data.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
+        document.getElementById('pricingModal').style.display = "flex";
+    }
 
-    displayOptions.forEach(option => {
-        const price = data.prices[option.key];
-        tbody.innerHTML += `
-            <tr>
-                <td>${option.label}</td>
-                <td class="price-tag">$${price}</td>
-            </tr>`;
-    });
-
-    document.getElementById('modal-features').innerHTML = data.features.map(f => 
-        `<li><i class="fas fa-check-circle"></i> ${f}</li>`
-    ).join('');
-    
-    document.getElementById('pricingModal').style.display = "flex";
-}
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function goToBuilder(days) {
@@ -478,7 +392,6 @@
             setTimeout(() => { window.location.href = "index.html?action=login"; }, 2000);
             return;
         }
-        
         const price = planDetails[currentSelectedPlan].prices[days.toString()];
         localStorage.setItem('selectedPlanName', currentSelectedPlan);
         localStorage.setItem('selectedDuration', days);
@@ -489,11 +402,9 @@
         const alertBox = document.getElementById("custom-alert");
         alertBox.innerText = message;
         alertBox.style.display = "block";
-        alertBox.style.animation = "fadeIn 0.3s forwards";
         setTimeout(() => { alertBox.style.display = "none"; }, 3000);
     }
 
-    // --- QUOTE FORM LOGIC ---
     const quoteForm = document.getElementById("quote-form");
     if(quoteForm) {
         quoteForm.addEventListener("submit", function(event) {
@@ -501,16 +412,13 @@
             const submitBtn = this.querySelector('button[type="submit"]');
             submitBtn.innerText = "Sending...";
             submitBtn.disabled = true;
-
             emailjs.sendForm('service_ku8gtez', 'template_tlc5mia', this)
                 .then(() => {
                     document.getElementById("quoteModal").style.display = "none";
-                    showAlert("Quote request sent! We'll contact you soon.");
+                    showAlert("Quote request sent!");
                     quoteForm.reset();
                 })
-                .catch(() => {
-                    showAlert("Error sending request. Please try again.");
-                })
+                .catch(() => showAlert("Error sending request."))
                 .finally(() => {
                     submitBtn.innerText = "Send Quote Request";
                     submitBtn.disabled = false;
@@ -518,37 +426,16 @@
         });
     }
 
-    window.onload = updateAuthUI;
-    // --- NUTRITION PLAN MODAL LOGIC ---
-const quoteModal = document.getElementById("quoteModal");
-const openModalBtn = document.getElementById("openModalBtn");
-const closeQuoteBtn = document.querySelector("#quoteModal .close-btn");
+    const openModalBtn = document.getElementById("openModalBtn");
+    if (openModalBtn) openModalBtn.onclick = () => document.getElementById("quoteModal").style.display = "flex";
 
-if (openModalBtn) {
-    openModalBtn.onclick = function() {
-        quoteModal.style.display = "flex";
-    }
-}
-
-if (closeQuoteBtn) {
-    closeQuoteBtn.onclick = function() {
-        quoteModal.style.display = "none";
-    }
-}
-
-// --- GLOBAL MODAL BACKDROP CLICK HANDLER ---
-window.addEventListener('click', function(event) {
-    // List of all your modal IDs
-    const modals = ['quoteModal', 'durationModal', 'pricingModal', 'custom-alert'];
-
-    modals.forEach(id => {
-        const modal = document.getElementById(id);
-        // If the user clicked the modal overlay (the background), but NOT the white box inside it
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
+    window.addEventListener('click', (event) => {
+        ['quoteModal', 'durationModal', 'pricingModal'].forEach(id => {
+            if (event.target === document.getElementById(id)) document.getElementById(id).style.display = 'none';
+        });
     });
-});
+
+    window.onload = updateAuthUI;
 </script>
 
 <style>

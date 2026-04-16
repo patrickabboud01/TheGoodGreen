@@ -336,6 +336,7 @@ main.content-wrapper {
     /* .menu-toggle { display: none; } */
 }
 
+
     </style>
 </head>
 <body>
@@ -343,31 +344,30 @@ main.content-wrapper {
     <div id="lightbox" onclick="this.style.display='none'">
         <img id="lightbox-img" src="" alt="Enlarged View">
     </div>
-
 <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
 <header>
     <nav class="navbar">
         <div class="logo-area">
             <a href="index.html">
-                <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                <img src="images/longlogo.png" alt="Logo" class="main-logo" style="height: 40px;">
             </a>
         </div>
         
         <div class="menu-toggle" id="menu-toggle">
-            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
         </div>
 
         <div class="sidebar" id="sidebar">
             <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
             <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-            <ul class="sidebar-links">
-                <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
-                <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
-                <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
-                <li><a href="packages.html">Packages</a></li>
-                <li><a href="menu.html">Menu</a></li>
-                <li><a href="#" id="auth-btn" class="auth-btn-sidebar">Login</a></li>
+            <ul class="sidebar-links" style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 15px;"><a href="index.html" style="text-decoration: none; color: #5d8039; font-weight: 700;">Home</a></li>
+                <li style="margin-bottom: 15px;"><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')" style="text-decoration: none; color: #444;">Continue your plan</a></li>
+                <li style="margin-bottom: 15px;"><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')" style="text-decoration: none; color: #444;">My Account</a></li>
+                <li style="margin-bottom: 15px;"><a href="packages.html" style="text-decoration: none; color: #444;">Packages</a></li>
+                <li style="margin-bottom: 15px;"><a href="menu.html" style="text-decoration: none; color: #444;">Menu</a></li>
+                <li style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;"><a href="#" id="auth-btn" class="auth-btn-sidebar" style="text-decoration: none; color: #5d8039; font-weight: 700;">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -523,6 +523,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             window.location.href = "index.html?action=login";
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    // Open Sidebar
+    toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        sidebar.classList.add('active');
+        overlay.style.display = 'block';
+    });
+
+    // Close Sidebar (X button)
+    closeBtn.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.style.display = 'none';
+    });
+
+    // Close on Overlay click or click outside
+    document.addEventListener('click', function(event) {
+        if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+            sidebar.classList.remove('active');
+            overlay.style.display = 'none';
         }
     });
 });
