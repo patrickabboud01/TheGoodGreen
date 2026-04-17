@@ -743,7 +743,92 @@ body { padding-top: 0; }
 
 </style>
 
+<section class="gallery-section">
+    <h2 class="gallery-title">Fresh From Our Kitchen</h2>
+    
+    <div class="gallery-container">
+        <div class="gallery-item">
+            <img src="images/menu items/avocado toast.png" alt="Plant-based Meal 1">
+        </div>
+        <div class="gallery-item">
+            <img src="images/menu items/croissant1.png" alt="Plant-based Meal 2">
+        </div>
+        <div class="gallery-item">
+            <img src="images/menu items/kebbeh 2.png" alt="Plant-based Meal 3">
+        </div>
+        <div class="gallery-item">
+            <img src="images/menu items/veggie soup.png" alt="Plant-based Meal 4">
+        </div>
+        <div class="gallery-item">
+            <img src="images/menu items/shakes.png" alt="Plant-based Meal 5">
+        </div>
+    </div>
 
+    <style>
+        .gallery-section {
+            padding: 40px 0;
+            background: #fff;
+            text-align: center;
+        }
+
+        .gallery-title {
+            color: #5d8039;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .gallery-container {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important; /* Forces the scroll */
+            gap: 10px;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory;
+            padding: 0 15px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .gallery-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-item {
+            flex: 0 0 160px; /* Small, elegant size for mobile */
+            scroll-snap-align: start;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1; /* Keeps images perfectly square */
+            background: #f4f1ea; /* Placeholder color while images load */
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* DESKTOP VIEW: More images visible, larger size */
+        @media (min-width: 768px) {
+            .gallery-container {
+                justify-content: center;
+                overflow-x: hidden !important;
+                gap: 20px;
+                padding: 0;
+            }
+
+            .gallery-item {
+                flex: 0 0 220px; /* Larger on PC */
+            }
+        }
+    </style>
+</section>
 
 <section id="how-it-works-new">
     <h2>Three Simple Steps</h2>
