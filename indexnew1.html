@@ -54,6 +54,9 @@
     <style>
         html, body {
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            background-color: #F5F1E8;
         }
 
         /* --- 1. MODAL & CENTERING SYSTEM --- */
@@ -106,7 +109,6 @@
         .sidebar.active { right: 0; }
         .user-greeting {
             padding: 30px 0 15px; margin-bottom: 15px;
-            border-bottom: 1px solid #f4f1ea;
             font-weight: 700; color: #5d8039; font-size: 1rem;
         }
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
@@ -193,6 +195,8 @@
 
         main {
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
 
         .site-footer {
@@ -239,6 +243,8 @@
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
 }
 
 .ticker-wrapper { width: 100%; overflow: hidden; }
@@ -265,13 +271,31 @@ header, .navbar {
 
 header {
     position: fixed;
-    top: 40px; /* height of promo banner */
+    top: 40px;
     left: 0;
     width: 100%;
     z-index: 1000;
-    background: transparent;
+    background: transparent !important;
 }
+
+.navbar {
+    background: transparent !important;
+}
+
 body { padding-top: 0; }
+
+header * {
+    transform: none !important;
+    zoom: 1 !important;
+}
+
+main {
+    position: relative;
+    margin: 0;
+    margin-top: -40px;
+    padding: 0;
+    padding-top: 80px;
+}
 </style>
 
 <div class="promo-banner">
@@ -367,11 +391,13 @@ body { padding-top: 0; }
                 <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                 <ul class="sidebar-links">
-                    <li><a href="index.html" style="color: #ffffff; font-weight: 700;">Home</a></li>
+                    <li><a href="#aboutus" style="color: #ffffff; font-weight: 700;">About Us</a></li>
+                      <li><a href="packages.html"style="color: #ffffff; font-weight: 700;">Plans</a></li>
+                      <li><a href="menu.html"style="color: #ffffff; font-weight: 700;">Menu</a></li>
                     <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')"style="color: #ffffff; font-weight: 700;">Continue your plan</a></li>
                     <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')"style="color: #ffffff; font-weight: 700;">My Account</a></li>
-                    <li><a href="packages.html"style="color: #ffffff; font-weight: 700;">Packages</a></li>
-                    <li><a href="menu.html"style="color: #ffffff; font-weight: 700;">Menu</a></li>
+                  
+                     
                     <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()"style="color: #ffffff; font-weight: 700;">Login</a></li>
                 </ul>
             </div>
@@ -425,7 +451,7 @@ body { padding-top: 0; }
 
 @media (max-width: 768px) {
     .hero-text {
-        margin-top: 40px !important; /* or even 0 */
+        margin-top: 20px !important; /* or even 0 */
     }
     .btn-outline-index {
         margin-left: 0 !important;
@@ -442,13 +468,15 @@ body { padding-top: 0; }
             position: relative;
             width: 100%;
             margin-top: 0px !important;
+            margin-bottom: 0;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 0;
             /* This tells the container to match the shape of your images */
             /* If your images are 16:9, use 16/9. If they are square, use 1/1 */
             aspect-ratio: 16 / 9;
             overflow: hidden;
             background-color: #f4f1ea; /* Fallback color */
-            margin-top: -80px !important;
-            padding-top: 80px;
         }
         /* This ensures the wrapper maintains the space for the images */
         .gallery-wrapper {
@@ -486,7 +514,7 @@ body { padding-top: 0; }
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: 120px 20px 20px 20px;
+    padding: 40px 20px 20px 20px;
     z-index: 3;
 }
        
@@ -592,7 +620,7 @@ body { padding-top: 0; }
 </section>
 
 <style>
-    .quick-links { width: 100%; padding: 5px; box-sizing: border-box; }
+    .quick-links { width: 100%; padding: 5px; box-sizing: border-box;margin-top: 50px;margin-bottom: 50px; }
     
     .links-row { 
         display: flex; flex-direction: row; gap: 5px; width: 100%; 
@@ -635,6 +663,7 @@ body { padding-top: 0; }
         .card-content { padding-left: 4px; }
         .card-text-1, .card-text-2 { font-size: 0.6rem; }
         .sub-card-text-1, .sub-card-text-2 { font-size: 0.45rem; }
+        .quick-links { width: 100%; padding: 5px; box-sizing: border-box;margin-top: 15px;margin-bottom: 10px; }
     }
 
     /* PC OPTIMIZATION */
@@ -653,19 +682,18 @@ body { padding-top: 0; }
     }
 </style>
 
-<section class="about-split">
+<section class="about-split" id="aboutus">
     <div class="split-container">
         <div class="split-image">
             <img src="images/karelpatrick.jpg" alt="The Good Green Team">
         </div>
         
         <div class="split-text">
-            <h3>WHO WE ARE</h3>
-            <h2>Our mission for a healthier Lebanon</h2>
+           <!-- <h3>WHO WE ARE</h3>-->
+            <h2 style="color: #5d8039;"> Hi! We’re  Patrick & Karel</h2>
             <p>
-                At The Good Green, we believe that eating healthy shouldn't be a chore. 
-                Founded by athletes for everyone, we provide premium plant-based meal 
-                plans that fuel your body and respect the planet.
+               
+We started The Good Green because we know how hard it is to find clean, 100% plant-based food in Lebanon that doesn't feel like a compromise. Whether you’re fully plant-based or just looking to add more health to your busy week, we’re here to make it effortless. We’ve done the prepping, the sourcing, and the cooking so you can enjoy vibrant, chef-made meals that make you feel your absolute best. No labels, just real food made easy.
             </p>
             
         </div>
@@ -673,9 +701,8 @@ body { padding-top: 0; }
 </section>
 <style>
     .about-split {
-    background-color: #5c803978; /* Your specific Green */
     color: rgb(8, 6, 6);
-    padding: 60px 0;
+    margin-bottom: 0px;
     width: 100%;
 }
 
@@ -719,7 +746,7 @@ body { padding-top: 0; }
 .split-text p {
     font-size: 1.1rem;
     line-height: 1.6;
-    margin-bottom: 25px;
+    margin-bottom: 0px;
 }
 
 
@@ -754,19 +781,19 @@ body { padding-top: 0; }
         font-size: 0.6rem; /* Very tiny upper title */
         margin-bottom: 2px;
     }
+.split-text h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0px !important; /* Force zero space below */
+    line-height: 1.1;             /* Tighter leading */
+    padding-bottom: 0px !important;
+}
 
-    .split-text h2 {
-        font-size: 1.1rem; /* Smaller main title */
-        margin-bottom: 8px;
-        line-height: 1.2;
-    }
-
-    .split-text p {
-        font-size: 0.75rem; /* Smaller paragraph text */
-        line-height: 1.5;
-        margin-bottom: 12px;
-    }
-
+.split-text p {
+    font-size: 0.60rem;
+    margin-top: 2px !important;  /* Pulls the paragraph up into the h2 space */
+    line-height: 1.3;             /* Tighter leading */
+    margin-bottom: 12px;
+}
     /* SCALE DOWN the button for mobile */
     .btn-read-more {
         padding: 6px 14px;
@@ -797,6 +824,7 @@ body { padding-top: 0; }
                 <h4>3. Build Your Plan</h4>
                 <p>Select every meal and customize ingredients.</p>
             </div>
+            
         </div>
     </div>
     <p class="advance-notice">⚠️ Orders should be placed 24–48 hours in advance.</p>
@@ -804,16 +832,17 @@ body { padding-top: 0; }
 <style>
     /* Base styles for PC */
 #how-it-works-new {
-    background: white; 
-    padding: 60px 0; 
-    border-top: 1px solid #eee; 
+    background: white;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
     scroll-margin-top: 100px;
 }
 
 #how-it-works-new h2 {
-    text-align: center; 
-    color: #5d8039; 
-    margin-bottom: 40px;
+    text-align: center;
+    color: #5d8039;
+    margin: 0 0 25px 0;
+    padding-top: 0;
 }
 
 .plan-grid {
@@ -828,6 +857,7 @@ body { padding-top: 0; }
     flex: 1; /* Ensures all three take equal width */
     text-align: center;
     min-width: 0; /* Prevents flex items from overflowing */
+    padding: 0 12px;
 }
 
 .step-card img {
@@ -857,7 +887,7 @@ body { padding-top: 0; }
 /* MOBILE SPECIFIC: Shrink elements to fit the row */
 @media (max-width: 768px) {
     #how-it-works, #how-it-works-new {
-        padding: 30px 15px;
+        padding: 30px 8px;
     }
 
     .step-card img {
@@ -879,97 +909,90 @@ body { padding-top: 0; }
 }
 </style>
 
-
-<section class="gallery-section">
-    <h2 class="gallery-title">Fresh From Our Kitchen</h2>
-    
-    <div class="gallery-container">
-        <div class="gallery-item">
-            <img src="images/menu items/avocado toast.png" alt="Plant-based Meal 1">
+<section class="about-split">
+    <div class="split-container">
+      
+        
+        <div class="split-text">
+            <h2 style="color: #5d8039;">Baked Without Compromise</h2>
+            <p>
+                Did you know these are 100% plant-based?<br> We craft our own signature croissants and buns in-house,<br> using artisanal techniques to get that perfect,<br> golden flake without the dairy.<br><br>
+                It's healthy eating that feels like a treat.
+            </p>
+            <br>
+            <a href="menu.html" class="btn-primary">Check The Menu</a>
         </div>
-        <div class="gallery-item">
-            <img src="images/menu items/croissant1.png" alt="Plant-based Meal 2">
-        </div>
-        <div class="gallery-item">
-            <img src="images/menu items/kebbeh 2.png" alt="Plant-based Meal 3">
-        </div>
-        <div class="gallery-item">
-            <img src="images/menu items/veggie soup.png" alt="Plant-based Meal 4">
-        </div>
-        <div class="gallery-item">
-            <img src="images/menu items/shakes.png" alt="Plant-based Meal 5">
+          <div class="split-image">
+            <img src="images/croissant.png" alt="Plant-based Croissant">
         </div>
     </div>
+</section>
 
-    <style>
-        .gallery-section {
-            padding: 40px 0;
-            background: #fff;
-            text-align: center;
-        }
+<style>
+    
+    /* Button styling */
+    .btn-primary {
 
-        .gallery-title {
-            color: #5d8039;
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-        }
+        color: #D66F3A;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 88px;
+        font-weight: 600;
+        display: inline-block;
+        border-color: #D66F3A; 
+       width: 200px;
+    }
 
-        .gallery-container {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important; /* Forces the scroll */
-            gap: 10px;
-            overflow-x: auto !important;
-            scroll-snap-type: x mandatory;
+    /* Mobile: Keep image and text on same line */
+    @media (max-width: 768px) {
+        .about-split .split-container {
+            flex-direction: row;
+            text-align: left;
+            align-items: center;
             padding: 0 15px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
         }
-
-        .gallery-container::-webkit-scrollbar {
-            display: none;
+        .about-split .split-text {
+            padding-left: 15px;
+            flex: 0 0 60%;
+            font-size: 0.6rem;
         }
-
-        .gallery-item {
-            flex: 0 0 160px; /* Small, elegant size for mobile */
-            scroll-snap-align: start;
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 1 / 1; /* Keeps images perfectly square */
-            background: #f4f1ea; /* Placeholder color while images load */
+        .about-split .split-image {
+            flex: 0 0 40%;
         }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
+        .about-split .split-text h2 {
+            font-size: 1.1rem;
+            margin-bottom: 0px;
+            line-height: 1.1;
         }
-
-        .gallery-item:hover img {
-            transform: scale(1.05);
+        .about-split .split-text p {
+            font-size: 0.6rem;
+            line-height: 1.3;
+            margin-top: 2px;
         }
-
-        /* DESKTOP VIEW: More images visible, larger size */
-        @media (min-width: 768px) {
-            .gallery-container {
-                justify-content: center;
-                overflow-x: hidden !important;
-                gap: 20px;
-                padding: 0;
-            }
-
-            .gallery-item {
-                flex: 0 0 220px; /* Larger on PC */
-            }
+        .about-split .btn-primary {
+            padding: 8px 16px;
+            font-size: 0.75rem;
         }
+           .btn-primary {
 
-    </style>
+        color: #D66F3A;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 88px;
+        font-weight: 600;
+        display: inline-block;
+        border-color: #D66F3A; 
+
+    }
+            
+    }
+</style>
+
+
 </section>
 
 <section class="reviews-section">
-    <h2 class="reviews-title">What Our Community Says</h2>
+    <h2 class="reviews-title" style="color: #5d8039;">What Our Community Says</h2>
     
     <div class="reviews-container">
         <div class="review-card">
@@ -1336,27 +1359,26 @@ body { padding-top: 0; }
             }, 3000);
         }
     })();
+
     let lastScroll = 0;
-const header = document.querySelector("header");
+    const header = document.querySelector("header");
 
-window.addEventListener("scroll", () => {
-    const currentScroll = window.pageYOffset;
+    window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
 
-    if (currentScroll <= 0) {
-        header.style.transform = "translateY(0)";
-        return;
-    }
+        if (currentScroll <= 0) {
+            header.style.transform = "translateY(0)";
+            return;
+        }
 
-    if (currentScroll > lastScroll) {
-        // scrolling DOWN → hide header
-        header.style.transform = "translateY(-100%)";
-    } else {
-        // scrolling UP → show header
-        header.style.transform = "translateY(0)";
-    }
+        if (currentScroll > lastScroll) {
+            header.style.transform = "translateY(-100%)";
+        } else {
+            header.style.transform = "translateY(0)";
+        }
 
-    lastScroll = currentScroll;
-});
+        lastScroll = currentScroll;
+    });
 </script>
 </main>
     
