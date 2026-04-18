@@ -161,9 +161,7 @@
                 border-top: none;
                 padding-top: 0;
                 padding: 10px 20px;
-                background-color: white;
-                color: #5d8039 !important;
-                border-radius: 5px;
+                
                 margin-left: 10px;
             }
             
@@ -257,7 +255,7 @@
 }
 
 header, .navbar {
-    position: fixed !important;
+   
     top: 40px !important;
     width: 100% !important;
     left: 0 !important;
@@ -265,6 +263,14 @@ header, .navbar {
     z-index: 100 !important;
 }
 
+header {
+    position: fixed;
+    top: 40px; /* height of promo banner */
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: transparent;
+}
 body { padding-top: 0; }
 </style>
 
@@ -424,6 +430,7 @@ body { padding-top: 0; }
     .btn-outline-index {
         margin-left: 0 !important;
     }
+    
 }
 
 .btn-outline-index {
@@ -482,24 +489,22 @@ body { padding-top: 0; }
     padding: 120px 20px 20px 20px;
     z-index: 3;
 }
-        .hero-overlay h1 {
-            
+       
+    .hero-overlay h1 {
             color: white;
             font-weight: 700;
-            margin-bottom: 2px;
             line-height: 1.1;
-            margin-top: 0px;
-            margin-left: 40px;
+            margin: 0 0 2px 40px; /* Top, Right, Bottom, Left */
+            font-size: 4.5rem;    /* INCREASED: Adjust this for bigger text */
         }
 
         .hero-overlay p {
-            font-size: clamp(0.95rem, 2vw, 1.15rem);
             color: rgba(255,255,255,0.88);
-            margin-top: 0;
-            margin-bottom: 0px;
-            margin-left: 40px;
-
+            margin: 0 0 0px 40px; /* Added bottom margin for spacing */
+            font-size: 1.5rem;    /* INCREASED: Adjust this for bigger paragraph text */
         }
+
+
 
         @media (max-width: 768px) {
             .hero-overlay h1, .hero-overlay p {
@@ -555,8 +560,6 @@ body { padding-top: 0; }
     }
 
 }
-
-    
 
     </style>
    
@@ -1360,6 +1363,27 @@ body { padding-top: 0; }
             }, 3000);
         }
     })();
+    let lastScroll = 0;
+const header = document.querySelector("header");
+
+window.addEventListener("scroll", () => {
+    const currentScroll = window.pageYOffset;
+
+    if (currentScroll <= 0) {
+        header.style.transform = "translateY(0)";
+        return;
+    }
+
+    if (currentScroll > lastScroll) {
+        // scrolling DOWN → hide header
+        header.style.transform = "translateY(-100%)";
+    } else {
+        // scrolling UP → show header
+        header.style.transform = "translateY(0)";
+    }
+
+    lastScroll = currentScroll;
+});
 </script>
 </body>
 </html>
