@@ -52,6 +52,11 @@
 }
 </script>
     <style>
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         /* --- 1. MODAL & CENTERING SYSTEM --- */
         .auth-overlay {
             display: none; 
@@ -185,6 +190,16 @@
         .form-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
 
+        @media (max-width: 768px) {
+            body { width: 100vw; overflow-x: hidden; }
+            .container { padding: 0 15px; max-width: 100%; }
+        }
+
+        main {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
             text-align: center; border-top: 5px solid #f4f1ea;
@@ -209,7 +224,7 @@
   gtag('config', 'G-B4KZQ9CKM1');
 </script>
 
-<body>
+<body style="overflow-x: hidden; width: 100%;">
 
 <style>
 /* Promo Banner Styles */
@@ -391,11 +406,17 @@ body { padding-top: 0; }
     text-align: center; /* Text remains centered inside the button */
     transition: all 0.2s ease;
     cursor: pointer;
-    font-size: medium;
-    
+    font-size: 1rem;
+
     /* Alignment Fixes */
-    margin-left: 40px; 
+    margin-left: 40px;
     margin-right: auto; /* Ensures it stays on the left */
+}
+
+@media (max-width: 768px) {
+    .btn-outline-index {
+        margin-left: 0 !important;
+    }
 }
 
 .btn-outline-index {
@@ -455,22 +476,28 @@ body { padding-top: 0; }
     z-index: 3;
 }
         .hero-overlay h1 {
-            
-            color: white; 
-            font-weight: 700; 
-            margin-bottom: 2px; 
-            line-height: 1.1; 
+
+            color: white;
+            font-weight: 700;
+            margin-bottom: 2px;
+            line-height: 1.1;
             margin-top: 0px;
             margin-left: 40px;
         }
-      
+
         .hero-overlay p {
             font-size: clamp(0.95rem, 2vw, 1.15rem);
-            color: rgba(255,255,255,0.88); 
-            margin-top: 0; 
+            color: rgba(255,255,255,0.88);
+            margin-top: 0;
             margin-bottom: 0px;
             margin-left: 40px;
-            
+
+        }
+
+        @media (max-width: 768px) {
+            .hero-overlay h1, .hero-overlay p {
+                margin-left: 20px !important;
+            }
         }
         .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
         .btn-outline-white {
@@ -481,12 +508,13 @@ body { padding-top: 0; }
         .btn-outline-white:hover { background: white; color: #2d5a27; }
 @media (max-width: 768px) {
     #hero {
-        margin-top: 0px; 
+        margin-top: 0px;
+        aspect-ratio: 3 / 2 !important; /* Shorter on mobile so full page is visible */
     }
 
     /* 1. Target the text elements and clear ALL margins */
-    .hero-overlay h1, 
-    .hero-overlay h1, 
+    .hero-overlay h1,
+    .hero-overlay h1,
     .hero-overlay p {
         margin: 0 !important;      /* Zero margin to keep them touching */
         line-height: 1.1;          /* Slightly more than 1 to prevent letters touching across lines */
@@ -501,17 +529,17 @@ body { padding-top: 0; }
         gap: 0 !important;
     }
 
-    .hero-overlay h1 { font-size: 0.8rem; }
-    .hero-overlay p { font-size: 0.5rem; }
+    .hero-overlay h1 { font-size: 1.5rem; }
+    .hero-overlay p { font-size: 0.9rem; }
 
     .btn-outline-index {
         margin-left: 0 !important;
         margin-top: 0 !important; /* Controlled by the .hero-btns margin-top instead */
-        padding: 6px 12px !important; /* Slightly smaller for an ultra-tight look */
-        font-size: 0.6rem !important;
-        max-width: 100px;
-        border-width: 1px;
-        border-radius: 18px;
+        padding: 10px 20px !important; /* Decent button padding */
+        font-size: 0.9rem !important;
+        max-width: 140px;
+        border-width: 2px;
+        border-radius: 25px;
     }
 
 }
@@ -546,15 +574,21 @@ body { padding-top: 0; }
     </div>
 </section>
 <style>
+.quick-links {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 .links-row {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     /* This creates the even spacing between and around the boxes */
-    justify-content: space-evenly; 
+    justify-content: space-evenly;
     align-items: flex-start;
     width: 100%;
-    padding: 15px 0;
+    padding: 15px 15px;
+    box-sizing: border-box;
 }
 
 .link-card {
@@ -752,6 +786,15 @@ body { padding-top: 0; }
         font-size: 0.7rem;
         border-radius: 30px;
     }
+
+    .about-split {
+        overflow-x: hidden;
+    }
+
+    .split-container {
+        max-width: 100%;
+        overflow: hidden;
+    }
 }
 
 </style>
@@ -835,20 +878,26 @@ body { padding-top: 0; }
 
 /* MOBILE SPECIFIC: Shrink elements to fit the row */
 @media (max-width: 768px) {
-    #how-it-works {
-        padding: 30px 10px;
+    #how-it-works, #how-it-works-new {
+        padding: 30px 15px;
+        overflow-x: hidden;
+    }
+
+    .container {
+        overflow-x: hidden;
+        max-width: 100%;
     }
 
     .step-card img {
-        height: 40px; /* Smaller icons on phone */
+        height: 50px; /* Better visible size on phone */
     }
 
     .step-card h4 {
-        font-size: 0.65rem; /* Small titles */
+        font-size: 0.85rem; /* Readable title */
     }
 
     .step-card p {
-        font-size: 0.55rem; /* Small description */
+        font-size: 0.75rem; /* More readable description */
         padding: 0 5px;
     }
 
@@ -942,6 +991,12 @@ body { padding-top: 0; }
             .gallery-item {
                 flex: 0 0 220px; /* Larger on PC */
             }
+        }
+
+        /* Ensure gallery section doesn't overflow */
+        .gallery-section {
+            overflow-x: hidden;
+            width: 100%;
         }
     </style>
 </section>
@@ -1076,6 +1131,12 @@ body { padding-top: 0; }
                 font-size: 1rem !important;
             }
         }
+
+        /* Ensure reviews section doesn't overflow */
+        .reviews-section {
+            overflow-x: hidden;
+            width: 100%;
+        }
     </style>
 </section>
 
@@ -1161,6 +1222,10 @@ body { padding-top: 0; }
         @media (max-width: 768px) {
             .site-footer {
                 padding: 40px 10px;
+                overflow-x: hidden;
+            }
+            .footer-links-wrapper {
+                overflow-x: hidden;
             }
             .footer-icon-subtle {
                 font-size: 1.2rem !important;
