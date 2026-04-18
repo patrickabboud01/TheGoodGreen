@@ -21,6 +21,18 @@ body {
     color: var(--dark);
     line-height: 1.5;
     padding-top: 80px; /* Space for fixed header */
+    min-width: 1200px;
+    overflow-x: auto;
+}
+.header-container {
+    display: flex;
+    justify-content:沟通-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Limits how far out buttons can go */
+    min-width: 1000px; /* Prevents them from moving too close to the logo */
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 /* --- 2. HEADER & NAVIGATION --- */
@@ -1225,8 +1237,7 @@ section { padding: 60px 0; }
 /* --- Desktop Header (Default) --- */
 .navbar {
     padding: 15px 0;
-    background: white;
-    border-bottom: 1px solid #eee;
+    background: transparent;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -1383,8 +1394,6 @@ section { padding: 60px 0; }
 
 .sidebar-links li {
     margin-bottom: 5px;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 5px;
 }
 
 .sidebar-links a {
@@ -2105,3 +2114,63 @@ main {
     margin-left: auto;
     margin-right: auto;
 }
+
+body {
+    /* Prevents the layout from 'collapsing' inward on PC zoom */
+    min-width: 1200px; 
+    overflow-x: auto; /* Adds a scrollbar if the user zooms in too much */
+}
+
+header, .about-split, .quick-links {
+    /* Ensures headers and sections don't shrink past a certain point */
+    min-width: 1100px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+.header-container {
+    display: flex;
+    justify-content:沟通-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Limits how far out buttons can go */
+    min-width: 1000px; /* Prevents them from moving too close to the logo */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+/* This only affects PC/Laptops */
+@media (min-width: 1024px) {
+    
+    /* 1. Force the main body to hold its shape */
+    body {
+        min-width: 1200px !important; 
+        overflow-x: auto !important;
+    }
+
+    /* 2. Lock the Header so logo and buttons don't move */
+    .header-container, 
+    nav, 
+    .navbar {
+        width: 1200px !important;
+        margin: 0 auto !important;
+        min-width: 1200px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+    }
+
+    /* 3. Lock the Green Floating Sections */
+    .about-split, 
+    .link-card-row,
+    .quick-links {
+        width: 1150px !important; /* Fixed pixel width instead of % */
+        min-width: 1150px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* 4. Fix the Footer Grid from image_4a140c.png */
+    .footer-links-wrapper {
+        width: 600px !important;
+        min-width: 600px !important;
+    }
+}
+
