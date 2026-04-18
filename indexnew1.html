@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
     <meta name="description" content="Discover healthy, plant-based meal plans at The Good Green. Your destination for strict vegan nutrition and custom wellness in Lebanon.">
     <meta name="google-site-verification" content="-MXud6y_PXNupwjRcnbVHhg9ThUF0xKTqJS5Qw-SPqk" />
     <title>The Good Green | Vegan Meal Plans & Healthy Kitchen in Lebanon</title>
@@ -54,7 +54,6 @@
     <style>
         html, body {
             overflow-x: hidden;
-            width: 100%;
         }
 
         /* --- 1. MODAL & CENTERING SYSTEM --- */
@@ -191,13 +190,11 @@
         .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
 
         @media (max-width: 768px) {
-            body { width: 100vw; overflow-x: hidden; }
-            .container { padding: 0 15px; max-width: 100%; }
+            .container { padding: 0 15px; box-sizing: border-box; }
         }
 
         main {
             overflow-x: hidden;
-            width: 100%;
         }
 
         .site-footer {
@@ -380,10 +377,12 @@ body { padding-top: 0; }
     <section id="hero">
         <div class="gallery-wrapper" id="gallery-wrapper"></div>
         <div class="hero-overlay">
-            <h1>Eat Clean.</h1>
-            <h1>Feel light.</h1>
-            <p>Plant-based meal </p>
-            <p>made fresh in Lebanon</p>
+            <div class="hero-text">
+             <h1>Eat Clean.</h1>
+             <h1>Feel light.</h1>
+             <p>Plant-based meal</p>
+             <p>made fresh in Lebanon</p>
+            </div>
             <div class="hero-btns">
                 <a href="packages.html" class="btn-outline-index btn-outline-white">View Plans</a>
                
@@ -394,6 +393,11 @@ body { padding-top: 0; }
     </section>
           
     <style>
+
+        .hero-text {
+    margin-top: 200px; /* push only text down */
+}
+
         .btn-outline-index {
     display: block; /* Changed from inline-block to block to respect margins easily */
     width: 100%;
@@ -414,6 +418,9 @@ body { padding-top: 0; }
 }
 
 @media (max-width: 768px) {
+    .hero-text {
+        margin-top: 45px !important; /* or even 0 */
+    }
     .btn-outline-index {
         margin-left: 0 !important;
     }
@@ -465,18 +472,18 @@ body { padding-top: 0; }
     opacity: 1;
 }
         .hero-overlay {
-    position: absolute; 
+    position: absolute;
     inset: 0;
     background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
-    display: flex; 
-    flex-direction: column; 
-    align-items: flex-start; 
-    justify-content: center; /* Centers text vertically over the image */
-    padding: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 120px 20px 20px 20px;
     z-index: 3;
 }
         .hero-overlay h1 {
-
+            
             color: white;
             font-weight: 700;
             margin-bottom: 2px;
@@ -512,6 +519,10 @@ body { padding-top: 0; }
         aspect-ratio: 3 / 2 !important; /* Shorter on mobile so full page is visible */
     }
 
+    .hero-overlay {
+        padding: 80px 20px 20px 20px !important;
+    }
+
     /* 1. Target the text elements and clear ALL margins */
     .hero-overlay h1,
     .hero-overlay h1,
@@ -540,6 +551,7 @@ body { padding-top: 0; }
         max-width: 140px;
         border-width: 2px;
         border-radius: 25px;
+        
     }
 
 }
@@ -576,7 +588,6 @@ body { padding-top: 0; }
 <style>
 .quick-links {
     overflow-x: hidden;
-    width: 100%;
 }
 
 .links-row {
@@ -786,15 +797,6 @@ body { padding-top: 0; }
         font-size: 0.7rem;
         border-radius: 30px;
     }
-
-    .about-split {
-        overflow-x: hidden;
-    }
-
-    .split-container {
-        max-width: 100%;
-        overflow: hidden;
-    }
 }
 
 </style>
@@ -880,12 +882,6 @@ body { padding-top: 0; }
 @media (max-width: 768px) {
     #how-it-works, #how-it-works-new {
         padding: 30px 15px;
-        overflow-x: hidden;
-    }
-
-    .container {
-        overflow-x: hidden;
-        max-width: 100%;
     }
 
     .step-card img {
@@ -993,11 +989,6 @@ body { padding-top: 0; }
             }
         }
 
-        /* Ensure gallery section doesn't overflow */
-        .gallery-section {
-            overflow-x: hidden;
-            width: 100%;
-        }
     </style>
 </section>
 
@@ -1132,11 +1123,6 @@ body { padding-top: 0; }
             }
         }
 
-        /* Ensure reviews section doesn't overflow */
-        .reviews-section {
-            overflow-x: hidden;
-            width: 100%;
-        }
     </style>
 </section>
 
@@ -1222,10 +1208,6 @@ body { padding-top: 0; }
         @media (max-width: 768px) {
             .site-footer {
                 padding: 40px 10px;
-                overflow-x: hidden;
-            }
-            .footer-links-wrapper {
-                overflow-x: hidden;
             }
             .footer-icon-subtle {
                 font-size: 1.2rem !important;

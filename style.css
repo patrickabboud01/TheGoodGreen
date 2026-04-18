@@ -21,8 +21,14 @@ body {
     color: var(--dark);
     line-height: 1.5;
     padding-top: 80px; /* Space for fixed header */
-    min-width: 1200px;
-    overflow-x: auto;
+    overflow-x: hidden;
+}
+
+@media (min-width: 1024px) {
+    body {
+        min-width: 1200px;
+        overflow-x: auto;
+    }
 }
 .header-container {
     display: flex;
@@ -2115,17 +2121,14 @@ main {
     margin-right: auto;
 }
 
-body {
-    /* Prevents the layout from 'collapsing' inward on PC zoom */
-    min-width: 1200px; 
-    overflow-x: auto; /* Adds a scrollbar if the user zooms in too much */
-}
 
-header, .about-split, .quick-links {
-    /* Ensures headers and sections don't shrink past a certain point */
-    min-width: 1100px; 
-    margin-left: auto;
-    margin-right: auto;
+@media (min-width: 1024px) {
+    header, .about-split, .quick-links {
+        /* Ensures headers and sections don't shrink past a certain point */
+        min-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 .header-container {
     display: flex;
@@ -2139,38 +2142,20 @@ header, .about-split, .quick-links {
 }
 /* This only affects PC/Laptops */
 @media (min-width: 1024px) {
-    
-    /* 1. Force the main body to hold its shape */
-    body {
-        min-width: 1200px !important; 
-        overflow-x: auto !important;
-    }
-
     /* 2. Lock the Header so logo and buttons don't move */
-    .header-container, 
-    nav, 
+    .header-container,
+    nav,
     .navbar {
-        width: 1200px !important;
-        margin: 0 auto !important;
-        min-width: 1200px !important;
-        display: flex !important;
-        justify-content: space-between !important;
-    }
-
-    /* 3. Lock the Green Floating Sections */
-    .about-split, 
-    .link-card-row,
-    .quick-links {
-        width: 1150px !important; /* Fixed pixel width instead of % */
-        min-width: 1150px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        width: auto;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
     }
 
     /* 4. Fix the Footer Grid from image_4a140c.png */
     .footer-links-wrapper {
-        width: 600px !important;
-        min-width: 600px !important;
+        width: auto;
+        margin: 0 auto;
     }
 }
 
