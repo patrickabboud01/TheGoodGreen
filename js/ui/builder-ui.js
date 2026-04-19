@@ -62,13 +62,13 @@ function renderMenu(cat) {
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; white-space: nowrap;">
     <p style="font-size: 0.75rem; color: #5d8039; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 4px;">
-        <i class="fas fa-dumbbell" style="font-size: 0.7rem;"></i> ${item.protein} g Protein
+        <i class="fas fa-dumbbell" style="font-size: 0.5rem;"></i> ${item.protein} g Protein
     </p>
 
     <div style="width: 1px; height: 12px; background-color: #ddd;"></div>
 
     <p style="font-size: 0.75rem; color: #888; margin: 0; display: flex; align-items: center; gap: 4px;">
-        <i class="fas fa-fire" style="font-size: 0.7rem;"></i> ${item.Kcal} Kcal*
+        <i class="fas fa-fire" style="font-size: 0.5rem;"></i> ${item.Kcal} Kcal*
     </p>
 </div>
 

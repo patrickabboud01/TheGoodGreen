@@ -2192,3 +2192,9 @@ main {
     border-radius: 12px;
     overflow: hidden;
 }
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
