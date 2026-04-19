@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Discover healthy, plant-based meal plans at The Good Green. Your destination for strict vegan nutrition and custom wellness in Lebanon.">
     <meta name="google-site-verification" content="-MXud6y_PXNupwjRcnbVHhg9ThUF0xKTqJS5Qw-SPqk" />
     <title>The Good Green | Vegan Meal Plans & Healthy Kitchen in Lebanon</title>
@@ -52,13 +52,6 @@
 }
 </script>
     <style>
-        html, body {
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            background-color: #F5F1E8;
-        }
-
         /* --- 1. MODAL & CENTERING SYSTEM --- */
         .auth-overlay {
             display: none; 
@@ -109,13 +102,14 @@
         .sidebar.active { right: 0; }
         .user-greeting {
             padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
             font-weight: 700; color: #5d8039; font-size: 1rem;
         }
         .sidebar-links { list-style: none; padding: 0; margin: 0; }
         .sidebar-links li { margin-bottom: 10px; }
         .sidebar-links li a {
             font-weight: 400; color: #5d8039; padding: 14px 16px;
-            display: block; text-decoration: none !important; transition: 0.2s; border: none !important;
+            display: block; text-decoration: none; transition: 0.2s;
         }
         .auth-btn-sidebar {
             margin-top: 20px; border-top: 1px solid #eee;
@@ -154,8 +148,6 @@
             .sidebar-links li a {
                 padding: 10px 15px;
                 font-size: 0.9rem;
-                text-decoration: none !important;
-                border: none !important;
             }
 
             .auth-btn-sidebar {
@@ -163,7 +155,9 @@
                 border-top: none;
                 padding-top: 0;
                 padding: 10px 20px;
-                
+                background-color: white;
+                color: #5d8039 !important;
+                border-radius: 5px;
                 margin-left: 10px;
             }
             
@@ -189,16 +183,6 @@
         .form-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
 
-        @media (max-width: 768px) {
-            .container { padding: 0 15px; box-sizing: border-box; }
-        }
-
-        main {
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
-
         .site-footer {
             background-color:#5d8039; color: white; padding: 40px 15px;
             text-align: center; border-top: 5px solid #f4f1ea;
@@ -223,7 +207,7 @@
   gtag('config', 'G-B4KZQ9CKM1');
 </script>
 
-<body style="overflow-x: hidden; width: 100%;">
+<body>
 
 <style>
 /* Promo Banner Styles */
@@ -243,8 +227,6 @@
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 1px;
-    margin: 0;
-    padding: 0;
 }
 
 .ticker-wrapper { width: 100%; overflow: hidden; }
@@ -260,47 +242,14 @@
     100% { transform: translate3d(-100%, 0, 0); }
 }
 
- .navbar {
-   
-    top: 0px !important;
-    width: 100% !important;
-    left: 0 !important;
-    background-color: transparent !important;
-    z-index: 100 !important;
-}
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background: transparent !important;
-   
-}
-
-.navbar {
-    background: transparent !important;
+header, .navbar {
+    top: 40px !important;
 }
 
 body { padding-top: 0; }
-
-header * {
-    zoom: 1 !important;
-    transition: transform 0.3s ease;
-    
-}
-
-main {
-    position: relative;
-    margin: 0;
-    margin-top: -80px;
-    padding: 0;
-    padding-top: 80px;
-}
 </style>
 
-<!--<div class="promo-banner">
+<div class="promo-banner">
     <div class="ticker-wrapper">
         <div class="ticker-content">
             GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; 
@@ -315,14 +264,14 @@ main {
             GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong>
         </div>
     </div>
-</div>-->
+</div>
 
 <div id="custom-alert">Message goes here</div>
 
 <div id="auth-modal" class="auth-overlay" style="display: none;">
     <div class="auth-modal-box">
         <button onclick="closeAuthModal()" class="close-btn">&times;</button>
-        <img src="images/longlogowhite.png" alt="Logo" style="height: 40px; margin: 0 auto 20px auto; display: block;">
+        <img src="images/longlogo.png" alt="Logo" style="height: 40px; margin: 0 auto 20px auto; display: block;">
         <h2 style="color: #5d8039; margin-bottom: 10px;">Welcome!</h2>
         <p style="margin-bottom: 25px; color: #666;">How would you like to proceed?</p>
         <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
@@ -365,100 +314,45 @@ main {
         </div>
     </div>
 </div>
-<!--
+
 <header>
     <nav class="navbar">
         <div class="container">
             <div class="logo-area">
                 <a href="index.html">
-                    <img src="images/longlogowhite.png" alt="Logo" class="main-logo">
+                    <img src="images/longlogo.png" alt="Logo" class="main-logo">
                 </a>
             </div>
             
             <div class="menu-toggle" id="menu-toggle">
                 <span></span><span></span><span></span><span></span>
             </div>
-            <style>
-                #menu-toggle span {
-                    display: block;
-                    width: 25px;        /* Length of the dash */
-                    height: 1px;        /* Thickness of the dash */
-                    background-color: #ffffff; 
-                    border-radius: 2px; /* Makes the ends slightly rounded */
-                    transition: all 0.3s ease;
-                }
-             </style>
 
             <div class="sidebar" id="sidebar">
                 <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
                 <div id="user-greeting" class="user-greeting">Hi, Guest</div>
                 <ul class="sidebar-links">
-                    <li><a href="#aboutus" style="color: #ffffff; font-weight: 700;">About Us</a></li>
-                      <li><a href="packages.html"style="color: #ffffff; font-weight: 700;">Plans</a></li>
-                      <li><a href="menu.html"style="color: #ffffff; font-weight: 700;">Menu</a></li>
-                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')"style="color: #ffffff; font-weight: 700;">Continue your plan</a></li>
-                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')"style="color: #ffffff; font-weight: 700;">My Account</a></li>
-                  
-                     
-                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()"style="color: #ffffff; font-weight: 700;">Login</a></li>
+                    <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-</header> -->
+</header>
 
 <main>
     <section id="hero">
-
-         <nav class="navbar">
-        <div class="container">
-            <div class="logo-area">
-                <a href="index.html">
-                    <img src="images/longlogowhite.png" alt="Logo" class="main-logo">
-                </a>
-            </div>
-            
-            <div class="menu-toggle" id="menu-toggle">
-                <span></span><span></span><span></span><span></span>
-            </div>
-            <style>
-                #menu-toggle span {
-                    display: block;
-                    width: 25px;        /* Length of the dash */
-                    height: 1px;        /* Thickness of the dash */
-                    background-color: #ffffff; 
-                    border-radius: 2px; /* Makes the ends slightly rounded */
-                    transition: all 0.3s ease;
-                }
-             </style>
-
-            <div class="sidebar" id="sidebar">
-                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
-                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
-                <ul class="sidebar-links">
-                    <li><a href="#aboutus" style="color: #ffffff; font-weight: 700;">About Us</a></li>
-                      <li><a href="packages.html"style="color: #ffffff; font-weight: 700;">Plans</a></li>
-                      <li><a href="menu.html"style="color: #ffffff; font-weight: 700;">Menu</a></li>
-                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')"style="color: #ffffff; font-weight: 700;">Continue your plan</a></li>
-                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')"style="color: #ffffff; font-weight: 700;">My Account</a></li>
-                  
-                     
-                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()"style="color: #ffffff; font-weight: 700;">Login</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
         <div class="gallery-wrapper" id="gallery-wrapper"></div>
         <div class="hero-overlay">
-            <div class="hero-text">
-             <h1>Eat Clean.</h1>
-             <h1>Feel light.</h1>
-             <p>Plant-based meal</p>
-             <p>made fresh in Lebanon</p>
-            </div>
+            <h3>IT'S TIME TO</h3>
+            <h2>EAT HEALTHY</h2>
+            <p>Premium plant-based meal plans delivered in Lebanon</p>
             <div class="hero-btns">
-                <a href="packages.html" class="btn-outline-index btn-outline-white">View Plans</a>
+                <a href="menu.html" class="btn-outline-index btn-outline-white">View Menu</a>
                
                 <!-- <a href="packages.html" class="btn-outline btn-outline-white">Explore Plans</a>
                 <a href="single.html" class="btn-outline btn-outline-white">Single Order</a>-->
@@ -467,46 +361,23 @@ main {
     </section>
           
     <style>
-@media (max-width: 768px) {
-    .sidebar.active {
-        background: #ffffff; /* keep or adjust if needed */
-    }
-
-    .sidebar.active .sidebar-links li a {
-        color: #5d8039 !important; /* your green text */
-    }
-}
-        .hero-text {
-    margin-top: 200px; /* push only text down */
-}
-
         .btn-outline-index {
     display: block; /* Changed from inline-block to block to respect margins easily */
     width: 100%;
     max-width: 200px;
     padding: 16px 30px;
-    border-radius: 40px !important;
+    border-radius: 12px;
     font-weight: 700;
     font-family: inherit;
     text-decoration: none;
     text-align: center; /* Text remains centered inside the button */
     transition: all 0.2s ease;
     cursor: pointer;
-    font-size: 1rem;
-
-    /* Alignment Fixes */
-    margin-left: 40px;
-    margin-right: auto; /* Ensures it stays on the left */
-}
-
-@media (max-width: 768px) {
-    .hero-text {
-        margin-top: 20px !important; /* or even 0 */
-    }
-    .btn-outline-index {
-        margin-left: 0 !important;
-    }
+    font-size: medium;
     
+    /* Alignment Fixes */
+    margin-left: 40px; 
+    margin-right: auto; /* Ensures it stays on the left */
 }
 
 .btn-outline-index {
@@ -514,81 +385,47 @@ main {
     border: 2.5px solid #5d8039;
     color: #5d8039;
 }
-       #hero {
-            position: relative;
-            width: 100%;
-            margin-top: 0px !important;
-            margin-bottom: 0;
-            margin-left: 0;
-            margin-right: 0;
-            padding: 0;
-            /* This tells the container to match the shape of your images */
-            /* If your images are 16:9, use 16/9. If they are square, use 1/1 */
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            background-color: #f4f1ea; /* Fallback color */
+        #hero {
+            position: relative; width: 100%; height: 100vh; max-height: 700px; min-height: 420px;
+            overflow: hidden; margin: 0;
         }
-        /* This ensures the wrapper maintains the space for the images */
-        .gallery-wrapper {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-
+        .gallery-wrapper { position: absolute; inset: 0; width: 100%; height: 100%; }
         .gallery-wrapper img {
-            
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            /* 'contain' shows the full image without cropping */
-            /* 'cover' touches all sides but might crop slightly to fill the space */
-            object-fit: cover; 
-            opacity: 0;
-            transition: opacity 1s ease;
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transition: opacity 1s ease;
+            z-index: 1;
         }
-
-        /* We need the first image to be 'relative' so it pushes the container open */
-        .gallery-wrapper img:first-child {
-            position: relative;
-        }
-
-        .gallery-wrapper img.active {
-    opacity: 1;
-}
+        .gallery-wrapper img.active { opacity: 1; z-index: 2; }
         .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 40px 20px 20px 20px;
-    z-index: 3;
-}
-       
-    .hero-overlay h1 {
-            color: white;
-            font-weight: 700;
-            line-height: 1.1;
-            margin: 0 0 2px 40px; /* Top, Right, Bottom, Left */
-            font-size: 4.5rem;    /* INCREASED: Adjust this for bigger text */
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
+            display: flex; flex-direction: column; align-items: left; justify-content: left;
+            text-align: left; padding: 20px; z-index: 3;
         }
-
+        .hero-overlay h3 {
+            
+            color: white; 
+            font-weight: 700; 
+            margin-bottom: 2px; 
+            line-height: 1.1; 
+            margin-top: 200px;
+            margin-left: 40px;
+        }
+        .hero-overlay h2 {
+            
+            color: white; 
+            font-weight: 700; 
+            margin-bottom: 2px; 
+            line-height: 1.1; 
+            margin-left: 40px;
+        }
         .hero-overlay p {
-            color: rgba(255,255,255,0.88);
-            margin: 0 0 0px 40px; /* Added bottom margin for spacing */
-            font-size: 1.5rem;    /* INCREASED: Adjust this for bigger paragraph text */
-        }
-
-
-
-        @media (max-width: 768px) {
-            .hero-overlay h1, .hero-overlay p {
-                margin-left: 20px !important;
-            }
+            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            color: rgba(255,255,255,0.88); 
+            margin-top: 0; 
+            margin-bottom: 30px;
+            margin-left: 40px;
+            
         }
         .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
         .btn-outline-white {
@@ -597,691 +434,83 @@ main {
             transition: all 0.3s;
         }
         .btn-outline-white:hover { background: white; color: #2d5a27; }
-@media (max-width: 768px) {
-    .navbar {
-        position: absolute;
-        top: 10px; /* adjust: 0–20px depending how high you want */
-        left: 0;
-        width: 100%;
-        z-index: 10;
-    }
-    #hero {
-       margin-top: -2px;
-        aspect-ratio: 3 / 2 !important; /* Shorter on mobile so full page is visible */
-    }
-
-    .hero-overlay {
-        padding: 80px 20px 20px 20px !important;
-    }
-
-    /* 1. Target the text elements and clear ALL margins */
-    .hero-overlay h1,
-    .hero-overlay h1,
-    .hero-overlay p {
-        margin: 0 !important;      /* Zero margin to keep them touching */
-        line-height: 1.1;          /* Slightly more than 1 to prevent letters touching across lines */
-        padding: 0 !important;    /* Remove padding that acts like a gap */
-        text-align: left;
-    }
-
-    /* 2. Remove the gap from the button container */
-    .hero-btns {
-        margin-top: 8px !important; /* This is the specific gap between 'p' and the button */
-        justify-content: flex-start !important; /* Ensure it stays left-aligned */
-        gap: 0 !important;
-    }
-
-    .hero-overlay h1 { font-size: 1.5rem; }
-    .hero-overlay p { font-size: 0.9rem; }
-
-    .btn-outline-index {
-        margin-left: 0 !important;
-        margin-top: 0 !important; /* Controlled by the .hero-btns margin-top instead */
-        padding: 10px 20px !important; /* Decent button padding */
-        font-size: 0.9rem !important;
-        max-width: 140px;
-        border-width: 2px;
-        border-radius: 25px;
-        
-    }
-    
-
-}
-
     </style>
-   
-
-
-<section class="quick-links">
-    <div class="links-row">
-        <a href="packages.html" class="link-card-3">
-            <div class="card-image"><img src="images/website designing-02.png" alt="Plans"></div>
-            <div class="card-content">
-                <div class="card-text-1">View Plans</div>
-                <div class="sub-card-text-1">Start within 48-24 hours</div>
-            </div>
-        </a>
-        <a href="menu.html" class="link-card-1">
-            <div class="card-image"><img src="images/website designing-03.png" alt="Menu"></div>
-            <div class="card-content">
-                <div class="card-text-1">View Menu</div>
-                <div class="sub-card-text-1">Explore all meals</div>
-            </div>
-        </a>
-        <a href="single.html" class="link-card-2">
-            <div class="card-image"><img src="images/website designing-04.png" alt="Order"></div>
-            <div class="card-content">
-                <div class="card-text-2">Quick Order</div>
-                <div class="sub-card-text-2">Ready-to-deliver meals</div>
-            </div>
-        </a>
-    </div>
-</section>
-
-<style>
-    .quick-links { width: 100%; padding: 5px; box-sizing: border-box;margin-top: 50px;margin-bottom: 50px; }
     
-    .links-row { 
-        display: flex; flex-direction: row; gap: 5px; width: 100%; 
-    }
 
-    .link-card-1, .link-card-2, .link-card-3 {
-        display: flex; flex-direction: row; align-items: center;
-        flex: 1; text-decoration: none; 
-        border-radius: 10px; 
-        padding: 5px 8px; 
-    }
-
-    .link-card-3 { background: #ffffff; border: 2px solid #5d8039; }
-    .link-card-1 { background: #ffffff; border: 2px solid #D66F3A; }
-    .link-card-2 { background: #D66F3A; border: 2px solid #D66F3A; }
-
-    .card-image { width: 25px; height: 25px; flex-shrink: 0; }
-    .card-image img { width: 100%; height: 100%; object-fit: contain; }
-    
-    .card-content { 
-        display: flex; flex-direction: column; justify-content: center; 
-        align-items: flex-start; overflow: hidden; width: 100%;
-        padding-left: 8px;
-    }
-
-    .card-text-1, .card-text-2 { font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
-    .sub-card-text-1, .sub-card-text-2 { font-size: 0.5rem; font-weight: 400; white-space: nowrap; margin-top: 1px; }
-    
-    .card-text-1 { color: #333; }
-    .sub-card-text-1 { color: #666; }
-    
-    .card-text-2 { color: #ffffff; }
-    .sub-card-text-2 { color: #ffffff; }
-
-    /* MOBILE OPTIMIZATION */
-    @media (max-width: 480px) {
-        .links-row { gap: 3px; }
-        .link-card-1, .link-card-2, .link-card-3 { padding: 4px 6px; border-radius: 8px; }
-        .card-image { width: 20px; height: 20px; }
-        .card-content { padding-left: 4px; }
-        .card-text-1, .card-text-2 { font-size: 0.6rem; }
-        .sub-card-text-1, .sub-card-text-2 { font-size: 0.45rem; }
-        .quick-links { width: 100%; padding: 5px; box-sizing: border-box;margin-top: 15px;margin-bottom: 10px; }
-    }
-
-    /* PC OPTIMIZATION */
-    @media (min-width: 769px) {
-        .links-row {
-            max-width:60%;
-            margin: 0 auto; /* Centers the 70% container */
-        }
-
-        .card-text-1, 
-        .card-text-2, 
-        .sub-card-text-1, 
-        .sub-card-text-2 {
-            padding-left: 45px;
-        }
-    }
-</style>
-
-<section class="about-split" id="aboutus">
-    <div class="split-container">
-        <div class="split-image">
-            <img src="images/karelpatrick.jpg" alt="The Good Green Team">
-        </div>
-        
-        <div class="split-text">
-           <!-- <h3>WHO WE ARE</h3>-->
-            <h2 style="color: #5d8039;"> Hi! We’re  Patrick & Karel</h2>
-            <p>
-               
-We started The Good Green because we know how hard it is to find clean, 100% plant-based food in Lebanon that doesn't feel like a compromise. Whether you’re fully plant-based or just looking to add more health to your busy week, we’re here to make it effortless. We’ve done the prepping, the sourcing, and the cooking so you can enjoy vibrant, chef-made meals that make you feel your absolute best. No labels, just real food made easy.
-            </p>
-            
-        </div>
-    </div>
-</section>
-<style>
-    .about-split {
-    color: rgb(8, 6, 6);
-    margin-bottom: 0px;
-    width: 100%;
-}
-
-.split-container {
-    display: flex;
-    align-items: center; /* Centers items vertically */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.split-image {
-    flex: 0 0 30%; /* Locks the width to exactly 30% */
-}
-
-.split-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 15px; /* Matches your card style */
-    display: block;
-}
-
-.split-text {
-    flex: 0 0 70%; /* Locks the width to exactly 70% */
-    padding-left: 50px; /* Space between image and text */
-}
-
-.split-text h3 {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    opacity: 0.9;
-}
-
-.split-text h2 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    line-height: 1.2;
-}
-
-.split-text p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 0px;
-}
-
-
-
-/* --- MOBILE RESPONSIVENESS (Update this part) --- */
-@media (max-width: 768px) {
-    /* CRITICAL: We DO NOT change flex-direction to column */
-    .split-container {
-        flex-direction: row; /* Force side-by-side on all screens */
-        align-items: center; /* Keep vertically centered */
-        padding: 0 15px; /* Slightly tighter padding for mobile */
-    }
-
-    /* Keep the image at 30% width */
-    .split-image {
-        flex: 0 0 30%; 
-    }
-
-    .split-image img {
-        border-radius: 8px; /* Softer radius for smaller mobile photo */
-    }
-
-    /* Keep the text at 70% width */
-    .split-text {
-        flex: 0 0 70%;
-        padding-left: 15px; /* CRITICAL: Must shrink this spacing for mobile */
-        text-align: left; /* Keep text left-aligned with the image */
-    }
-
-    /* SHRINK the text so it fits the 70% space */
-    .split-text h3 {
-        font-size: 0.6rem; /* Very tiny upper title */
-        margin-bottom: 2px;
-    }
-.split-text h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0px !important; /* Force zero space below */
-    line-height: 1.1;             /* Tighter leading */
-    padding-bottom: 0px !important;
-}
-
-.split-text p {
-    font-size: 0.60rem;
-    margin-top: 2px !important;  /* Pulls the paragraph up into the h2 space */
-    line-height: 1.3;             /* Tighter leading */
-    margin-bottom: 12px;
-}
-    /* SCALE DOWN the button for mobile */
-    .btn-read-more {
-        padding: 6px 14px;
-        font-size: 0.7rem;
-        border-radius: 30px;
-    }
-}
-
-</style>
-
-
-<section id="how-it-works-new">
-    <h2>Three Simple Steps</h2>
-    <div class="container">
-        <div class="plan-grid">
-            <div class="step-card">
-                <img src="images/icons-03.png" alt="Icon">
-                <h4>1. Pick a Package</h4>
-                <p>Choose the number of daily items you need.</p>
-            </div>
-            <div class="step-card">
-                <img src="images/icons-02.png" alt="Icon">
-                <h4>2. Choose Your Duration</h4>
-                <p>Select a duration commitment.</p>
-            </div>
-            <div class="step-card">
-                <img src="images/icons-01.png" alt="Icon">
-                <h4>3. Build Your Plan</h4>
-                <p>Select every meal and customize ingredients.</p>
-            </div>
-            
-        </div>
-    </div>
-    <p class="advance-notice">⚠️ Orders should be placed 24–48 hours in advance.</p>
-</section>
-<style>
-    /* Base styles for PC */
-#how-it-works-new {
-    background: white;
-    padding: 20px 0;
-    border-top: 1px solid #eee;
-    scroll-margin-top: 100px;
-}
-
-#how-it-works-new h2 {
-    text-align: center;
-    color: #5d8039;
-    margin: 0 0 25px 0;
-    padding-top: 0;
-}
-
-.plan-grid {
-    display: flex; 
-    justify-content: space-around; 
-    gap: 15px; 
-    flex-wrap: nowrap; /* Forces one line on all screens */
-    width: 100%;
-}
-
-.step-card {
-    flex: 1; /* Ensures all three take equal width */
-    text-align: center;
-    min-width: 0; /* Prevents flex items from overflowing */
-    padding: 0 12px;
-}
-
-.step-card img {
-    height: 60px;
-    width: auto;
-    margin-bottom: 10px;
-}
-
-.step-card h4 {
-    color: #333;
-    font-size: 1rem;
-    margin-bottom: 5px;
-}
-
-.step-card p {
-    font-size: 0.85rem; 
-    color: #777;
-    line-height: 1.3;
-}
-
-.advance-notice {
-    font-size: small; 
-    text-align: center; 
-    margin-top: 30px;
-}
-
-/* MOBILE SPECIFIC: Shrink elements to fit the row */
-@media (max-width: 768px) {
-    #how-it-works, #how-it-works-new {
-        padding: 30px 8px;
-    }
-
-    .step-card img {
-        height: 50px; /* Better visible size on phone */
-    }
-
-    .step-card h4 {
-        font-size: 0.85rem; /* Readable title */
-    }
-
-    .step-card p {
-        font-size: 0.75rem; /* More readable description */
-        padding: 0 5px;
-    }
-
-    .plan-grid {
-        gap: 5px; /* Tighter gap for small screens */
-    }
-}
-</style>
-
-<section class="about-split">
-    <div class="split-container">
+    <section id="how-it-works" style="background: white; padding: 60px 0; border-top: 1px solid #eee; scroll-margin-top: 100px;">
       
+       <h2 style="text-align: center; color: #5d8039; margin-bottom: 40px;">Three Simple Steps</h2>
+        <div class="container">
+           
+            <div class="plan-grid" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap;">
+                <div class="step-card" style="text-align:center;">
+                    <img src="images/icons-03.png" alt="Icon" style="height: 70px;">
+                    <h4>1. Pick a Package</h4>
+                    <p style="font-size: 0.95rem; color: #777;">Choose the number of daily items you need.</p>
+                </div>
+                <div class="step-card" style="text-align:center;">
+                    <img src="images/icons-02.png" alt="Icon" style="height: 60px;">
+                    <h4>2. Choose Your Duration</h4>
+                    <p style="font-size: 0.95rem; color: #777;">Select a duration commitment.</p>
+                </div>
+                <div class="step-card" style="text-align:center;">
+                    <img src="images/icons-01.png" alt="Icon" style="height: 60px;">
+                    <h4>3. Build Your Plan</h4>
+                    <p style="font-size: 0.95rem; color: #777;">Select every meal and customize ingredients.</p>
+                </div>
+            </div>
+        </div>
+         <p style="font-size: small; text-align: center;">  ⚠️ Orders should be placed 24–48 hours in advance.</p>
+    </section>
+</main>
+
+<section class="reviews-section" style="padding: 60px 20px; background: #fdfdfd; text-align: center;">
+    <h2 style="color: #2d5a27; margin-bottom: 30px;">What Our Community Says</h2>
+    <div class="reviews-container" style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; -webkit-overflow-scrolling: touch; max-width: 1200px; margin: 0 auto;">
+        <style>
+            .reviews-container::-webkit-scrollbar { display: none; }
+            .reviews-container { -ms-overflow-style: none; scrollbar-width: none; }
+            .review-card { min-width: 280px; max-width: 300px; scroll-snap-align: start; flex-shrink: 0; }
+            @media (min-width: 768px) {
+                .reviews-container { overflow-x: visible; flex-wrap: wrap; justify-content: center; }
+                .review-card { min-width: 0; }
+            }
+        </style>
         
-        <div class="split-text">
-            <h2 style="color: #5d8039;">Baked Without Compromise</h2>
-            <p>
-                Did you know these are 100% plant-based?<br> We craft our own signature croissants and buns in-house,<br> using artisanal techniques to get that perfect,<br> golden flake without the dairy.<br><br>
-                It's healthy eating that feels like a treat.
-            </p>
-            <br>
-            <a href="menu.html" class="btn-primary">Check The Menu</a>
-        </div>
-          <div class="split-image">
-            <img src="images/croissant.png" alt="Plant-based Croissant">
-        </div>
-    </div>
-</section>
-
-<style>
-    
-    /* Button styling */
-    .btn-primary {
-
-        color: #D66F3A;
-        padding: 12px 24px;
-        text-decoration: none;
-        border-radius: 88px;
-        font-weight: 600;
-        display: inline-block;
-        border-color: #D66F3A; 
-       width: 200px;
-    }
-
-    /* Mobile: Keep image and text on same line */
-    @media (max-width: 768px) {
-        .about-split .split-container {
-            flex-direction: row;
-            text-align: left;
-            align-items: center;
-            padding: 0 15px;
-        }
-        .about-split .split-text {
-            padding-left: 15px;
-            flex: 0 0 60%;
-            font-size: 0.6rem;
-        }
-        .about-split .split-image {
-            flex: 0 0 40%;
-        }
-        .about-split .split-text h2 {
-            font-size: 1.1rem;
-            margin-bottom: 0px;
-            line-height: 1.1;
-        }
-        .about-split .split-text p {
-            font-size: 0.6rem;
-            line-height: 1.3;
-            margin-top: 2px;
-        }
-        .about-split .btn-primary {
-            padding: 8px 16px;
-            font-size: 0.75rem;
-        }
-           .btn-primary {
-
-        color: #D66F3A;
-        padding: 12px 24px;
-        text-decoration: none;
-        border-radius: 88px;
-        font-weight: 600;
-        display: inline-block;
-        border-color: #D66F3A; 
-
-    }
-            
-    }
-</style>
-
-
-</section>
-
-<section class="reviews-section">
-    <h2 class="reviews-title" style="color: #5d8039;">What Our Community Says</h2>
-    
-    <div class="reviews-container">
-        <div class="review-card">
-            <div class="stars">★★★★★</div>
-            <p class="review-text">"Amazing vegan food! Fresh, flavorful, and full of creative options. Highly recommended!"</p>
-            <h4 class="reviewer-name">— Joelle Kaprielian</h4>
+        <div class="review-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 300px; border: 1px solid #eee;">
+            <div style="color: #ffc107; margin-bottom: 10px;">★★★★★</div>
+            <p style="font-style: italic; color: #555; font-size: 0.9rem;">"Amazing vegan food! Fresh, flavorful, and full of creative options. Highly recommended!"</p>
+            <h4 style="margin-top: 15px; color: #5d8039;">— Joelle Kaprielian</h4>
         </div>
 
-        <div class="review-card">
-            <div class="stars">★★★★★</div>
-            <p class="review-text">"I tried the lazy cake it's yummmmm!!!!"</p>
-            <h4 class="reviewer-name">— Maysoun Azzam</h4>
+        <div class="review-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 300px; border: 1px solid #eee;">
+            <div style="color: #ffc107; margin-bottom: 10px;">★★★★★</div>
+            <p style="font-style: italic; color: #555; font-size: 0.9rem;">"I love it! Finally a dedicated place for vegan meal planning in Lebanon. The food is incredible and it’s so easy to have my meals sorted. Perfect for vegans here"</p>
+            <h4 style="margin-top: 15px; color: #5d8039;">— k.K.</h4>
         </div>
 
-        <div class="review-card">
-            <div class="stars">★★★★★</div>
-            <p class="review-text">"I didn't know that vegan food is so tasty. They really good. Thank you 😊 🙏"</p>
-            <h4 class="reviewer-name">— Ayda Abboud</h4>
+        <div class="review-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 300px; border: 1px solid #eee;">
+            <div style="color: #ffc107; margin-bottom: 10px;">★★★★★</div>
+            <p style="font-style: italic; color: #555; font-size: 0.9rem;">" didn't know that vegan food is so tasty. They really good. Thank you 😊 🙏 Food: 5/5  |  Service: 5/5  |  Atmosphere: 5/5"</p>
+            <h4 style="margin-top: 15px; color: #5d8039;">— Ayda Abboud</h4>
         </div>
     </div>
-
-    <a href="https://search.google.com/local/writereview?placeid=ChIJJVezT5M_HxURp6nqhWik-IQ" target="_blank" class="google-review-link">
-        Write a review on Google
-    </a>
-
-    <style>
-        /* Container Styles */
-        .reviews-section {
-            padding: 60px 10px;
-            background: #fdfdfd;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .reviews-title {
-            color: #2d5a27;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
-        }
-
-        .reviews-container {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important; /* Prevents vertical stacking */
-            gap: 12px !important;
-            overflow-x: auto !important; /* Enables swiping */
-            scroll-snap-type: x mandatory;
-            padding: 20px 5px !important;
-            max-width: 1200px;
-            margin: 0 auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
-        }
-
-        .reviews-container::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
-        }
-
-        /* Card Styles - MOBILE FIRST (2 boxes visible) */
-        .review-card {
-            flex: 0 0 47% !important; /* Forces 2 boxes per screen width */
-            min-width: 47% !important;
-            scroll-snap-align: center;
-            background: white;
-            padding: 15px !important;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
-            box-sizing: border-box; /* Includes padding in width */
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .stars {
-            color: #ffc107;
-            margin-bottom: 8px;
-            font-size: 0.8rem;
-        }
-
-        .review-text {
-            font-style: italic;
-            color: #555;
-            font-size: 0.7rem !important;
-            line-height: 1.3;
-            margin: 0;
-        }
-
-        .reviewer-name {
-            margin-top: 12px;
-            color: #5d8039;
-            font-size: 0.75rem !important;
-            font-weight: 700;
-        }
-
-        .google-review-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: #5d8039;
-            font-weight: bold;
-            text-decoration: underline;
-        }
-
-        /* DESKTOP STYLES */
-        @media (min-width: 768px) {
-            .reviews-container {
-                flex-wrap: wrap !important; /* Allows wrapping on PC */
-                justify-content: center;
-                overflow-x: hidden !important;
-                gap: 25px !important;
-            }
-
-            .review-card {
-                flex: 0 0 300px !important; /* Fixed size for PC */
-                min-width: 300px !important;
-                padding: 25px !important;
-            }
-
-            .review-text {
-                font-size: 0.9rem !important;
-            }
-
-            .reviewer-name {
-                font-size: 1rem !important;
-            }
-        }
-
-    </style>
+    <a href="https://search.google.com/local/writereview?placeid=ChIJJVezT5M_HxURp6nqhWik-IQ" target="_blank" style="display: inline-block; margin-top: 30px; color: #5d8039; font-weight: bold; text-decoration: underline;">Write a review on Google</a>
 </section>
 
 <footer class="site-footer">
-    <div class="footer-links-wrapper">
-        <div class="footer-links-grid">
-            <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-column-link">
-                <i class="fa-brands fa-instagram footer-icon-subtle"></i>
-                <span class="footer-text">thegoodgreenlb</span>
-            </a>
-
-            <a href="https://wa.me/96181153917" target="_blank" class="footer-column-link">
-                <i class="fa-brands fa-whatsapp footer-icon-subtle"></i>
-                <span class="footer-text">+961 81 15 39 17</span>
-            </a>
-
-            <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-column-link">
-                <i class="fa-brands fa-facebook-f footer-icon-subtle"></i>
-                <span class="footer-text">thegoodgreen</span>
-            </a>
-        </div>
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
     </div>
-
-    <p class="footer-copy">&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
-
-    <style>
-       
-        .site-footer {
-            background-color: #5d8039; 
-            color: white; 
-            padding: 60px 20px; /* Reduced vertical padding */
-            text-align: center; 
-            border-top: 4px solid #f4f1ea;
-        }
-
-        .footer-links-wrapper {
-            max-width: 500px; /* Narrower spread feels more organized */
-            margin: 0 auto 40px auto;
-        }
-
-        .footer-links-grid {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 10px;
-        }
-
-        .footer-column-link {
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.9); /* Slightly transparent white is softer on the eyes */
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .footer-column-link:hover {
-            color: white;
-            transform: translateY(-2px); /* Subtle interactive lift */
-        }
-
-        /* Smaller, cleaner icons */
-        .footer-icon-subtle {
-            font-size: 1.5rem !important; /* Shrunk from 2.5rem to 1.5rem */
-            opacity: 0.8;
-        }
-
-        /* Lighter, smaller text */
-        .footer-text {
-            font-weight: 400; /* Regular weight instead of Bold */
-            font-size: 0.75rem; /* Smaller font */
-            letter-spacing: 0.8px;
-        }
-
-        .footer-copy {
-            font-size: 0.65rem; /* Very small and elegant */
-            color: rgba(255, 255, 255, 0.5); /* Dimmed out so it doesn't compete with the links */
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 20px;
-        }
-
-        /* Mobile adjustments to keep it dainty on small screens */
-        @media (max-width: 768px) {
-            .site-footer {
-                padding: 40px 10px;
-            }
-            .footer-icon-subtle {
-                font-size: 1.2rem !important;
-            }
-            .footer-text {
-                font-size: 0.55rem;
-                letter-spacing: 0.2px;
-            }
-            .footer-copy {
-                font-size: 0.5rem;
-                letter-spacing: 1.5px;
-            }
-            
-        }
-    </style>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 </footer>
 
 <script>
@@ -1420,9 +649,6 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
             }, 3000);
         }
     })();
-
 </script>
-</main>
-    
 </body>
 </html>
