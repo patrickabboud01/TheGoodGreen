@@ -1084,10 +1084,11 @@ section { padding: 60px 0; }
 
 /* Menu Grid - 2 columns */
 .app-menu-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 15px;
+   display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 10px;
+    box-sizing: border-box;
     background: white;
 }
 
@@ -1150,6 +1151,7 @@ section { padding: 60px 0; }
     pointer-events: none; /* Makes it unclickable */
     opacity: 0.6;
 }
+
 /* Custom Toast Notification */
 .toast-notice {
     position: fixed;
@@ -2160,3 +2162,33 @@ main {
     }
 }
 
+* {
+    box-sizing: border-box;
+}
+.menu-card {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+.app-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0 8px;
+    box-sizing: border-box;
+}
+.app-menu-grid > * {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.app-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 0 6px;
+}
+.app-menu-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
