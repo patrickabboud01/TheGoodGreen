@@ -271,7 +271,7 @@
 
 header {
     position: fixed;
-    top: 40px;
+    top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
@@ -294,13 +294,13 @@ header * {
 main {
     position: relative;
     margin: 0;
-    margin-top: -40px;
+    margin-top: -80px;
     padding: 0;
     padding-top: 80px;
 }
 </style>
 
-<div class="promo-banner">
+<!--<div class="promo-banner">
     <div class="ticker-wrapper">
         <div class="ticker-content">
             GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong> &nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp; 
@@ -315,7 +315,7 @@ main {
             GET 20% OFF ON YOUR FIRST ORDER! USE CODE: <strong>TGG20</strong>
         </div>
     </div>
-</div>
+</div>-->
 
 <div id="custom-alert">Message goes here</div>
 
@@ -467,7 +467,15 @@ main {
     </section>
           
     <style>
+@media (max-width: 768px) {
+    .sidebar.active {
+        background: #ffffff; /* keep or adjust if needed */
+    }
 
+    .sidebar.active .sidebar-links li a {
+        color: #5d8039 !important; /* your green text */
+    }
+}
         .hero-text {
     margin-top: 200px; /* push only text down */
 }
