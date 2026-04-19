@@ -260,9 +260,9 @@
     100% { transform: translate3d(-100%, 0, 0); }
 }
 
-header, .navbar {
+ .navbar {
    
-    top: 40px !important;
+    top: 0px !important;
     width: 100% !important;
     left: 0 !important;
     background-color: transparent !important;
@@ -276,6 +276,7 @@ header {
     width: 100%;
     z-index: 1000;
     background: transparent !important;
+   
 }
 
 .navbar {
@@ -285,8 +286,9 @@ header {
 body { padding-top: 0; }
 
 header * {
-    transform: none !important;
     zoom: 1 !important;
+    transition: transform 0.3s ease;
+    
 }
 
 main {
@@ -363,7 +365,7 @@ main {
         </div>
     </div>
 </div>
-
+<!--
 <header>
     <nav class="navbar">
         <div class="container">
@@ -403,10 +405,50 @@ main {
             </div>
         </div>
     </nav>
-</header>
+</header> -->
 
 <main>
     <section id="hero">
+
+         <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="images/longlogowhite.png" alt="Logo" class="main-logo">
+                </a>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span><span></span>
+            </div>
+            <style>
+                #menu-toggle span {
+                    display: block;
+                    width: 25px;        /* Length of the dash */
+                    height: 1px;        /* Thickness of the dash */
+                    background-color: #ffffff; 
+                    border-radius: 2px; /* Makes the ends slightly rounded */
+                    transition: all 0.3s ease;
+                }
+             </style>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                <ul class="sidebar-links">
+                    <li><a href="#aboutus" style="color: #ffffff; font-weight: 700;">About Us</a></li>
+                      <li><a href="packages.html"style="color: #ffffff; font-weight: 700;">Plans</a></li>
+                      <li><a href="menu.html"style="color: #ffffff; font-weight: 700;">Menu</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')"style="color: #ffffff; font-weight: 700;">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')"style="color: #ffffff; font-weight: 700;">My Account</a></li>
+                  
+                     
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()"style="color: #ffffff; font-weight: 700;">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
         <div class="gallery-wrapper" id="gallery-wrapper"></div>
         <div class="hero-overlay">
             <div class="hero-text">
@@ -487,6 +529,7 @@ main {
         }
 
         .gallery-wrapper img {
+            
             position: absolute;
             inset: 0;
             width: 100%;
@@ -547,8 +590,15 @@ main {
         }
         .btn-outline-white:hover { background: white; color: #2d5a27; }
 @media (max-width: 768px) {
+    .navbar {
+        position: absolute;
+        top: 10px; /* adjust: 0–20px depending how high you want */
+        left: 0;
+        width: 100%;
+        z-index: 10;
+    }
     #hero {
-        margin-top: 0px;
+       margin-top: -2px;
         aspect-ratio: 3 / 2 !important; /* Shorter on mobile so full page is visible */
     }
 
@@ -586,6 +636,7 @@ main {
         border-radius: 25px;
         
     }
+    
 
 }
 
@@ -1148,6 +1199,7 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
     <p class="footer-copy">&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
 
     <style>
+       
         .site-footer {
             background-color: #5d8039; 
             color: white; 
@@ -1219,6 +1271,7 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
                 font-size: 0.5rem;
                 letter-spacing: 1.5px;
             }
+            
         }
     </style>
 </footer>
@@ -1360,25 +1413,6 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
         }
     })();
 
-    let lastScroll = 0;
-    const header = document.querySelector("header");
-
-    window.addEventListener("scroll", () => {
-        const currentScroll = window.pageYOffset;
-
-        if (currentScroll <= 0) {
-            header.style.transform = "translateY(0)";
-            return;
-        }
-
-        if (currentScroll > lastScroll) {
-            header.style.transform = "translateY(-100%)";
-        } else {
-            header.style.transform = "translateY(0)";
-        }
-
-        lastScroll = currentScroll;
-    });
 </script>
 </main>
     
