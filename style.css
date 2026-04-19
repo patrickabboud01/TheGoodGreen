@@ -497,17 +497,52 @@ section { padding: 60px 0; }
 
 .menu-item-card {
     background: white;
-    padding: 15px;
+    padding: 0;
     border-radius: 12px;
     border: 1px solid #eee;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    overflow: hidden;
 }
 
 .menu-item-card img {
     width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+}
+
+.menu-item-card > div:not(img):not(button) {
+    padding: 12px;
+    flex-grow: 1;
+}
+
+.menu-item-card button {
+    margin-top: auto;
+    margin: 0 12px 12px 12px;
+    padding: 10px 20px;
+}
+
+@media (min-width: 768px) {
+    .menu-item-card {
+        min-height: 380px;
+    }
+
+    .menu-item-card img {
+        height: 200px;
+    }
+
+    .menu-item-card > div:not(img):not(button) {
+        padding: 15px;
+    }
+
+    .menu-item-card button {
+        margin: 0 15px 15px 15px;
+    }
 }
 
 /* --- THANK YOU PAGE SPECIFICS --- */
@@ -1060,7 +1095,7 @@ section { padding: 60px 0; }
     display: flex;
     overflow-x: auto;
     padding: 10px 15px;
-    gap: 10px;
+    gap: 2px;
     background: #f8f9f8;
     position: sticky;
     top: 135px;
@@ -1180,14 +1215,25 @@ section { padding: 60px 0; }
     display: flex;
     overflow-x: auto;
     white-space: nowrap;
-    gap: 10px;
+    gap: 2px;
     padding: 10px;
     /* This enables the ordering logic */
 }
 
 .cat-btn {
     /* Ensure buttons don't shrink */
-    flex-shrink: 0; 
+    flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+    .category-nav {
+        gap: 2px;
+        justify-content: flex-start;
+    }
+
+    .cat-btn {
+        flex: 0 0 auto;
+    }
 }
 
 .site-footer {

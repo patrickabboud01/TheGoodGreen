@@ -92,11 +92,21 @@ const rawMenuData = [
      { 
         category: "lunch", 
         name: "Lahm Baajin", 
-        protein: 26,
+        protein: 26, 
         Kcal: 600, 
         image: "images/menu items/lahm.png",
         fixed_ingredients: "Flat Bread;Soy Chunks;Spices;Pomegranate Molasses;Onions;Lemon;Olive Oil", 
         removable_ingredients: "", 
+        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+    },
+     { 
+        category: "dinner", 
+        name: "Veggie Noodles", 
+        protein: 12,
+        Kcal: 400, 
+        image: "images/menu items/pasta noodles.png",
+        fixed_ingredients: "Noodles", 
+        removable_ingredients: "Carrots;Garlic;BellPepper;Cabbage;Soy Sauce; Seaseme Seeds", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
@@ -159,16 +169,7 @@ const rawMenuData = [
         removable_ingredients: "potato;carrot;zucchini;Chilly sauce", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
-    { 
-        category: "dinner", 
-        name: "Veggie Noodles", 
-        protein: 12,
-        Kcal: 400, 
-        image: "images/menu items/pasta noodles.png",
-        fixed_ingredients: "Noodles", 
-        removable_ingredients: "Carrots;Garlic;BellPepper;Cabbage;Soy Sauce; Seaseme Seeds", 
-        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
+   
     { 
         category: "dinner", 
         name: "Veggie Soup", 
@@ -196,7 +197,7 @@ const rawMenuData = [
         name: "Pasta Salad & Grilled Potatoes", 
         protein: 22,
         Kcal: 650,
-        image: "images/menu items/pasta baked potatoes.png",
+        image: "images/menu items/pastasalade.jpeg",
         fixed_ingredients: "Pasta;Grilled Potatoes", 
         removable_ingredients: "Black Beans;Olives;Cucumber;Carrots;Tomato;Corn", 
         choice_title: "Dressing", 
