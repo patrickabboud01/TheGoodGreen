@@ -238,13 +238,13 @@ const rawMenuData = [
     },
     { 
         category: "snack", 
-        name: "Oat Cookie Chocolate", 
+        name: "Oat Cookie", 
         protein: 5, 
         Kcal: 190,
         image: "images/menu items/cookies.png",
         fixed_ingredients: "Banana;Oats;Chocolate Flakes", 
         removable_ingredients: "Peanut Butter", 
-        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+        choice_title: "Flavour", choice_options: "Chocolate;Plain;Berries", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 
         category: "snack", 

@@ -60,8 +60,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
-    max-width: 1100px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .main-logo {
@@ -1467,12 +1466,10 @@ section { padding: 60px 0; }
 .navbar .container {
     display: flex;
     /* This ensures they stay in a row and never wrap to a second line */
-    flex-direction: row; 
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 0 15px; /* Side padding so they don't touch the screen edges */
     height: 70px;    /* Explicit height helps keep items centered vertically */
 }
@@ -2193,10 +2190,15 @@ main {
 @media (min-width: 1024px) {
     /* 2. Lock the Header so logo and buttons don't move */
     .header-container,
-    nav,
-    .navbar {
+    nav {
         width: auto;
         margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .navbar {
+        width: 100%;
         display: flex;
         justify-content: space-between;
     }

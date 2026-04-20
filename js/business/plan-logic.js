@@ -30,7 +30,7 @@ function calculateDayOffset(currentPlanWeek) {
 function getCategoryRestrictions(planName) {
     const cleanPlanName = planName.toLowerCase().trim();
     const restrictions = {
-        "solo": ["snack", "snacks", "protein", "extra pro", "breakfast"],
+        "solo": ["snack", "snacks", "protein", "extra pro"],
         "duo": ["snack", "snacks", "protein", "extra pro"],
         "trio": ["protein", "extra pro"],
         "protein": ["breakfast", "snack", "snacks", "main meals"]
