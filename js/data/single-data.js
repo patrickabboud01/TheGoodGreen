@@ -8,6 +8,7 @@ const singleMenuData = [
         image: "images/menu items/burger.png",
         ingredients: "Bun, Falafel Patty, Tahini, Lettuce, Tomato"
     },
+    
     { 
         category: "Main Meals", 
         name: "Lahm Baajin", 
