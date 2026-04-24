@@ -180,8 +180,8 @@
 
         .menu-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             margin-bottom: 120px;
         }
 
@@ -199,6 +199,21 @@
             }
         }
 
+        @media (max-width: 480px) {
+            main.content-wrapper {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .menu-grid {
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                gap: 15px;
+                padding: 0 10px;
+                box-sizing: border-box;
+            }
+        }
+
         /* --- CARDS & ITEMS --- */
         .img-container { 
             width: 100%; 
@@ -210,6 +225,8 @@
         }
 
         .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .clickable-image { cursor: pointer; transition: transform 0.2s; }
+        .clickable-image:hover { transform: scale(1.05); }
 
         .price-tag { 
             position: absolute; 
@@ -339,6 +356,14 @@
         .cart-item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; }
         .checkout-now-btn { display: block; width: 100%; background: var(--brand-green); color: white; text-align: center; padding: 15px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top: 20px; }
 
+        /* --- IMAGE LIGHTBOX MODAL --- */
+        .image-modal { display: none; position: fixed; z-index: 12000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+        .image-modal.active { display: flex; }
+        .image-modal-content { max-width: 90%; max-height: 90vh; position: relative; }
+        .image-modal img { width: 100%; height: auto; border-radius: 15px; }
+        .image-modal-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2.5rem; cursor: pointer; background: rgba(0,0,0,0.5); border: none; padding: 5px 15px; border-radius: 50%; line-height: 1; }
+        .image-modal-close:hover { background: rgba(0,0,0,0.8); }
+
         /* --- FOOTER & FLOATING BTN --- */
         .floating-btn {
             position: fixed;
@@ -419,7 +444,45 @@
         <div id="cart-summary" style="margin-top:20px; text-align:right;">
             <h3 id="modal-total">Total: $0.00</h3>
         </div>
-        <a href="checkout.html" class="checkout-now-btn">Proceed to Checkout</a>
+        <a href="javascript:void(0)" class="checkout-now-btn" onclick="proceedToCheckout()">Proceed to Checkout</a>
+    </div>
+</div>
+
+<div id="empty-cart-modal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <span style="font-size:1.5rem; cursor:pointer; position: absolute; top: 15px; right: 15px;" onclick="closeEmptyCartModal()">&times;</span>
+        <i class="fa-solid fa-cart-shopping" style="font-size: 3rem; color: var(--light-green); margin-bottom: 20px; display: block;"></i>
+        <h2 style="margin:0 0 15px 0; color:var(--brand-green)">Your Cart is Empty</h2>
+        <p style="color: #666; margin-bottom: 25px;">Please add items to your cart before checking out.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <a href="index.html" class="checkout-now-btn" style="background: var(--brand-green); text-decoration: none; margin: 0;">Back to Home</a>
+            <button onclick="closeEmptyCartModal()" style="background: var(--light-green); color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: 700;">Continue Shopping</button>
+        </div>
+    </div>
+</div>
+
+<div id="image-modal" class="image-modal" onclick="closeImageModal(event)">
+    <div class="image-modal-content" onclick="event.stopPropagation()">
+        <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
+        <img id="enlarged-image" src="" alt="Enlarged view">
+    </div>
+</div>
+
+<div id="edit-item-modal" class="modal">
+    <div class="modal-content" style="max-width: 450px; max-height: 85vh; overflow-y: auto;">
+        <div style="position: relative; margin-bottom: 20px;">
+            <h3 id="edit-item-title" style="color: var(--brand-green); margin: 0; padding-right: 30px;">Edit Item</h3>
+            <button onclick="closeEditItemModal()" style="position: absolute; top: 0; right: 0; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888;">&times;</button>
+        </div>
+        <div id="edit-ingredients-container" style="max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 12px; padding: 15px; margin-bottom: 20px; background: #fafafa;">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 0.9rem; color: #666; margin-bottom: 8px; font-weight: 600;">Special Instructions (Optional)</label>
+            <textarea id="edit-special-instructions"
+                placeholder="e.g. No salt, extra spicy, allergies..."
+                style="width: 100%; height: 80px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 0.9rem; resize: none; box-sizing: border-box;"></textarea>
+        </div>
+        <button onclick="saveEditedItem()" class="checkout-now-btn" style="margin: 0;">Save Changes</button>
     </div>
 </div>
 
@@ -440,7 +503,8 @@
     </nav>
 </header>
 
-<main class="content-wrapper" id="single-container"></main>
+<main class="content-wrapper" id="single-container">
+</main>
 <style>
     /* --- REPLACE YOUR OLD .footer-icon WITH THIS --- */
 .footer-icon-block {
@@ -499,9 +563,12 @@
 
 <script>
     // Master Switch
-    const isComingSoon = true; 
+    const isComingSoon = true;
 
-    let cart = JSON.parse(localStorage.getItem('single_order_cart')) || [];
+    // Clear cart on every page reload for fresh start
+    localStorage.removeItem('single_order_cart');
+    let cart = [];
+    let instanceCounter = 0;
 
     function initPage() {
         const container = document.getElementById('single-container');
@@ -562,14 +629,14 @@
                     <div class="menu-card">
                         <div class="img-container">
                             <div class="price-tag">$${item.price.toFixed(2)}</div>
-                            <img src="${item.image}" alt="${item.name}">
+                            <img src="${item.image}" alt="${item.name}" class="clickable-image" onclick="openImageModal('${item.image}', event)">
                         </div>
                         <div class="item-info">
                             <h3 class="item-name">${item.name}</h3>
                             <p class="item-description">${item.ingredients || ''}</p>
                             <div class="order-action">
-                                <span style="font-size:0.8rem; color:#999;">${item.Kcal} Kcal</span>
-                                <div class="qty-controls" id="controls-${safeName}"></div>
+                                <span style="font-size:0.8rem; color:#999;">${item.Kcal} Kcal | ${item.protein}g Protein</span>
+                                <button class="add-btn" onclick="openAddItemModal('${item.name}', ${item.price}, '${item.ingredients || ''}')">Add</button>
                             </div>
                         </div>
                     </div>`;
@@ -588,37 +655,49 @@
             list.innerHTML = '<p style="text-align:center; color:#999;">Your cart is empty.</p>';
             return;
         }
-        cart.forEach(item => {
+        cart.forEach((item) => {
+            const instrDisplay = item.specialInstructions ? `<div style="font-size:0.75rem; color:#999; font-style:italic; margin-top:5px;">📝 ${item.specialInstructions}</div>` : '';
+            const removedIngrDisplay = item.removedIngredients.length > 0 ? `<div style="font-size:0.75rem; color:#d9534f; margin-top:3px;">❌ No: ${item.removedIngredients.join(', ')}</div>` : '';
             list.innerHTML += `
-                <div class="cart-item-row">
-                    <div style="flex:1;">
-                        <h4 style="margin:0; text-transform:uppercase;">${item.name}</h4>
-                        <p style="margin:5px 0; color:var(--light-green); font-weight:700;">$${(item.price * item.qty).toFixed(2)}</p>
+                <div class="cart-item-row" style="flex-direction: column; align-items: flex-start;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="flex:1;">
+                            <h4 style="margin:0; text-transform:uppercase;">${item.name}</h4>
+                            <p style="margin:5px 0; color:var(--light-green); font-weight:700;">$${item.price.toFixed(2)}</p>
+                            ${removedIngrDisplay}
+                            ${instrDisplay}
+                        </div>
+                        <button onclick="removeFromCart(${item.instanceId}); renderCartModal();" style="color:red; background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
                     </div>
-                    <div class="qty-controls">
-                        <button class="qty-btn" onclick="removeFromCart('${item.name}', ${item.price}); renderCartModal();">-</button>
-                        <span class="qty-text">${item.qty}</span>
-                        <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}); renderCartModal();">+</button>
+                    <div style="width: 100%; display: flex; justify-content: space-between; gap: 10px;">
+                        <button onclick="openEditItemModal(${item.instanceId})" style="flex:1; background: var(--light-green); color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem;">Edit</button>
+                        <div class="qty-controls" style="gap: 5px;">
+                            <button class="qty-btn" onclick="updateItemQty(${item.instanceId}, -1); renderCartModal();">-</button>
+                            <span class="qty-text">${item.qty}</span>
+                            <button class="qty-btn" onclick="updateItemQty(${item.instanceId}, 1); renderCartModal();">+</button>
+                        </div>
                     </div>
                 </div>`;
         });
     }
 
     function addToCart(name, price) {
-        const existing = cart.find(i => i.name === name);
-        if (existing) existing.qty++;
-        else cart.push({ name, price, qty: 1 });
+        const itemData = singleMenuData.find(i => i.name === name);
+        cart.push({
+            instanceId: ++instanceCounter,
+            name,
+            price,
+            qty: 1,
+            removedIngredients: [],
+            specialInstructions: '',
+            ingredients: itemData?.ingredients || ''
+        });
         updateControls(name, price);
         updateCartTotal();
     }
 
-    function removeFromCart(name, price) {
-        const existing = cart.find(i => i.name === name);
-        if (existing) {
-            existing.qty--;
-            if (existing.qty <= 0) cart = cart.filter(i => i.name !== name);
-        }
-        updateControls(name, price);
+    function removeFromCart(instanceId) {
+        cart = cart.filter(i => i.instanceId !== instanceId);
         updateCartTotal();
     }
 
@@ -626,15 +705,170 @@
         const safeName = name.replace(/\s+/g, '-');
         const div = document.getElementById(`controls-${safeName}`);
         if (!div) return;
-        const cartItem = cart.find(i => i.name === name);
-        if (cartItem && cartItem.qty > 0) {
+        const totalQty = cart.filter(i => i.name === name).reduce((sum, item) => sum + item.qty, 0);
+        if (totalQty > 0) {
             div.innerHTML = `
-                <button class="qty-btn" onclick="removeFromCart('${name}', ${price})">-</button>
-                <span class="qty-text">${cartItem.qty}x</span>
-                <button class="qty-btn" onclick="addToCart('${name}', ${price})">+</button>`;
+                <span class="qty-text">${totalQty}x</span>
+                <button class="add-btn" onclick="addToCart('${name}', ${price})">Add More</button>`;
         } else {
             div.innerHTML = `<button class="add-btn" onclick="addToCart('${name}', ${price})">Add</button>`;
         }
+    }
+
+    function proceedToCheckout() {
+        if (cart.length === 0) {
+            closeCart();
+            document.getElementById('empty-cart-modal').style.display = 'flex';
+        } else {
+            window.location.href = 'checkout.html';
+        }
+    }
+
+    function closeEmptyCartModal() {
+        document.getElementById('empty-cart-modal').style.display = 'none';
+    }
+
+    // --- IMAGE LIGHTBOX FUNCTIONS ---
+    function openImageModal(imageSrc, event) {
+        event.stopPropagation();
+        const modal = document.getElementById('image-modal');
+        const img = document.getElementById('enlarged-image');
+        img.src = imageSrc;
+        modal.classList.add('active');
+    }
+
+    function closeImageModal(event) {
+        if (event) event.stopPropagation();
+        const modal = document.getElementById('image-modal');
+        modal.classList.remove('active');
+    }
+
+    function updateItemQty(instanceId, change) {
+        const item = cart.find(i => i.instanceId === instanceId);
+        if (item) {
+            item.qty += change;
+            if (item.qty <= 0) removeFromCart(instanceId);
+        }
+        updateCartTotal();
+    }
+
+    // --- EDIT ITEM FUNCTIONS ---
+    let currentEditingInstanceId = null;
+    let isAddingNewItem = false;
+    let pendingNewItemData = {};
+
+    function openAddItemModal(itemName, itemPrice, itemIngredients) {
+        isAddingNewItem = true;
+        currentEditingInstanceId = null;
+        pendingNewItemData = {
+            name: itemName,
+            price: itemPrice,
+            ingredients: itemIngredients,
+            removedIngredients: [],
+            specialInstructions: ''
+        };
+
+        document.getElementById('edit-item-title').innerText = `Customize ${itemName}`;
+        document.getElementById('edit-special-instructions').value = '';
+
+        // Build ingredients list
+        const ingredientsContainer = document.getElementById('edit-ingredients-container');
+        ingredientsContainer.innerHTML = '';
+
+        if (itemIngredients) {
+            const ingredientsList = itemIngredients.split(',').map(i => i.trim()).filter(i => i);
+            ingredientsList.forEach(ingredient => {
+                ingredientsContainer.innerHTML += `
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
+                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" checked onchange="toggleNewItemIngredient('${ingredient}')">
+                        <span style="font-size: 0.95rem;">${ingredient}</span>
+                    </label>`;
+            });
+        } else {
+            ingredientsContainer.innerHTML = '<p style="color:#999; text-align: center;">No customizable ingredients for this item.</p>';
+        }
+
+        document.getElementById('edit-item-modal').style.display = 'flex';
+    }
+
+    function openEditItemModal(instanceId) {
+        isAddingNewItem = false;
+        currentEditingInstanceId = instanceId;
+        const item = cart.find(i => i.instanceId === instanceId);
+
+        document.getElementById('edit-item-title').innerText = `Edit ${item.name}`;
+        document.getElementById('edit-special-instructions').value = item.specialInstructions || '';
+
+        // Build ingredients list
+        const ingredientsContainer = document.getElementById('edit-ingredients-container');
+        ingredientsContainer.innerHTML = '';
+
+        if (item.ingredients) {
+            const ingredientsList = item.ingredients.split(',').map(i => i.trim()).filter(i => i);
+            ingredientsList.forEach(ingredient => {
+                const isRemoved = item.removedIngredients.includes(ingredient);
+                ingredientsContainer.innerHTML += `
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
+                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" ${isRemoved ? '' : 'checked'} onchange="toggleEditIngredient('${ingredient}')">
+                        <span style="font-size: 0.95rem;">${ingredient}</span>
+                    </label>`;
+            });
+        } else {
+            ingredientsContainer.innerHTML = '<p style="color:#999; text-align: center;">No customizable ingredients for this item.</p>';
+        }
+
+        document.getElementById('edit-item-modal').style.display = 'flex';
+    }
+
+    function closeEditItemModal() {
+        document.getElementById('edit-item-modal').style.display = 'none';
+        currentEditingInstanceId = null;
+    }
+
+    function toggleNewItemIngredient(ingredient) {
+        if (pendingNewItemData.removedIngredients.includes(ingredient)) {
+            pendingNewItemData.removedIngredients = pendingNewItemData.removedIngredients.filter(i => i !== ingredient);
+        } else {
+            pendingNewItemData.removedIngredients.push(ingredient);
+        }
+    }
+
+    function toggleEditIngredient(ingredient) {
+        const item = cart.find(i => i.instanceId === currentEditingInstanceId);
+        if (item) {
+            if (item.removedIngredients.includes(ingredient)) {
+                item.removedIngredients = item.removedIngredients.filter(i => i !== ingredient);
+            } else {
+                item.removedIngredients.push(ingredient);
+            }
+        }
+    }
+
+    function saveEditedItem() {
+        if (isAddingNewItem) {
+            // Adding a new item
+            pendingNewItemData.specialInstructions = document.getElementById('edit-special-instructions').value;
+            cart.push({
+                instanceId: ++instanceCounter,
+                name: pendingNewItemData.name,
+                price: pendingNewItemData.price,
+                qty: 1,
+                removedIngredients: pendingNewItemData.removedIngredients,
+                specialInstructions: pendingNewItemData.specialInstructions,
+                ingredients: pendingNewItemData.ingredients
+            });
+            const safeName = pendingNewItemData.name.replace(/\s+/g, '-');
+            updateControls(pendingNewItemData.name, pendingNewItemData.price);
+        } else {
+            // Editing an existing item
+            const item = cart.find(i => i.instanceId === currentEditingInstanceId);
+            if (item) {
+                item.specialInstructions = document.getElementById('edit-special-instructions').value;
+                renderCartModal();
+            }
+        }
+        updateCartTotal();
+        closeEditItemModal();
     }
 
     // --- SIDEBAR & GLOBAL ---
@@ -665,7 +899,10 @@
         btn.style.bottom = (footerRect.top < window.innerHeight) ? (window.innerHeight - footerRect.top + 20) + "px" : "30px";
     });
 
-    window.onclick = (event) => { if (event.target == document.getElementById('cart-modal')) closeCart(); };
+    window.onclick = (event) => {
+        if (event.target == document.getElementById('cart-modal')) closeCart();
+        if (event.target == document.getElementById('edit-item-modal')) closeEditItemModal();
+    };
 
     function protectedRedirect(url) {
         if (localStorage.getItem('current_user')) window.location.href = url;

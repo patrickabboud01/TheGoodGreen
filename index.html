@@ -319,6 +319,16 @@ main {
 
 <div id="custom-alert">Message goes here</div>
 
+<div id="quick-order-modal" class="auth-overlay" style="display: none;">
+    <div class="auth-modal-box">
+        <button onclick="closeQuickOrderModal()" class="close-btn">&times;</button>
+        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3rem; color: #5d8039; margin-bottom: 20px;"></i>
+        <h2 style="color: #5d8039; margin-bottom: 15px;">Single Item Order Notice</h2>
+        <p style="margin-bottom: 25px; color: #666; line-height: 1.6;">Some single item order <strong>takes up to 12 hours</strong> to prepare.</p>
+        <button onclick="continueToSingleOrder()" class="btn-primary" style="width:100%; max-width: 300px; border: none; cursor: pointer;">Continue</button>
+    </div>
+</div>
+
 <div id="auth-modal" class="auth-overlay" style="display: none;">
     <div class="auth-modal-box">
         <button onclick="closeAuthModal()" class="close-btn">&times;</button>
@@ -668,10 +678,10 @@ main {
                 <div class="sub-card-text-1">Explore all meals</div>
             </div>
         </a>
-        <a href="single.html" class="link-card-2">
+        <a href="javascript:void(0)" class="link-card-2" onclick="openQuickOrderModal();">
             <div class="card-image"><img src="images/website designing-04.png" alt="Order"></div>
             <div class="card-content">
-                <div class="card-text-2">Quick Order</div>
+                <div class="card-text-2">Single Item Order</div>
                 <div class="sub-card-text-2">Ready-to-deliver meals</div>
             </div>
         </a>
@@ -679,6 +689,7 @@ main {
 </section>
 
 <style>
+
     .quick-links { width: 100%; padding: 5px; box-sizing: border-box;margin-top: 50px;margin-bottom: 50px; }
     
     .links-row { 
@@ -739,6 +750,7 @@ main {
             padding-left: 45px;
         }
     }
+    
 </style>
 
 <section class="about-split" id="aboutus">
@@ -886,12 +898,13 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
             
         </div>
     </div>
-    <p class="advance-notice">⚠️ Orders should be placed 24–48 hours in advance.</p>
+   <!-- <p class="advance-notice">⚠️ Orders should be placed 24–48 hours in advance.</p>-->
 </section>
 <style>
+
     /* Base styles for PC */
 #how-it-works-new {
-    background: white;
+    background-color: #5c80392a;
     padding: 20px 0;
     border-top: 1px solid #eee;
     scroll-margin-top: 100px;
@@ -968,7 +981,51 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
 }
 </style>
 
-<section class="about-split">
+<section class="banner-section">
+    <div class="banner-container">
+        <img src="images/banner 2.jpeg" alt="Banner 1" class="banner-image">
+        <div class="banner-overlay">
+            <button class="banner--green link-to" onclick="window.location.href='packages.html';">
+  Check our plans
+</button>
+        </div>
+    </div>
+</section>
+
+<style>
+    .banner--green {
+    padding: 10px 20px;
+    background-color: #5d8039;
+    color: #ffffff;
+    border: 3px solid #5d8039;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.banner--green:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .banner-section {
+        margin: 20px 0; /* Smaller spacing on mobile */
+    }
+    .banner-overlay {
+        padding: 65px 20px 0px 20px;
+    }
+    .banner--green {
+        padding: 6px 14px;
+        font-size: 0.7rem;
+    }
+}
+</style>
+
+<section class="about-split2">
     <div class="split-container">
       
         
@@ -988,7 +1045,9 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
 </section>
 
 <style>
-    
+   .about-split2{
+    background-color: #5c80392a;
+   }
     /* Button styling */
     .btn-primary {
 
@@ -1004,31 +1063,31 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
 
     /* Mobile: Keep image and text on same line */
     @media (max-width: 768px) {
-        .about-split .split-container {
+        .about-split2 .split-container {
             flex-direction: row;
             text-align: left;
             align-items: center;
             padding: 0 15px;
         }
-        .about-split .split-text {
+        .about-split2 .split-text {
             padding-left: 15px;
             flex: 0 0 60%;
             font-size: 0.4rem;
         }
-        .about-split .split-image {
+        .about-split2 .split-image {
             flex: 0 0 40%;
         }
-        .about-split .split-text h2 {
+        .about-split2 .split-text h2 {
             font-size: 1.1rem;
             margin-bottom: 0px;
             line-height: 1.1;
         }
-        .about-split .split-text p {
+        .about-split2 .split-text p {
             font-size: 0.6rem;
             line-height: 1.3;
             margin-top: 2px;
         }
-        .about-split .btn-primary {
+        .about-split2 .btn-primary {
             padding: 8px 16px;
             font-size: 0.75rem;
         }
@@ -1046,8 +1105,92 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
             
     }
 </style>
+</section>
 
+<section class="banner-section">
+    <div class="banner-container">
+        <img src="images/banner.jpeg" alt="Banner 2" class="banner-image">
+        <div class="banner-overlay">
+            <button class="banner-button link-to" onclick="window.location.href='menu.html';">
+  Check our menu
+</button>
+        </div>
+    </div>
+    <style>
+/* Banner Section Styles */
+.banner-section {
+    width: 100%;
+    margin: 20px 0; /* Vertical spacing */
+    display: flex;
+    justify-content: center; /* Ensures the 95% width image is centered */
+    
+}
 
+.banner-container {
+    position: relative;
+    width: 95%;
+}
+
+.banner-image {
+    width: 100%; /* Fill the container */
+    height: auto;
+    display: block;
+    aspect-ratio: 2291 / 1182;
+    object-fit: cover;
+    border-radius: 10px; /* Optional: adds a modern look */
+}
+
+.banner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;      /* ⬅️ move to bottom */
+    justify-content: flex-end; /* ⬅️ keep left */
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.banner-button {
+    padding: 10px 20px;
+    background-color: #D66F3A;
+    color: #ffffff;
+    border: 3px solid #D66F3A;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.banner-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .banner-section {
+        margin: 20px 0; /* Smaller spacing on mobile */
+    }
+    .banner-overlay {
+        padding: 65px 20px 0px 20px;
+    }
+    .banner-button {
+        padding: 6px 14px;
+        font-size: 0.7rem;
+    }
+}
+@media (min-width: 769px) {
+    .banner-section {
+        margin: 40px 0;
+    }
+
+    .banner-container {
+        width: 60%; /* Adjust this percentage to control the size on desktop */
+        max-width: 1200px; /* Optional: prevents it from getting too huge on ultra-wide screens */
+    }
+}
+    </style>
 </section>
 
 <section class="reviews-section">
@@ -1081,7 +1224,7 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
         /* Container Styles */
         .reviews-section {
             padding: 60px 10px;
-            background: #fdfdfd;
+            background-color: #5c80392a;
             text-align: center;
             overflow: hidden;
         }
@@ -1100,7 +1243,7 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
             overflow-x: auto !important; /* Enables swiping */
             scroll-snap-type: x mandatory;
             padding: 20px 5px !important;
-            max-width: 1200px;
+           /*: 1200px;*/    
             margin: 0 auto;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none; /* Firefox */
@@ -1383,6 +1526,18 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
     function protectedRedirect(url) {
         if (localStorage.getItem('current_user')) window.location.href = url;
         else { showAlert("Please log in."); setTimeout(() => openEntryModal('login'), 1500); }
+    }
+
+    function openQuickOrderModal() {
+        document.getElementById('quick-order-modal').style.display = 'flex';
+    }
+
+    function closeQuickOrderModal() {
+        document.getElementById('quick-order-modal').style.display = 'none';
+    }
+
+    function continueToSingleOrder() {
+        window.location.href = 'single.html';
     }
 
     const toggle = document.getElementById('menu-toggle');
