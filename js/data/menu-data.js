@@ -116,7 +116,7 @@ const rawMenuData = [
         Kcal: 380,
         image: "images/menu items/veggies with rice.png",
         fixed_ingredients: "Rice;Soy Sauce", 
-        removable_ingredients: "Potato;Carrotss;Broccoli;Zucchini", 
+        removable_ingredients: "Potato;Carrots;Broccoli;Zucchini", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
     { 

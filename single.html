@@ -468,6 +468,18 @@
     </div>
 </div>
 
+<div id="choices-modal" class="modal">
+    <div class="modal-content" style="max-width: 450px; max-height: 85vh; overflow-y: auto;">
+        <div style="position: relative; margin-bottom: 20px;">
+            <h3 id="choices-title" style="color: var(--brand-green); margin: 0; padding-right: 30px;">Select Your Options</h3>
+            <button onclick="closeChoicesModal()" style="position: absolute; top: 0; right: 0; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888;">&times;</button>
+        </div>
+        <div id="choices-container" style="margin-bottom: 20px;">
+        </div>
+        <button onclick="proceedToEditFromChoices()" class="checkout-now-btn" style="margin: 0;">Continue to Customize</button>
+    </div>
+</div>
+
 <div id="edit-item-modal" class="modal">
     <div class="modal-content" style="max-width: 450px; max-height: 85vh; overflow-y: auto;">
         <div style="position: relative; margin-bottom: 20px;">
@@ -563,7 +575,7 @@
 
 <script>
     // Master Switch
-    const isComingSoon = true;
+    const isComingSoon = false;
 
     // Clear cart on every page reload for fresh start
     localStorage.removeItem('single_order_cart');
@@ -658,12 +670,21 @@
         cart.forEach((item) => {
             const instrDisplay = item.specialInstructions ? `<div style="font-size:0.75rem; color:#999; font-style:italic; margin-top:5px;">📝 ${item.specialInstructions}</div>` : '';
             const removedIngrDisplay = item.removedIngredients.length > 0 ? `<div style="font-size:0.75rem; color:#d9534f; margin-top:3px;">❌ No: ${item.removedIngredients.join(', ')}</div>` : '';
+
+            let choicesDisplay = '';
+            if (item.choices && Object.keys(item.choices).length > 0) {
+                choicesDisplay = '<div style="font-size:0.75rem; color:#5d8039; margin-top:5px; font-weight:600;">✓ Choices: ';
+                choicesDisplay += Object.values(item.choices).join(', ');
+                choicesDisplay += '</div>';
+            }
+
             list.innerHTML += `
                 <div class="cart-item-row" style="flex-direction: column; align-items: flex-start;">
                     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div style="flex:1;">
                             <h4 style="margin:0; text-transform:uppercase;">${item.name}</h4>
                             <p style="margin:5px 0; color:var(--light-green); font-weight:700;">$${item.price.toFixed(2)}</p>
+                            ${choicesDisplay}
                             ${removedIngrDisplay}
                             ${instrDisplay}
                         </div>
@@ -690,7 +711,8 @@
             qty: 1,
             removedIngredients: [],
             specialInstructions: '',
-            ingredients: itemData?.ingredients || ''
+            ingredients: itemData?.ingredients || '',
+            choices: {}
         });
         updateControls(name, price);
         updateCartTotal();
@@ -752,31 +774,106 @@
         updateCartTotal();
     }
 
-    // --- EDIT ITEM FUNCTIONS ---
+    // --- EDIT ITEM & CHOICES FUNCTIONS ---
     let currentEditingInstanceId = null;
     let isAddingNewItem = false;
     let pendingNewItemData = {};
+    let pendingSelectedChoices = {};
 
     function openAddItemModal(itemName, itemPrice, itemIngredients) {
-        isAddingNewItem = true;
-        currentEditingInstanceId = null;
-        pendingNewItemData = {
-            name: itemName,
-            price: itemPrice,
-            ingredients: itemIngredients,
-            removedIngredients: [],
-            specialInstructions: ''
-        };
+        const itemData = singleMenuData.find(i => i.name === itemName);
 
-        document.getElementById('edit-item-title').innerText = `Customize ${itemName}`;
+        // Check if item has choices
+        if (itemData && (itemData.choicename1 || itemData.choicename2 || itemData.choicename3)) {
+            isAddingNewItem = true;
+            currentEditingInstanceId = null;
+            pendingNewItemData = {
+                name: itemName,
+                price: itemPrice,
+                ingredients: itemIngredients,
+                removedIngredients: [],
+                specialInstructions: ''
+            };
+            pendingSelectedChoices = {};
+            showChoicesModal(itemName, itemData);
+        } else {
+            // No choices, go directly to edit modal
+            isAddingNewItem = true;
+            currentEditingInstanceId = null;
+            pendingNewItemData = {
+                name: itemName,
+                price: itemPrice,
+                ingredients: itemIngredients,
+                removedIngredients: [],
+                specialInstructions: '',
+                choices: {}
+            };
+            openEditModal();
+        }
+    }
+
+    function showChoicesModal(itemName, itemData) {
+        document.getElementById('choices-title').innerText = `${itemName} - Select Your Options`;
+        const container = document.getElementById('choices-container');
+        container.innerHTML = '';
+
+        let choiceCount = 0;
+        for (let i = 1; i <= 3; i++) {
+            const choiceNameKey = `choicename${i}`;
+            const choiceItemsKey = `choiceitems${i}`;
+
+            if (itemData[choiceNameKey] && itemData[choiceItemsKey]) {
+                choiceCount++;
+                const choiceName = itemData[choiceNameKey];
+                const choiceItems = itemData[choiceItemsKey].split(',').map(item => item.trim());
+
+                container.innerHTML += `
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 0.9rem; color: #666; margin-bottom: 12px; font-weight: 600;">${choiceName}</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            ${choiceItems.map((item, idx) => `
+                                <label style="display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="choice-${i}" value="${item}" style="width: 18px; height: 18px; cursor: pointer; accent-color: #5d8039;">
+                                    <span style="font-size: 0.95rem;">${item}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        if (choiceCount === 0) {
+            container.innerHTML = '<p style="color:#999; text-align: center;">No choices available for this item.</p>';
+        }
+
+        document.getElementById('choices-modal').style.display = 'flex';
+    }
+
+    function proceedToEditFromChoices() {
+        for (let i = 1; i <= 3; i++) {
+            const selectedRadio = document.querySelector(`input[name="choice-${i}"]:checked`);
+            if (selectedRadio) {
+                pendingSelectedChoices[`choice${i}`] = selectedRadio.value;
+            }
+        }
+        pendingNewItemData.choices = pendingSelectedChoices;
+        closeChoicesModal();
+        openEditModal();
+    }
+
+    function closeChoicesModal() {
+        document.getElementById('choices-modal').style.display = 'none';
+    }
+
+    function openEditModal() {
+        document.getElementById('edit-item-title').innerText = `Customize ${pendingNewItemData.name}`;
         document.getElementById('edit-special-instructions').value = '';
 
-        // Build ingredients list
         const ingredientsContainer = document.getElementById('edit-ingredients-container');
         ingredientsContainer.innerHTML = '';
 
-        if (itemIngredients) {
-            const ingredientsList = itemIngredients.split(',').map(i => i.trim()).filter(i => i);
+        if (pendingNewItemData.ingredients) {
+            const ingredientsList = pendingNewItemData.ingredients.split(',').map(i => i.trim()).filter(i => i);
             ingredientsList.forEach(ingredient => {
                 ingredientsContainer.innerHTML += `
                     <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
@@ -799,7 +896,6 @@
         document.getElementById('edit-item-title').innerText = `Edit ${item.name}`;
         document.getElementById('edit-special-instructions').value = item.specialInstructions || '';
 
-        // Build ingredients list
         const ingredientsContainer = document.getElementById('edit-ingredients-container');
         ingredientsContainer.innerHTML = '';
 
@@ -846,7 +942,6 @@
 
     function saveEditedItem() {
         if (isAddingNewItem) {
-            // Adding a new item
             pendingNewItemData.specialInstructions = document.getElementById('edit-special-instructions').value;
             cart.push({
                 instanceId: ++instanceCounter,
@@ -855,12 +950,11 @@
                 qty: 1,
                 removedIngredients: pendingNewItemData.removedIngredients,
                 specialInstructions: pendingNewItemData.specialInstructions,
-                ingredients: pendingNewItemData.ingredients
+                ingredients: pendingNewItemData.ingredients,
+                choices: pendingNewItemData.choices || {}
             });
-            const safeName = pendingNewItemData.name.replace(/\s+/g, '-');
             updateControls(pendingNewItemData.name, pendingNewItemData.price);
         } else {
-            // Editing an existing item
             const item = cart.find(i => i.instanceId === currentEditingInstanceId);
             if (item) {
                 item.specialInstructions = document.getElementById('edit-special-instructions').value;
@@ -901,6 +995,7 @@
 
     window.onclick = (event) => {
         if (event.target == document.getElementById('cart-modal')) closeCart();
+        if (event.target == document.getElementById('choices-modal')) closeChoicesModal();
         if (event.target == document.getElementById('edit-item-modal')) closeEditItemModal();
     };
 

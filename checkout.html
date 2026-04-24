@@ -567,13 +567,18 @@
 
                 if (isSingleOrder) {
                     singleOrderCart.forEach(item => {
+                        let specialInstr = item.specialInstructions || '';
+                        if (item.choices && Object.keys(item.choices).length > 0) {
+                            const choicesStr = Object.values(item.choices).join(', ');
+                            specialInstr = specialInstr ? `${choicesStr} || ${specialInstr}` : choicesStr;
+                        }
                         itemsToInsert.push({
                             order_id: orderId,
                             day_number: 1,
                             meal_name: item.name,
                             choice: `Qty: ${item.qty}`,
                             removed_ingredients: item.removedIngredients?.join(', ') || '',
-                            special_instructions: item.specialInstructions || 'Single Menu Order'
+                            special_instructions: specialInstr || 'Single Menu Order'
                         });
                     });
                 } else {
