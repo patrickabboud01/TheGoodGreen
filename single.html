@@ -181,21 +181,21 @@
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 120px;
         }
 
         @media (min-width: 768px) {
             .menu-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 30px;
+                gap: 20px;
             }
         }
 
         @media (min-width: 1200px) {
             .menu-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 35px;
+                gap: 25px;
             }
         }
 
@@ -204,10 +204,11 @@
                 padding-left: 15px;
                 padding-right: 15px;
             }
+            
 
             .menu-grid {
                 width: 100%;
-                gap: 15px;
+                gap: 12px;
                 box-sizing: border-box;
             }
         }
@@ -230,7 +231,7 @@
             position: absolute; 
             top: 15px; 
             left: 15px; 
-            background: var(--brand-green); 
+            background: #5d8039; 
             color: white; 
             padding: 5px 12px; 
             border-radius: 12px; 
@@ -242,6 +243,9 @@
             border-radius: 15px;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .menu-card:hover {
@@ -252,29 +256,32 @@
         .item-name {
             font-weight: 700;
             text-transform: uppercase;
-            margin: 0 0 8px 0;
-            font-size: clamp(0.9rem, 2vw, 1rem);
+            margin: 0 0 6px 0;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
             color: var(--text-dark);
         }
 
         .item-info {
-            padding: 0 15px 15px 15px;
+            padding: 0 12px 10px 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .item-description {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #666;
-            margin-bottom: 10px;
-            line-height: 1.4;
+            margin-bottom: 6px;
+            line-height: 1.3;
         }
 
         .order-action {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             border-top: 1px solid #eee;
-            padding: 10px 15px 0 15px;
-            gap: 10px;
+            padding: 8px 12px 0 12px;
+            gap: 8px;
+            margin-top: auto;
         }
 
         .order-action .qty-controls {
@@ -300,13 +307,15 @@
             background: var(--light-green);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 7px 14px;
             border-radius: 50px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .add-btn:hover {
@@ -645,9 +654,10 @@
                             <h3 class="item-name">${item.name}</h3>
                             <p class="item-description">${item.ingredients || ''}</p>
                             <div class="order-action">
-                                <span style="font-size:0.8rem; color:#999;">${item.Kcal} Kcal | ${item.protein}g Protein</span>
-                                <button class="add-btn" onclick="openAddItemModal('${item.name}', ${item.price}, '${item.ingredients || ''}')">Add</button>
+                                <span style="font-size:0.65rem; color:#999; flex-shrink: 1; min-width: 0;">${item.Kcal} Kcal | ${item.protein}g Protein</span>
+                                 <button class="add-btn" onclick="openAddItemModal('${item.name}', ${item.price}, '${item.ingredients || ''}')">Add</button>
                             </div>
+                           
                         </div>
                     </div>`;
             });
