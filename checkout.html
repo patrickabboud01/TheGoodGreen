@@ -355,12 +355,17 @@
         const e = document.getElementById('reg-email').value;
         const p = document.getElementById('reg-password').value;
         if(!e || !p || !n) return alert("Missing fields!");
-        const { data, error } = await sbClient.from('profiles').insert([{ 
+        const { data, error } = await sbClient.from('profiles').insert([{
             full_name: n, email: e, password: p,
             phone_number: document.getElementById('reg-phone').value,
             address: document.getElementById('reg-address').value
         }]).select();
-        if (error) return alert("Signup failed.");
+        if (error) {
+            if (error.code === 'PGRST116' || error.message?.includes('duplicate') || error.message?.includes('Duplicate')) {
+                return alert("This email is already registered.");
+            }
+            return alert("Signup failed.");
+        }
         localStorage.setItem('current_user', JSON.stringify(data[0]));
         sessionStorage.setItem('auth_choice_made', 'true');
         location.reload();
