@@ -235,34 +235,17 @@ const singleMenuData = [
   
   {
     category: "Snacks",
-    name: "Oat Cookies Chocolate 3pcs",
+    name: "Oat Cookies 3pcs",
     protein: 5,
     Kcal: 400,
     price: 6.00,
     image: "images/menu items/cookies.png",
     ingredients: "Oats,  Peanut Butter, Vegan Chocolate , Milk",
-    lockedIngredients:"Oats, Milk"
+    lockedIngredients:"Oats, Milk",
+    choicename1: "Flavour",
+    choiceitems1: "Chocolate , Berries , Plain ",
   },
-    {
-    category: "Snacks",
-    name: "Oat Cookies Plain 3pcs",
-    protein: 5,
-    Kcal: 400,
-    price: 6.00,
-    image: "images/menu items/cookies.png",
-    ingredients: "Oats,  Peanut Butter, Milk",
-    lockedIngredients :"Oats, Milk"
-  },
-    {
-    category: "Snacks",
-    name: "Oat Cookies Berries 3pcs",
-    protein: 5,
-    Kcal: 400,
-    price: 6.00,
-    image: "images/menu items/cookies.png",
-    ingredients: "Oats,  Peanut Butter, Fresh Berries , Milk",
-    lockedIngredients :"Oats, Milk"
-  },
+   
     {
     category: "Snacks",
     name: "Lazy Cake 10pcs",
@@ -344,6 +327,19 @@ const singleMenuData = [
     image: "images/menu items/protein shake plain.png",
     ingredients: "Vegan Protein Blend",
         lockedIngredients :"Vegan Protein Blend"
+
+  },
+  {
+    category: "Protein",
+    name: "Protein Cookie",
+    protein: 10,
+    Kcal: 200,
+    price: 3.00,
+    image: "images/menu items/cookies.png",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend",
+    choicename1: "Flavour",
+    choiceitems1: "Chocolate , Berries , Plain "
 
   },
 
