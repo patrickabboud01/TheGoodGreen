@@ -1,17 +1,7 @@
 const singleMenuData = [
 
   // --- BREAKFAST ---
-  {
-    category: "Breakfast",
-    name: "Croissant Chocolate 2pcs",
-    protein: 9,
-    Kcal: 400,
-    price: 5.00,
-    image: "images/menu items/chocolate croissant.jpeg",
-    ingredients: "Croissant dough, Chocolate",
-    choicename1: "swap the second flavour for",
-    choiceitems1: "plain , zaatar ",
-  },
+ 
   
   {
     category: "Breakfast",
@@ -21,20 +11,13 @@ const singleMenuData = [
     price: 5.00,
     image: "images/menu items/croissant1.png",
     ingredients: "Croissant dough",
-    choicename1: "swap the second flavour for",
-    choiceitems1: "Chocolate , zaatar ",
+    lockedIngredients: "Croissant dough",
+    choicename1: "First Croissant Flavour",
+    choiceitems1: "Chocolate , Zaatar , Plain",
+    choicename2: "Second Croissant Flavour",
+    choiceitems2: "Chocolate , Zaatar , Plain",
   },
-  {
-    category: "Breakfast",
-    name: "Croissant Zaatar 2pcs",
-    protein: 9,
-    Kcal: 400,
-    price: 5.00,
-    image: "images/menu items/croissant2.jpeg",
-    ingredients: "Croissant dough, Zaatar",
-    choicename1: "swap the second flavour for",
-    choiceitems1: "Chocolate , Plain ",
-  },
+ 
   {
     category: "Breakfast",
     name: "Oatmeal Bowl",
@@ -42,9 +25,10 @@ const singleMenuData = [
     Kcal: 450,
     price: 7.00,
     image: "images/menu items/oats.png",
-    ingredients: "Oats, Milk, Dark Chocolate, Peanut Butter,Berries",
+    ingredients: "Oats, Milk, Dark Chocolate, Peanut Butter,Berries,Banana",
+    lockedIngredients: "Oats, Milk",
     choicename1: "Milk type",
-    choiceitems1: "Soy , Almond ",
+    choiceitems1: "Soy , Almond , Oat",
   },
   {
     category: "Breakfast",
@@ -53,7 +37,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 6,
     image: "images/menu items/hummus1.png",
-    ingredients: "Crackers, Hummus, Cucumber, Pumpkin Seeds, Olives"
+    ingredients: "Crackers, Hummus, Cucumber, Pumpkin Seeds, Olives",
+    lockedIngredients: "Crackers, Hummus",
   },
   {
     category: "Breakfast",
@@ -62,7 +47,8 @@ const singleMenuData = [
     Kcal: 500,
     price: 7,
     image: "images/menu items/EggSandwich.jpg",
-    ingredients: "Chickpea Flour, Pain Demie, Spices, Tomato, Lettuce"
+    ingredients: "Chickpea Flour, Pain Demie, Spices, Tomato, Lettuce",
+    lockedIngredients: "Chickpea Flour, Pain Demie, Spices",
   },
   {
     category: "Breakfast",
@@ -72,10 +58,11 @@ const singleMenuData = [
     price: 6,
     image: "images/menu items/pankakes.png",
     ingredients: "Vegan Pancake Mix, Banana, Berries",
+    lockedIngredients: "Vegan Pancake Mixs",
     choicename1: "topping",
-    choiceitems1: "chocolate , mayple ",
+    choiceitems1: "Chocolate , Mayple ",
     choicename2: "milk type",
-    choiceitems2: "oat , almond "
+    choiceitems2: "Oat , Almond , Soy"
   },
   {
     category: "Breakfast",
@@ -84,7 +71,8 @@ const singleMenuData = [
     Kcal: 250,
     price: 9,
     image: "images/menu items/avocado toast.png",
-    ingredients: "Toast, Avocado, Mushrooms, Herbs , Spices"
+    ingredients: "Toast, Avocado, Mushrooms, Herbs , Spices",
+    lockedIngredients :"Toast, Avocad"
   },
   {
     category: "Breakfast",
@@ -94,6 +82,7 @@ const singleMenuData = [
     price: 5.00,
     image: "images/menu items/milk.png",
     ingredients: "Milk, Cornflakes",
+    lockedIngredients : "Milk, Cornflakes",
     choicename2: "milk type",
     choiceitems2: "oat , almond "
     
@@ -107,7 +96,8 @@ const singleMenuData = [
     Kcal: 600,
     price: 8.00,
     image: "images/menu items/lahm.png",
-    ingredients: "Flat Bread, Soy Chunks, Pomegranate Molasses, Onions"
+    ingredients: "Flat Bread, Soy Chunks, Pomegranate Molasses, ,Tomato ,Onions, Lemon Juice , Spices ",
+    lockedIngredients :"Lemon Juice , Spices"
   },
     {
     category: "Main",
@@ -116,7 +106,9 @@ const singleMenuData = [
     Kcal: 380,
     price: 9.00,
     image: "images/menu items/veggies with rice.png",
-    ingredients: "Rice, Carrots , Poatatoes , Broccoli , Zucchini ,SoySauce"
+    ingredients: "Rice, Carrots , Poatatoes , Broccoli , Zucchini ,SoySauce",
+    lockedIngredients :"Rice , SoySauce"
+
   },
 
   {
@@ -126,7 +118,9 @@ const singleMenuData = [
     Kcal: 400,
     price: 10.00,
     image: "images/menu items/quinoa.png",
-    ingredients: "Quinoa, Carrots, Bell Pepper, Zucchini, Chickpeas"
+    ingredients: "Quinoa, Carrots, Bell Pepper, Zucchini, Chickpeas",
+    lockedIngredients :"Quinoa"
+
   },
   {
     category: "Main",
@@ -136,10 +130,7 @@ const singleMenuData = [
     price: 12,
     image: "images/menu items/burger.png",
     ingredients: "Bun, Falafel Patty Baked, Tahini, Lettuce, Tomato",
-    choicename1: "Bun Type",
-    choiceitems1: "Plain Bun, Olive Bun, Zaatar Bun",
-    choicename2: "Sauce Level",
-    choiceitems2: "Light Tahini, Regular Tahini, Extra Tahini"
+    lockedIngredients :"Bun,Falafel Patty Baked",
   },
     { 
         category: "Main", 
@@ -148,7 +139,8 @@ const singleMenuData = [
         Kcal: 450,
         price: 11.0,
         image: "images/menu items/kebbeh 2.png",
-       ingredients: "Borghoul , Soy Mince , Spices , Salad , Salad Dressing"
+       ingredients: "Borghoul , Soy Mince , Spices , Salad , Salad Dressing",
+       lockedIngredients:"Borghoul , Soy Mince , Spices"
       },
   {
     category: "Main",
@@ -157,7 +149,8 @@ const singleMenuData = [
     Kcal: 350,
     price: 6.0,
     image: "images/menu items/lentille soupe.png",
-    ingredients: "Red Lentils, Garlic, Carrot, Potato"
+    ingredients: "Red Lentils, Garlic, Carrot, Potato",
+    lockedIngredients:"Red Lentils"
   },{
    category: "Main",
     name: "Veggie Soup",
@@ -174,7 +167,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 8.0,
     image: "images/menu items/pasta noodles.png",
-    ingredients: "Noodles, Carrots, Garlic, Bell Pepper, Cabbage, Soy Sauce, Sesame Seeds"
+    ingredients: "Noodles, Carrots, Garlic, Bell Pepper, Cabbage, Soy Sauce, Sesame Seeds",
+    lockedIngredients:"Soy Sauce,Noodles"
   },
   {
     category: "Main",
@@ -183,7 +177,8 @@ const singleMenuData = [
     Kcal: 450,
     price: 9.00,
     image: "images/menu items/dal baht.png",
-    ingredients: "Lentils, Rice, Potato, Carrot, Zucchini"
+    ingredients: "Lentils, Rice, Potato, Carrot, Zucchini",
+    lockedIngredients : "Lentils, Rice"
   },
   {
     category: "Main",
@@ -192,7 +187,8 @@ const singleMenuData = [
     Kcal: 450,
     price: 5.50,
     image: "images/menu items/fattoush.png",
-    ingredients: "Fattoush, Pomegranate Molasses"
+    ingredients: "Fattoush, Pomegranate Molasses",
+    lockedIngredients :"Fattoush"
   },
    {
     category: "Main",
@@ -201,7 +197,8 @@ const singleMenuData = [
     Kcal: 450,
     price: 5.50,
     image: "images/menu items/tabboulr baked potatoes.png",
-    ingredients: "finely chopped parsley, mint, diced tomatoes, onion, soaked fine bulgur wheat"
+    ingredients: "finely chopped parsley, mint, diced tomatoes, onion, soaked fine bulgur wheat",
+    lockedIngredients :"diced tomatoes, onion, soaked fine bulgur wheat"
   },
     {
     category: "Main",
@@ -210,7 +207,8 @@ const singleMenuData = [
     Kcal: 200,
     price: 4.0,
     image: "images/menu items/potatoewedges.jpg",
-    ingredients: "Potato , Spices"
+    ingredients: "Potato , Spices",
+    lockedIngredients:"Potato"
   },
 
   {
@@ -220,7 +218,8 @@ const singleMenuData = [
     Kcal: 600,
     price: 8.5,
     image: "images/menu items/pastasalade.jpeg",
-    ingredients: "Pasta,Black Beans,Olives,Cucumber,Carrots,Tomato,Corn,Dressing"
+    ingredients: "Pasta,Black Beans,Olives,Cucumber,Carrots,Tomato,Corn,Dressing",
+    lockedIngredients:"Pasta"
   },
 
   {
@@ -230,7 +229,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 6.00,
     image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk"
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk"
   },
   
   {
@@ -240,7 +240,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 6.00,
     image: "images/menu items/cookies.png",
-    ingredients: "Oats,  Peanut Butter, Vegan Chocolate , Milk"
+    ingredients: "Oats,  Peanut Butter, Vegan Chocolate , Milk",
+    lockedIngredients:"Oats, Milk"
   },
     {
     category: "Snacks",
@@ -249,7 +250,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 6.00,
     image: "images/menu items/cookies.png",
-    ingredients: "Oats,  Peanut Butter, Milk"
+    ingredients: "Oats,  Peanut Butter, Milk",
+    lockedIngredients :"Oats, Milk"
   },
     {
     category: "Snacks",
@@ -258,7 +260,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 6.00,
     image: "images/menu items/cookies.png",
-    ingredients: "Oats,  Peanut Butter, Fresh Berries , Milk"
+    ingredients: "Oats,  Peanut Butter, Fresh Berries , Milk",
+    lockedIngredients :"Oats, Milk"
   },
     {
     category: "Snacks",
@@ -267,7 +270,8 @@ const singleMenuData = [
     Kcal: 800,
     price: 12.00,
     image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk"
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk"
   },
   {
     category: "Snacks",
@@ -276,7 +280,8 @@ const singleMenuData = [
     Kcal: 1600,
     price: 24.00,
     image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk"
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk"
   },
   {
     category: "Snacks",
@@ -285,7 +290,8 @@ const singleMenuData = [
     Kcal: 130,
     price: 6.00,
     image: "images/menu items/saladde de fruit.png",
-    ingredients: "Seasonal Fruits"
+    ingredients: "Seasonal Fruits",
+    lockedIngredients:"Seasonal Fruits"
   },
   {
     category: "Snacks",
@@ -303,7 +309,8 @@ const singleMenuData = [
     Kcal: 120,
     price: 5.00,
     image: "images/menu items/orange juice.png",
-    ingredients: "Fresh Orange"
+    ingredients: "Fresh Orange",
+    lockedIngredients:"Fresh Orange"
   },
 
   // --- PROTEIN ---
@@ -314,7 +321,8 @@ const singleMenuData = [
     Kcal: 600,
     price: 8.00,
     image: "images/menu items/protein shake plain.png",
-    ingredients: "Vegan Protein Blend"
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend"
   },
   {
     category: "Protein",
@@ -323,7 +331,9 @@ const singleMenuData = [
     Kcal: 600,
     price: 8.00,
     image: "images/menu items/protein shake plain.png",
-    ingredients: "Vegan Protein Blend"
+    ingredients: "Vegan Protein Blend",
+        lockedIngredients :"Vegan Protein Blend"
+
   },
   {
     category: "Protein",
@@ -332,7 +342,9 @@ const singleMenuData = [
     Kcal: 600,
     price: 8.00,
     image: "images/menu items/protein shake plain.png",
-    ingredients: "Vegan Protein Blend"
+    ingredients: "Vegan Protein Blend",
+        lockedIngredients :"Vegan Protein Blend"
+
   },
 
   // --- PASTRY ---
@@ -344,12 +356,7 @@ const singleMenuData = [
     price: 5.00,
     image: "images/menu items/bun plain.png",
     ingredients: "Flour, Yeast, Salt, Olive Oil, Sugar, Water",
-    choicename1: "Bun Flavor",
-    choiceitems1: "Plain, Olive, Zaatar",
-    choicename2: "Pack Size",
-    choiceitems2: "6pcs, 12pcs, 24pcs",
-    choicename3: "Dipping Sauce",
-    choiceitems3: "None, Hummus, Olive Paste"
+    lockedIngredients: "Flour, Yeast, Salt, Olive Oil, Sugar, Water",
   },
   {
     category: "Pastry",
@@ -358,7 +365,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 8.00,
     image: "images/menu items/olive bun.png",
-    ingredients: "Flour, Yeast, Salt, Olive Oil, Olive Paste, Sugar, Water"
+    ingredients: "Flour, Yeast, Salt, Olive Oil, Olive Paste, Sugar, Water",
+    lockedIngredients : "Flour, Yeast, Salt, Olive Oil, Olive Paste, Sugar, Water",
   }
 
 ];

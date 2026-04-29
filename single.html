@@ -489,6 +489,18 @@
     </div>
 </div>
 
+<div id="cart-recovery-modal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3rem; color: var(--light-green); margin-bottom: 20px; display: block;"></i>
+        <h2 style="margin:0 0 15px 0; color:var(--brand-green)">You Have an Old Cart</h2>
+        <p style="color: #666; margin-bottom: 25px;">Would you like to continue with your previous items or start fresh?</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="continueWithOldCart()" class="checkout-now-btn" style="background: #D66F3A; text-decoration: none; margin: 0; border: none;border-radius: 50px; cursor: pointer;">Continue with Old Cart</button>
+            <button onclick="startFreshCart()" style="background: #5D8039; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: 700;">Start Fresh</button>
+        </div>
+    </div>
+</div>
+
 <div id="image-modal" class="image-modal" onclick="closeImageModal(event)">
     <div class="image-modal-content" onclick="event.stopPropagation()">
         <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
@@ -605,12 +617,31 @@
     // Master Switch
     const isComingSoon = false;
 
-    // Clear cart on every page reload for fresh start
-    localStorage.removeItem('single_order_cart');
     let cart = [];
     let instanceCounter = 0;
 
     function initPage() {
+        const container = document.getElementById('single-container');
+        const floatBtn = document.getElementById('float-cart');
+
+        // Check for old cart and ask user
+        const savedCart = localStorage.getItem('single_order_cart');
+        if (savedCart) {
+            try {
+                const parsedCart = JSON.parse(savedCart);
+                if (parsedCart.length > 0) {
+                    document.getElementById('cart-recovery-modal').style.display = 'flex';
+                    return;
+                }
+            } catch (e) {
+                localStorage.removeItem('single_order_cart');
+            }
+        }
+
+        loadPageContent();
+    }
+
+    function loadPageContent() {
         const container = document.getElementById('single-container');
         const floatBtn = document.getElementById('float-cart');
 
@@ -779,6 +810,29 @@
         document.getElementById('empty-cart-modal').style.display = 'none';
     }
 
+    function continueWithOldCart() {
+        const savedCart = localStorage.getItem('single_order_cart');
+        if (savedCart) {
+            try {
+                cart = JSON.parse(savedCart);
+                instanceCounter = Math.max(...cart.map(i => i.instanceId), 0);
+            } catch (e) {
+                cart = [];
+                instanceCounter = 0;
+            }
+        }
+        document.getElementById('cart-recovery-modal').style.display = 'none';
+        loadPageContent();
+    }
+
+    function startFreshCart() {
+        localStorage.removeItem('single_order_cart');
+        cart = [];
+        instanceCounter = 0;
+        document.getElementById('cart-recovery-modal').style.display = 'none';
+        loadPageContent();
+    }
+
     // --- IMAGE LIGHTBOX FUNCTIONS ---
     function openImageModal(imageSrc, event) {
         event.stopPropagation();
@@ -903,11 +957,21 @@
 
         if (pendingNewItemData.ingredients) {
             const ingredientsList = pendingNewItemData.ingredients.split(',').map(i => i.trim()).filter(i => i);
+            const itemData = singleMenuData.find(i => i.name === pendingNewItemData.name);
+            const lockedIngredientsStr = itemData?.lockedIngredients || '';
+            const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
             ingredientsList.forEach(ingredient => {
+                const isLocked = lockedList.includes(ingredient);
+                const lockIcon = isLocked ? ' 🔒' : '';
+                const disabledAttr = isLocked ? 'disabled' : '';
+                const cursorStyle = isLocked ? 'cursor: not-allowed; opacity: 0.6;' : 'cursor: pointer;';
+                const labelStyle = isLocked ? 'background-color: #f5f5f5; ' : '';
+
                 ingredientsContainer.innerHTML += `
-                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
-                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" checked onchange="toggleNewItemIngredient('${ingredient}')">
-                        <span style="font-size: 0.95rem;">${ingredient}</span>
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; ${cursorStyle} ${labelStyle}">
+                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" ${disabledAttr} checked onchange="toggleNewItemIngredient('${ingredient}')">
+                        <span style="font-size: 0.95rem;">${ingredient}${lockIcon}</span>
                     </label>`;
             });
         } else {
@@ -930,12 +994,22 @@
 
         if (item.ingredients) {
             const ingredientsList = item.ingredients.split(',').map(i => i.trim()).filter(i => i);
+            const itemData = singleMenuData.find(i => i.name === item.name);
+            const lockedIngredientsStr = itemData?.lockedIngredients || '';
+            const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
             ingredientsList.forEach(ingredient => {
                 const isRemoved = item.removedIngredients.includes(ingredient);
+                const isLocked = lockedList.includes(ingredient);
+                const lockIcon = isLocked ? ' 🔒' : '';
+                const disabledAttr = isLocked ? 'disabled' : '';
+                const cursorStyle = isLocked ? 'cursor: not-allowed; opacity: 0.6;' : 'cursor: pointer;';
+                const labelStyle = isLocked ? 'background-color: #f5f5f5; ' : '';
+
                 ingredientsContainer.innerHTML += `
-                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
-                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" ${isRemoved ? '' : 'checked'} onchange="toggleEditIngredient('${ingredient}')">
-                        <span style="font-size: 0.95rem;">${ingredient}</span>
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; ${cursorStyle} ${labelStyle}">
+                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" ${disabledAttr} ${isRemoved ? '' : 'checked'} onchange="toggleEditIngredient('${ingredient}')">
+                        <span style="font-size: 0.95rem;">${ingredient}${lockIcon}</span>
                     </label>`;
             });
         } else {
@@ -951,6 +1025,14 @@
     }
 
     function toggleNewItemIngredient(ingredient) {
+        const itemData = singleMenuData.find(i => i.name === pendingNewItemData.name);
+        const lockedIngredientsStr = itemData?.lockedIngredients || '';
+        const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
+        if (lockedList.includes(ingredient)) {
+            return;
+        }
+
         if (pendingNewItemData.removedIngredients.includes(ingredient)) {
             pendingNewItemData.removedIngredients = pendingNewItemData.removedIngredients.filter(i => i !== ingredient);
         } else {
@@ -960,12 +1042,20 @@
 
     function toggleEditIngredient(ingredient) {
         const item = cart.find(i => i.instanceId === currentEditingInstanceId);
-        if (item) {
-            if (item.removedIngredients.includes(ingredient)) {
-                item.removedIngredients = item.removedIngredients.filter(i => i !== ingredient);
-            } else {
-                item.removedIngredients.push(ingredient);
-            }
+        if (!item) return;
+
+        const itemData = singleMenuData.find(i => i.name === item.name);
+        const lockedIngredientsStr = itemData?.lockedIngredients || '';
+        const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
+        if (lockedList.includes(ingredient)) {
+            return;
+        }
+
+        if (item.removedIngredients.includes(ingredient)) {
+            item.removedIngredients = item.removedIngredients.filter(i => i !== ingredient);
+        } else {
+            item.removedIngredients.push(ingredient);
         }
     }
 
