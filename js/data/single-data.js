@@ -238,7 +238,7 @@ const singleMenuData = [
     name: "Oat Cookies 3pcs",
     protein: 5,
     Kcal: 400,
-    price: 6.00,
+    price: 4.00,
     image: "images/menu items/cookies.png",
     ingredients: "Oats,  Peanut Butter, Vegan Chocolate , Milk",
     lockedIngredients:"Oats, Milk",
