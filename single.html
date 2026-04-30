@@ -489,14 +489,16 @@
     </div>
 </div>
 
-<div id="cart-recovery-modal" class="modal">
+<<div id="cart-recovery-modal" class="modal">
     <div class="modal-content" style="max-width: 400px; text-align: center;">
-        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3rem; color: var(--light-green); margin-bottom: 20px; display: block;"></i>
-        <h2 style="margin:0 0 15px 0; color:var(--brand-green)">You Have an Old Cart</h2>
+        <h2 style="margin:0 0 15px 0; color:#5D8039">You Have an Old Cart</h2>
         <p style="color: #666; margin-bottom: 25px;">Would you like to continue with your previous items or start fresh?</p>
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button onclick="continueWithOldCart()" class="checkout-now-btn" style="background: #D66F3A; text-decoration: none; margin: 0; border: none;border-radius: 50px; cursor: pointer;">Continue with Old Cart</button>
-            <button onclick="startFreshCart()" style="background: #5D8039; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: 700;">Start Fresh</button>
+            <!-- Added font-size: 16px and padding: 15px to match the second button -->
+            <button onclick="continueWithOldCart()" class="checkout-now-btn" style="background: #D66F3A; color: white; text-decoration: none; margin: 0; border: none; border-radius: 50px; cursor: pointer; font-size: 16px; padding: 15px; font-weight: 700;">Continue with Old Cart</button>
+            
+            <!-- Added font-size: 16px -->
+            <button onclick="startFreshCart()" style="background: #5D8039; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 16px;">Start Fresh</button>
         </div>
     </div>
 </div>
