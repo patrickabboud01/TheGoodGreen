@@ -5,7 +5,7 @@ const singleMenuData = [
   
   {
     category: "Breakfast",
-    name: "Croissant Plain 2pcs",
+    name: "Croissant 2pcs",
     protein: 9,
     Kcal: 400,
     price: 5.00,
@@ -299,7 +299,7 @@ const singleMenuData = [
   // --- PROTEIN ---
   {
     category: "Protein",
-    name: "Protein Shake Plain + Protein Cookie",
+    name: "Protein Shake Plain + Protein Oat Cookie",
     protein: 50,
     Kcal: 600,
     price: 8.00,
@@ -309,7 +309,7 @@ const singleMenuData = [
   },
   {
     category: "Protein",
-    name: "Protein Shake Chocolate + Protein Cookie",
+    name: "Protein Shake Chocolate + Protein Oat Cookie",
     protein: 50,
     Kcal: 600,
     price: 8.00,
@@ -320,7 +320,7 @@ const singleMenuData = [
   },
   {
     category: "Protein",
-    name: "Protein Shake Berries + Protein Cookie",
+    name: "Protein Shake Berries + Protein Oat Cookie",
     protein: 50,
     Kcal: 600,
     price: 8.00,
@@ -331,8 +331,8 @@ const singleMenuData = [
   },
   {
     category: "Protein",
-    name: "Protein Cookie",
-    protein: 10,
+    name: "Protein Oat Cookie",
+    protein: 15,
     Kcal: 200,
     price: 3.00,
     image: "images/menu items/cookies.png",
