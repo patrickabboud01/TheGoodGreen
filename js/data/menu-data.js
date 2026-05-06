@@ -222,7 +222,7 @@ const rawMenuData = [
         protein: 5, 
         Kcal: 400,
         image: "images/menu items/lazy cake.png",
-        fixed_ingredients: "Cacao;Biscuits,Coconut Oil, Vgean Milk", 
+        fixed_ingredients: "Cacao;Biscuits,Coconut Oil, Vgean Milk , Maple syrup", 
         removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
@@ -271,7 +271,28 @@ const rawMenuData = [
     // --- PROTEIN ---
     { 
         category: "protein", 
-        name: "Protein Shake Plain 35g + Protein Cookie 15g", 
+        name: "Protein Shake PeanutButter-Caramel (0sugar)", 
+        protein: 35, 
+        Kcal: 420,
+        image: "images/menu items/protein shake plain.png",
+        fixed_ingredients: "Vegan Protein Blend", 
+        removable_ingredients: "", 
+        choice_type: "single"
+    },
+    
+  { 
+        category: "protein", 
+        name: "Protein Shake Mocha (0sugar)", 
+        protein: 35, 
+        Kcal: 420,
+        image: "images/menu items/chocolate protein shake.png",
+        fixed_ingredients: "Vegan Protein Blend", 
+        removable_ingredients: "", 
+        choice_type: "single"
+    }, 
+    { 
+        category: "protein", 
+        name: "Protein Shake PeanutButter-Caramel (0sugar) + Protein Oat Cookie", 
         protein: 50, 
         Kcal: 600,
         image: "images/menu items/protein shake plain.png",
@@ -283,7 +304,7 @@ const rawMenuData = [
     },
   { 
         category: "protein", 
-        name: "Protein Shake Chocolate 35g + Protein Cookie 15g", 
+        name: "Protein Shake Mocha (0sugar)+ Protein Oat Cookie", 
         protein: 50, 
         Kcal: 600,
         image: "images/menu items/chocolate protein shake.png",
@@ -292,12 +313,13 @@ const rawMenuData = [
         choice_title: "Cookie Flavor", 
         choice_options: "Plain;Chocolate;Berries",
         choice_type: "single"
-    },  { 
+    }, 
+     { 
         category: "protein", 
-        name: "Protein Shake Berries 35g + Protein Cookie 15g", 
-        protein: 50, 
-        Kcal: 600,
-        image: "images/menu items/protein shake berries.png",
+        name: "Oat Protein Cookie 15g", 
+        protein: 15, 
+        Kcal: 200,
+        image: "images/menu items/cookies.png",
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
         choice_title: "Cookie Flavor", 

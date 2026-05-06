@@ -229,8 +229,8 @@ const singleMenuData = [
     Kcal: 400,
     price: 6.00,
     image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk",
-    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk"
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple syrup",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple syrup "
   },
   
   {
@@ -253,8 +253,8 @@ const singleMenuData = [
     Kcal: 800,
     price: 12.00,
     image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk",
-    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk"
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple syrup",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk, maple syrup"
   },
   {
     category: "Snacks",
@@ -263,8 +263,8 @@ const singleMenuData = [
     Kcal: 1600,
     price: 24.00,
     image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk",
-    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk"
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple syrup",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk , Maple syrup"
   },
   {
     category: "Snacks",
@@ -299,7 +299,27 @@ const singleMenuData = [
   // --- PROTEIN ---
   {
     category: "Protein",
-    name: "Protein Shake Plain + Protein Oat Cookie",
+    name: "Protein Shake PeanutButter-Caramel (0 sugar)",
+    protein: 35,
+    Kcal: 420,
+    price: 6.00,
+    image: "images/menu items/protein shake plain.png",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend"
+  },
+    {
+    category: "Protein",
+    name: "Protein Shake Mocha (0 sugar)",
+    protein: 35,
+    Kcal: 420,
+    price: 6.00,
+    image: "images/menu items/chocolate protein shake.png",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend"
+  },
+  {
+    category: "Protein",
+    name: "Protein Shake PeanutButter-Caramel (0sugar) + Protein Oat Cookie",
     protein: 50,
     Kcal: 600,
     price: 8.00,
@@ -309,26 +329,16 @@ const singleMenuData = [
   },
   {
     category: "Protein",
-    name: "Protein Shake Chocolate + Protein Oat Cookie",
+    name: "Protein Shake Mocha (0sugar) + Protein Oat Cookie",
     protein: 50,
     Kcal: 600,
     price: 8.00,
-    image: "images/menu items/protein shake plain.png",
+    image: "images/menu items/chocolate protein shake.png",
     ingredients: "Vegan Protein Blend",
         lockedIngredients :"Vegan Protein Blend"
 
   },
-  {
-    category: "Protein",
-    name: "Protein Shake Berries + Protein Oat Cookie",
-    protein: 50,
-    Kcal: 600,
-    price: 8.00,
-    image: "images/menu items/protein shake plain.png",
-    ingredients: "Vegan Protein Blend",
-        lockedIngredients :"Vegan Protein Blend"
-
-  },
+  
   {
     category: "Protein",
     name: "Protein Oat Cookie",
