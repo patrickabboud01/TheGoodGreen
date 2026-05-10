@@ -7,7 +7,7 @@ const rawMenuData = [
         Kcal : 450,
         image: "images/menu items/oats.png",
         fixed_ingredients: "Oats;Milk", 
-        removable_ingredients: "Dark Chocolate;Peanut Butter", 
+        removable_ingredients: "Dark Chocolate;Peanut Butter;Banana", 
         choice_title: "Step 1: Milk Type", 
         choice_options: "Oat;Soy;Almond",
         choice_type: "single",
