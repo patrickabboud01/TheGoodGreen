@@ -468,7 +468,7 @@ main {
              <p>made fresh in Lebanon</p>
             </div>
             <div class="hero-btns">
-                <a href="packages.html" class="btn-outline-index btn-outline-white">View Plans</a>
+                <a href="single.html" class="btn-outline-index btn-outline-white">View Menu</a>
                
                 <!-- <a href="packages.html" class="btn-outline btn-outline-white">Explore Plans</a>
                 <a href="single.html" class="btn-outline btn-outline-white">Single Order</a>-->
@@ -667,21 +667,21 @@ main {
         <a href="packages.html" class="link-card-3">
             <div class="card-image"><img src="images/website designing-02.png" alt="Plans"></div>
             <div class="card-content">
-                <div class="card-text-1">View Plans</div>
+                <div class="card-text-1">Meal Plans</div>
                 <div class="sub-card-text-1">Start within 24-48 hours</div>
             </div>
         </a>
-        <a href="menu.html" class="link-card-1">
+      <!--  <a href="menu.html" class="link-card-1">
             <div class="card-image"><img src="images/website designing-03.png" alt="Menu"></div>
             <div class="card-content">
                 <div class="card-text-1">View Menu</div>
                 <div class="sub-card-text-1">Explore all meals</div>
             </div>
-        </a>
+        </a>-->
         <a href="javascript:void(0)" class="link-card-2" onclick="openQuickOrderModal();">
             <div class="card-image"><img src="images/website designing-04.png" alt="Order"></div>
             <div class="card-content">
-                <div class="card-text-2">Single Item Order</div>
+                <div class="card-text-2">Order Now</div>
                 <div class="sub-card-text-2">Ready-to-deliver meals</div>
             </div>
         </a>
@@ -693,9 +693,13 @@ main {
     .quick-links { width: 100%; padding: 5px; box-sizing: border-box;margin-top: 20px;margin-bottom: 20px; }
     
     .links-row { 
-        display: flex; flex-direction: row; gap: 5px; width: 100%; 
-    }
-
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    width: 90%;
+    justify-content: center; /* centers buttons horizontally */
+    margin: 0 auto; /* centers the whole row */
+}
     .link-card-1, .link-card-2, .link-card-3 {
         display: flex; flex-direction: row; align-items: center;
         flex: 1; text-decoration: none; 
@@ -1035,7 +1039,7 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
                 It's healthy eating that feels like a treat.
             </p>
             <br>
-            <a href="menu.html" class="btn-primary">Check The Menu</a>
+            <a href="single.html" class="btn-primary">Check The Menu</a>
         </div>
           <div class="split-image">
             <img src="images/croissant.png" alt="Plant-based Croissant">
@@ -1111,7 +1115,7 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
     <div class="banner-container">
         <img src="images/banner3.jpeg" alt="Banner 2" class="banner-image">
         <div class="banner-overlay">
-            <button class="banner-button link-to" onclick="window.location.href='menu.html';">
+            <button class="banner-button link-to" onclick="window.location.href='single.html';">
   Check our menu
 </button>
         </div>
@@ -1326,7 +1330,80 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
     </style>
 </section>
 
-<footer class="site-footer">
+<section class="whatsapp-links"></section>
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/96181153917" 
+   target="_blank" 
+   class="whatsapp-float"
+   id="whatsappBtn">
+
+    <i class="fa-brands fa-whatsapp"></i>
+
+</a>
+</section>
+<style>
+ .whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: #5d8039;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index: 9999;
+    transition: transform 0.2s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+}
+
+.whatsapp-float i {
+    color: white;
+    font-size: 28px;
+}
+
+.whatsapp-hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const whatsappBtn = document.getElementById("whatsappBtn");
+    const footer = document.getElementById("footer");
+
+    if (!whatsappBtn || !footer) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+
+            // if footer is visible in screen
+            if (entry.isIntersecting) {
+                whatsappBtn.classList.add("whatsapp-hide");
+            } else {
+                whatsappBtn.classList.remove("whatsapp-hide");
+            }
+
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px 20px 0px'
+    });
+
+    observer.observe(footer);
+});
+</script>
+
+
+<footer class="site-footer" id="footer">
     <div class="footer-links-wrapper">
         <div class="footer-links-grid">
             <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-column-link">
@@ -1425,6 +1502,8 @@ We started The Good Green because we know how hard it is to find clean, 100% pla
         }
     </style>
 </footer>
+
+
 
 <script>
     const U = 'https://dehcgxbupadfabotpwvg.supabase.co';
