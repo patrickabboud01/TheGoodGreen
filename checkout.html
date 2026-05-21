@@ -310,6 +310,7 @@
     let pendingUrl = "";
     let isSingleOrder = false;
     let finalName = ""; // Track plan name for order submission
+    let appliedPromoCode = ""; // Track applied promo code
 
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
@@ -536,6 +537,7 @@
             }
 
             if (code === "TGG20") {
+                appliedPromoCode = code;
                 discountAmount = Math.round(finalPrice * 0.20 * 10) / 10;
                 msg.style.color = "#5d8039";
                 msg.innerText = `Success! $${discountAmount.toFixed(1)} discount applied.`;
@@ -543,6 +545,7 @@
             } else {
                 msg.style.color = "red"; msg.innerText = "Invalid promo code.";
                 discountAmount = 0;
+                appliedPromoCode = "";
                 document.getElementById('display-price').innerText = `$${finalPrice.toFixed(1)}`;
             }
         };
@@ -640,6 +643,7 @@
                     original_price: finalPrice.toFixed(2),
                     discount_amount: discountAmount > 0 ? discountAmount.toFixed(2) : "0.00",
                     total_price: actualPaidPrice.toFixed(2),
+                    promo_code: appliedPromoCode || "None",
                     order_id: orderId,
                     items_details: itemsDetailsHtml
                 };
@@ -659,6 +663,78 @@
             }
         });
     };
+</script>
+
+<section class="whatsapp-links"></section>
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/96181153917" 
+   target="_blank" 
+   class="whatsapp-float"
+   id="whatsappBtn">
+
+    <i class="fa-brands fa-whatsapp"></i>
+
+</a>
+</section>
+<style>
+ .whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: #5d8039;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index: 9999;
+    transition: transform 0.2s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+}
+
+.whatsapp-float i {
+    color: white;
+    font-size: 28px;
+}
+
+.whatsapp-hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const whatsappBtn = document.getElementById("whatsappBtn");
+    const footer = document.getElementById("footer");
+
+    if (!whatsappBtn || !footer) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+
+            // if footer is visible in screen
+            if (entry.isIntersecting) {
+                whatsappBtn.classList.add("whatsapp-hide");
+            } else {
+                whatsappBtn.classList.remove("whatsapp-hide");
+            }
+
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px 20px 0px'
+    });
+
+    observer.observe(footer);
+});
 </script>
 
 <footer class="site-footer">
