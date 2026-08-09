@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meal Builder | The Good Green</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .auth-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); z-index: 999999;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .auth-modal-box {
+            background: white; padding: 40px; border-radius: 20px;
+            width: 90%; max-width: 420px; position: relative; text-align: center;
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; background: none; 
+            border: none; font-size: 2rem; cursor: pointer; color: #888;
+        }
+        .week-indicator {
+            background: #2d5a27; color: white; padding: 2px 8px; 
+            border-radius: 4px; font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; margin-bottom: 4px; display: inline-block;
+        }
+
+        /* --- UNIFIED MODAL STYLES --- */
+        #editModal .modal-content {
+            max-width: 400px;
+            border-radius: 25px;
+            padding: 30px 20px;
+            text-align: center;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .review-scroll-area {
+            max-height: 380px;
+            overflow-y: auto;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+
+        .custom-alert-overlay {
+            display: none; position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 10000000; 
+            align-items: center; justify-content: center; backdrop-filter: blur(4px);
+        }
+        .custom-alert-box {
+            background: white; padding: 30px; border-radius: 20px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .alert-btns { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-cancel { background: #eee; color: #444; border: none; padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; font-weight: 600; }
+        .btn-confirm-discard { background: #d9534f; color: white; border: none; padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; font-weight: 700; }
+    </style>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B4KZQ9CKM1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B4KZQ9CKM1');
+</script>
+<body class="builder-app-ui">
+
+    <div id="custom-alert" class="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+            <h3 style="color: #2d5a27; margin-bottom: 10px;">Discard Progress?</h3>
+            <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave? Your meal selections will not be saved.</p>
+            <div class="alert-btns">
+                <button class="btn-cancel" onclick="closeCustomAlert()">Stay Here</button>
+                <button class="btn-confirm-discard" id="confirm-redirect-btn">Discard</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="builder-header">
+        <div class="header-top">
+            <a href="packages.html" class="back-btn" >✕</a>
+
+            <div class="plan-info">
+                <div id="week-label" class="week-indicator" style="display:none;">Week 1</div>
+                <h3 id="plan-name-display">Loading...</h3>
+                <p><span id="display-total-days">0</span> Days Total</p>
+                
+            </div>
+            <button id="confirm-all-btn" class="btn-confirm-mini" onclick="handleFinalOrder()">Confirm</button>
+        </div>
+        <div class="calendar-wrapper">
+            <div id="calendar-grid" class="calendar-snap-row"></div>
+        </div>
+        <p style="font-size: small; padding-left: 15px;">  ⚠️ Orders should be placed 24–48 hours in advance.</p>
+    </header>
+
+    <main class="builder-content">
+        <div class="day-status-card">
+            <div class="status-left">
+                <h3>Day <span id="active-day-num">1</span></h3>
+                
+            </div>
+            <div class="selection-drawer">
+                <h4>Current Selections</h4>
+                <ul id="selection-list" class="mini-selection-list"></ul>
+            </div>
+        </div>
+        
+        <nav class="category-nav">
+            
+            <button class="cat-btn" onclick="renderMenu('breakfast')">Breakfast</button>
+            <button class="cat-btn" onclick="renderMenu('lunch/dinner')">Main Meals</button>
+            <button class="cat-btn" onclick="renderMenu('snack')">Snacks</button>
+            <button class="cat-btn" onclick="renderMenu('protein')">Extra Pro</button>
+        </nav>
+
+        <div id="menu-grid" class="app-menu-grid"></div>
+    </main>
+
+    <div id="auth-modal" class="auth-overlay">
+        <div class="auth-modal-box">
+            <div id="auth-message-area"></div>
+            <div id="auth-buttons-area" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="entry-modal" class="auth-overlay">
+        <div class="auth-modal-box">
+            <button onclick="closeEntryModal()" class="close-btn">&times;</button>
+            <div id="login-form-area">
+                <h2 style="color: #5d8039; margin-bottom: 20px;">Log In</h2>
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                    <input type="email" id="login-email" placeholder="Email Address" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="password" id="login-password" placeholder="Password" style="padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <button onclick="handleLogin()" class="btn-primary" style="width:100%;">Enter Kitchen</button>
+                    <button onclick="toggleAuthMode('signup')" style="background:none; border:none; color:#2d5a27; cursor:pointer; font-weight:600;">New here? Create account</button>
+                </div>
+            </div>
+            <div id="signup-form-area" style="display: none;">
+                <h2 style="color: #2d5a27; margin-bottom: 15px;">Create Account</h2>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <input type="text" id="reg-name" placeholder="Full Name" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="email" id="reg-email" placeholder="Email" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="tel" id="reg-phone" placeholder="Phone Number" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" id="reg-address" placeholder="Delivery Address" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="password" id="reg-password" placeholder="Password" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                    <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Sign Up</button>
+                    <button onclick="toggleAuthMode('login')" style="background:none; border:none; color:#5d8039; cursor:pointer; font-weight:600;">Back to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div id="ingredients-list">
+                </div>
+        </div>
+    </div>
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
+    </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+</footer>
+<style>
+    /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
+        
+    
+</style>
+
+    <script src="js/data/menu-data.js"></script>
+    <script src="js/services/supabase-client.js"></script>
+    <script src="js/business/plan-logic.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/ui/builder-ui.js"></script>
+    <script src="js/ui/builder-state.js"></script>
+
+    <script>
+        let pendingUrl = "";
+        function triggerCustomAlert(url) {
+            pendingUrl = url;
+            document.getElementById('custom-alert').style.display = 'flex';
+        }
+        function closeCustomAlert() {
+            document.getElementById('custom-alert').style.display = 'none';
+            pendingUrl = "";
+        }
+        document.getElementById('confirm-redirect-btn').onclick = function() {
+            if (pendingUrl) window.location.href = pendingUrl;
+        };
+        
+    </script>
+    <div id="image-lightbox" class="auth-overlay" style="display: none; cursor: zoom-out;" onclick="closeImageLightbox()">
+     <button class="close-btn" style="color: white; top: 20px; right: 20px; position: absolute; background: none; border: none; font-size: 30px;">&times;</button>
+    <img id="lightbox-img" src="" style="max-width: 90%; max-height: 80vh; border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5); object-fit: contain;">
+</div>
+</body>
+</html>

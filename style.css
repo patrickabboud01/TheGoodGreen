@@ -1,0 +1,2248 @@
+/* --- 1. CORE VARIABLES & RESET --- */
+:root {
+    --forest: #2d5a27;
+    --forest-light: #4A5D3F;
+    --cream: #F9F7F2;
+    --dark: #2C3528;
+    --white: #ffffff;
+    --shadow: 0 4px 15px rgba(0,0,0,0.08);
+    --border: #eee;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: white;
+    margin: 0;
+    color: var(--dark);
+    line-height: 1.5;
+    padding-top: 80px; /* Space for fixed header */
+    overflow-x: hidden;
+}
+
+@media (min-width: 1024px) {
+    body {
+        min-width: 1200px;
+        overflow-x: auto;
+    }
+}
+.header-container {
+    display: flex;
+    justify-content:沟通-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Limits how far out buttons can go */
+    min-width: 1000px; /* Prevents them from moving too close to the logo */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- 2. HEADER & NAVIGATION --- */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    transition: transform 0.3s ease-in-out;
+}
+
+.header-hidden { transform: translateY(-100%); }
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    width: 100%;
+}
+
+.main-logo {
+    height: 40px;
+    width: auto;
+    display: block;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* --- 3. LAYOUT UTILITIES --- */
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+section { padding: 60px 0; }
+
+/* --- 4. HERO SECTION --- */
+.hero-home {
+    text-align: center;
+    background: var(--white);
+    padding: 40px 20px 60px;
+  
+}
+
+.hero-home h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: #5d8039;
+    margin: 0px 0;
+}
+
+.badge {
+    display: inline-block;
+    background: #d66f33;
+    color: var(--white);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hero-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 30px;
+    align-items: center;
+}
+
+/* --- 5. BUTTONS --- */
+.btn-primary, .btn-outline {
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size:medium;
+}
+
+.btn-primary {
+    background: transparent;
+    border: 2.5px solid #5d8039;
+    color: #5d8039;
+}
+
+.btn-primary-orange, .btn-outline {
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size:medium;
+}
+
+.btn-primary-orange {
+    background: transparent;
+    border: 2.5px solid #d66f33;
+    color: #d66f33;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2.5px solid #5d8039;
+    color: #5d8039;
+}
+
+.btn-details {
+    background: none;
+    border: none;
+    color: #d66f33;
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+/* --- 6. GRIDS & CARDS --- */
+.plan-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile default */
+    gap: 20px;
+}
+
+.plan-card {
+    background: var(--white);
+    padding: 40px 25px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    position: relative;
+}
+
+.plan-card.featured {
+    border: 2px solid #d66f33;
+}
+
+/* --- 7. MODALS --- */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    text-align: center;
+}
+
+.duration-options button {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 18px;
+    background: #5d8039;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* --- 8. BUILDER INTERFACE (Mobile First) --- */
+.builder-container {
+    display: flex;
+    flex-direction: column; /* Stacks on mobile */
+    min-height: 100vh;
+}
+
+.builder-sidebar {
+    width: 100%;
+    background: var(--white);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.builder-main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* --- 9. FOOTER --- */
+.site-footer {
+    background: #5d8039;
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.footer-icon {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.footer-icon img {
+    width: 22px;
+    filter: brightness(0) invert(1);
+}
+/* --- FOOTER FIX --- */
+.footer-links {
+    display: flex;
+    flex-direction: row; /* Always horizontal */
+    justify-content: center;
+    gap: 20px; /* Space between IG and WA */
+    margin-top: 15px;
+    flex-wrap: nowrap; /* Prevents breaking into two lines */
+}
+
+.footer-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap; /* Keeps the icon and text together */
+    font-size: 0.85rem; /* Slightly smaller for mobile fit */
+}
+
+@media (max-width: 400px) {
+    .footer-links {
+        gap: 10px; /* Tighter gap for small phones */
+    }
+    .footer-icon span {
+        font-size: 0.75rem; /* Prevents overflow on tiny screens */
+    }
+}
+
+/* --- 10. DESKTOP OVERRIDES (768px+) --- */
+@media (min-width: 768px) {
+    body { padding-top: 90px; }
+
+    .hero-btns {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .plan-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+    }
+
+    .builder-container {
+        flex-direction: row;
+        height: calc(100vh - 80px);
+        overflow: hidden;
+    }
+
+    .builder-sidebar {
+        width: 350px;
+        height: 100%;
+        border-right: 1px solid var(--border);
+        border-bottom: none;
+    }
+
+    .builder-main {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .footer-links {
+        flex-direction: row;
+        justify-content: center;
+        gap: 40px;
+    }
+}
+/* --- BUILDER PAGE SPECIFICS --- */
+
+/* Sidebar Fix for Mobile */
+@media (max-width: 768px) {
+    .builder-container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+    .builder-sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--border);
+        position: sticky;
+        top: 60px; /* Sits below the header */
+        z-index: 900;
+    }
+}
+
+/* Sidebar Elements */
+.sidebar-title {
+    font-size: 1.2rem;
+    color: #5d8039;
+    margin-bottom: 15px;
+}
+
+.selection-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.selection-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.remove-btn {
+    color: #e74c3c;
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+/* Calendar Styling */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.day-dot {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: 0.2s;
+    background: white;
+}
+
+.day-dot.active {
+    border: 2px solid #5d8039;
+    color: #5d8039;
+    font-weight: bold;
+}
+
+.day-dot.complete {
+    background: #5d8039;
+    color: white;
+    border-color: #5d8039;
+}
+
+/* Menu Tabs (The category scroll) */
+.menu-tabs {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    scrollbar-width: none; /* Firefox */
+    
+}
+
+.menu-tabs::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+.tabs { 
+    display: flex; 
+    gap: 12px; 
+    margin-bottom: 30px; 
+    border-bottom: none; /* Removed the line since we are using button styles now */
+    padding-bottom: 10px;
+}
+
+.tab-btn { 
+    background: #eee; /* Light gray for inactive tabs */
+    border: none; 
+    padding: 12px 24px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    color: #666; 
+    transition: all 0.3s ease;
+    border-radius: 50px; /* Makes them rounded pills */
+    font-size: 0.9rem;
+}
+
+/* THE FIX: Green background + White text */
+.tab-btn.active { 
+    background-color: #5d8039 !important; 
+    color: white !important; 
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3); /* Adds a subtle glow */
+}
+
+/* Hover effect for inactive buttons */
+.tab-btn:hover:not(.active) {
+    background-color: #e0e0e0;
+    color: #5d8039;
+}
+/* Menu Grid Items */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.menu-item-card {
+    background: white;
+    padding: 0;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    overflow: hidden;
+}
+
+.menu-item-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+}
+
+.menu-item-card > div:not(img):not(button) {
+    padding: 12px;
+    flex-grow: 1;
+}
+
+.menu-item-card button {
+    margin-top: auto;
+    margin: 0 12px 12px 12px;
+    padding: 10px 20px;
+}
+
+@media (min-width: 768px) {
+    .menu-item-card {
+        min-height: 380px;
+    }
+
+    .menu-item-card img {
+        height: 200px;
+    }
+
+    .menu-item-card > div:not(img):not(button) {
+        padding: 15px;
+    }
+
+    .menu-item-card button {
+        margin: 0 15px 15px 15px;
+    }
+}
+
+/* --- THANK YOU PAGE SPECIFICS --- */
+
+.thank-you-section {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.success-check {
+    width: 80px;
+    height: 80px;
+    background: #5d8039;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 20px;
+}
+
+.order-summary-box {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin: 30px 0;
+    text-align: left;
+}
+
+.order-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.order-row.total {
+    border-top: 2px solid var(--cream);
+    border-bottom: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 20px;
+}
+/* --- BUILDER PAGE LAYOUT --- */
+.builder-body {
+    overflow: hidden; /* Prevents double scrollbars on desktop */
+    background: white;
+    padding-top: 0 !important; /* Builder doesn't need the header padding */
+}
+
+.builder-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar Styling */
+.builder-sidebar {
+    width: 350px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    overflow-y: auto;
+}
+
+.sidebar-top {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: var(--gray);
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#plan-name-display {
+    color: #5d8039;
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+/* Calendar Grid */
+.calendar-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 30px;
+}
+
+.day-dot {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.5px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: white;
+    transition: 0.2s;
+}
+
+.day-dot.active {
+    border: 2px solid #5d8039;
+    background: #f0f4ee;
+    font-weight: bold;
+}
+
+.day-dot.complete {
+    background: #5d8039;
+    color: white;
+    border-color: #5d8039;
+}
+
+/* Selection List & Stats */
+.day-overview {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.selection-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.selection-list li {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.day-stats {
+    font-weight: 700;
+    color: #5d8039;
+    margin-bottom: 15px;
+}
+
+/* Main Menu Area */
+.builder-main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background: white;
+}
+
+.menu-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    padding: 10px 25px;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: #5d8039;
+    color: white;
+    border-color: #5d8039;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+     background-color: #e0e0e0 !important;
+}
+
+.btn-confirm {
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    background: #5d8039;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-confirm.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- MOBILE BUILDER TIDY-UP --- */
+@media (max-width: 768px) {
+    .builder-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .builder-sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 20px;
+    }
+
+    .builder-main {
+        padding: 20px;
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 items per row on phones */
+        background: white;
+    }
+}
+/* --- HOW IT WORKS SECTION --- */
+#how-it-works {
+    text-align: center; /* Centers the main heading */
+}
+
+.step-card {
+    padding: 20px;
+    text-align: center; /* Centers the content inside each card */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Ensures flex children are centered */
+}
+
+.step-card h4 {
+    margin: 10px 0;
+    color: var(--dark);
+}
+
+.step-card p {
+    max-width: 250px; /* Prevents text from spreading too wide on desktop */
+    margin: 0 auto;
+}
+
+/* Adjust the grid for this section specifically */
+#how-it-works .plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+/* --- CHECKOUT PAGE CLEANUP --- */
+.checkout-body {
+    background-color: white;
+    padding-bottom: 60px;
+}
+
+.checkout-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* This ensures cards NEVER overlap */
+}
+
+.checkout-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    width: 100%;
+}
+
+.checkout-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.checkout-header h1 {
+    color: #5d8039;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #eee;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+    outline: none;
+    border-color: #5d8039;
+}
+
+/* Fix for the Summary Card specifically */
+.summary-details p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+.summary-details b {
+    color: #5d8039;
+}
+/* Checkout Page specific layout */
+.checkout-body {
+    background: white;
+    min-height: 100vh;
+}
+
+.checkout-main {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Forces vertical spacing so nothing overlaps */
+}
+
+.checkout-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.checkout-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+/* --- BUILDER PAGE FIXES --- */
+
+/* 1. Reset Container for Mobile */
+.builder-container {
+    display: flex;
+    flex-direction: row; /* Desktop default */
+    min-height: 100vh;
+}
+
+/* 2. Sidebar Desktop vs Mobile */
+.builder-sidebar {
+    width: 350px;
+    flex-shrink: 0;
+    background: white;
+    padding: 25px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+}
+
+/* 3. Main Content Desktop vs Mobile */
+.builder-main {
+    flex-grow: 1;
+    padding: 30px;
+    background: white;
+    overflow-y: auto;
+}
+
+/* --- MOBILE SPECIFIC OVERRIDES --- */
+@media (max-width: 850px) {
+    .builder-container {
+        flex-direction: column; /* Stack vertically on phones */
+        height: auto;
+    }
+
+    .builder-sidebar {
+        width: 100%; /* Take full width */
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+        position: relative;
+        height: auto;
+        padding: 20px;
+    }
+
+    .builder-main {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+    }
+
+    /* Make the calendar grid more compact on phones */
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr); 
+        gap: 5px;
+    }
+
+    .day-dot {
+        height: 35px;
+        width: 35px;
+        font-size: 0.8rem;
+    }
+
+    /* Fix menu tabs scrolling horizontally on small screens */
+    .menu-tabs {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        gap: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto; /* Don't shrink buttons */
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+}/* --- MOBILE-FIRST BUILDER UI --- */
+.builder-app-ui {
+    background: #f8f9f8;
+    margin: 0;
+    padding-top: 140px; /* Space for the sticky header */
+}
+
+/* Sticky Header */
+.builder-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.back-btn { text-decoration: none; font-size: 1.5rem; color: #999; }
+.plan-info { flex-grow: 1; }
+.plan-info h2 { font-size: 1rem; margin: 0; color: #5d8039; }
+.plan-info p { font-size: 0.75rem; margin: 0; color: #888; }
+
+.btn-confirm-mini {
+    background: #5d8039;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Horizontal Calendar Scroll */
+.calendar-wrapper {
+    padding: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    background: #fff;
+}
+
+.calendar-snap-row {
+    display: flex;
+    gap: 10px;
+}
+
+.day-dot {
+    flex: 0 0 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f0f0f0;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.day-dot.active {
+    background: #5d8039;
+    color: white;
+}
+
+/* Category Nav */
+.category-nav {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 15px;
+    gap: 2px;
+    background: #f8f9f8;
+    position: sticky;
+    top: 135px;
+    z-index: 999;
+}
+
+.cat-btn {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 0.85rem;
+}
+
+.cat-btn.active {
+    background: #5d8039 !important;
+    color: white;
+    border-color: #5d8039 !important;
+}
+
+/* Menu Grid - 2 columns */
+.app-menu-grid {
+   display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background: white;
+}
+
+/* Status Card */
+.day-status-card {
+    background: white;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.protein-label { font-size: 0.7rem; display: block; color: #888; text-transform: uppercase; }
+.protein-val { font-size: 1.2rem; font-weight: 700; color: #5d8039; }
+/* Normal Category Button */
+.cat-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+/* HIGHLIGHT: The menu you are currently in */
+.cat-btn.active {
+    background: #5d8039 !important;
+    color: white !important;
+    border-color:#5d8039 !important;
+}
+
+/* LOCKED: Unavailable for the specific package */
+.cat-btn.locked {
+    background: #e0e0e0 !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+    text-decoration: line-through !important; /* Lined over */
+    border-color: #ccc !important;
+    opacity: 0.6;
+}
+
+
+/* Optional: Smooth transition when switching */
+.cat-btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+/* Style for unavailable category buttons */
+.cat-btn.unavailable {
+    background-color: #e0e0e0 !important;
+    color: #a0a0a0 !important;
+    text-decoration: line-through !important; /* The line over the text */
+    border-color: #ccc !important;
+    cursor: not-allowed !important;
+    pointer-events: none; /* Makes it unclickable */
+    opacity: 0.6;
+}
+
+/* Custom Toast Notification */
+.toast-notice {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #ce4242; /* Red for alerts, use #5d8039; for success */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    z-index: 10000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Fixed Width Logic */
+    width: 90%; 
+    max-width: 350px; /* Limits size on larger screens */
+    text-align: center; /* Centers the sentence inside the bar */
+}
+
+.toast-notice.show {
+    transform: translateX(-50%) translateY(0);
+}
+.category-nav {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 2px;
+    padding: 10px;
+    /* This enables the ordering logic */
+}
+
+.cat-btn {
+    /* Ensure buttons don't shrink */
+    flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+    .category-nav {
+        gap: 2px;
+        justify-content: flex-start;
+    }
+
+    .cat-btn {
+        flex: 0 0 auto;
+    }
+}
+
+.site-footer {
+    background-color: #2d5a27; /* Your Forest Green */
+    color: white;
+    padding: 30px 15px;
+    text-align: center;
+}
+
+.site-footer {
+    background-color: #2d5a27;
+    color: white;
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.footer-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.3s;
+}
+
+/* This targets the Icons specifically */
+.footer-icon i {
+    font-size: 24px; /* Adjust size here */
+    color: white;    /* This ensures they are pure white */
+}
+
+.footer-icon:hover {
+    opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+    .footer-links {
+        gap: 15px;
+    }
+    .footer-icon span {
+        font-size: 0.8rem;
+    }
+}
+/* --- Desktop Header (Default) --- */
+.navbar {
+    padding: 15px 0;
+    background: transparent;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.main-logo {
+    height: 60px; /* Normal size for desktop */
+    transition: height 0.3s;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Mobile Header Fix (Screen smaller than 480px) --- */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 8px 0; /* Slimmer padding */
+    }
+
+    .container {
+        flex-direction: column; /* Stack logo above links */
+        align-items: center;
+        gap: 8px;
+    }
+
+    .main-logo {
+        height: 35px; /* Much smaller logo for phone */
+    }
+
+    .nav-links {
+        gap: 15px; /* Tighter spacing between Home/Packages/Menu */
+    }
+
+    .nav-links li a {
+        font-size: 0.85rem; /* Smaller text for links */
+    }
+
+    /* Reduce the padding on the main content so it moves UP */
+    main section {
+        padding-top: 20px !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px !important;
+    }
+}
+/* Container to align them */
+.footer-brand-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Specific styling for the PNGs */
+.footer-brand-img {
+    height: 40px; /* Adjust this number to resize all 3 at once */
+    width: auto;
+    filter: none !important; /* Forces original PNG colors */
+    -webkit-filter: none !important;
+    object-fit: contain;
+}
+
+/* Mobile Tweak: If 40px is too big for a phone screen */
+@media (max-width: 480px) {
+    .footer-brand-img {
+        height: 30px; 
+        gap: 12px;
+    }
+}
+.footer-brand-img {
+    /* Use 'min-height' and 'height' together to force it */
+    height: 40px !important; 
+    min-height: 40px !important;
+    
+    /* Ensure no other code is capping the size */
+    max-height: none !important; 
+    max-width: none !important;
+    
+    width: auto !important;
+    display: inline-block !important;
+    
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+/* Navbar adjustment to make room for dots */
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Three Dots Button */
+.menu-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+}
+
+.menu-dots span {
+    width: 6px;
+    height: 6px;
+    background-color: #2d5a27;
+    border-radius: 50%;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Start hidden off-screen */
+    width: 280px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    padding: 40px 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    right: 0; /* Slide in */
+}
+
+/* Close Button (X) */
+.close-sidebar {
+    font-size: 2.5rem;
+    color: #2d5a27;
+    cursor: pointer;
+    align-self: flex-end;
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+/* Links inside sidebar */
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.sidebar-links li {
+    margin-bottom: 5px;
+}
+
+.sidebar-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: block;
+}
+
+.sidebar-links a:hover {
+    color: #2d5a27;
+    padding-left: 5px;
+    transition: 0.2s;
+}
+/* --- HEADER ALIGNMENT FIX --- */
+.navbar .container {
+    display: flex;
+    /* This ensures they stay in a row and never wrap to a second line */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 15px; /* Side padding so they don't touch the screen edges */
+    height: 70px;    /* Explicit height helps keep items centered vertically */
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    flex: 1; /* Allows the logo area to take up available space */
+}
+
+.main-logo {
+    height: 50px; /* Force a consistent height */
+    width: auto;
+    display: block;
+}
+
+.menu-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+    /* Prevent the dots from shrinking or moving */
+    flex-shrink: 0; 
+    margin-left: auto; 
+}
+/* --- UPDATED MENU DASHES --- */
+#menu-toggle {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Space between the dashes */
+    padding: 10px;
+}
+
+#menu-toggle span {
+    display: block;
+    width: 25px;        /* Length of the dash */
+    height: 1px;        /* Thickness of the dash */
+    background-color: #2d5a27; 
+    border-radius: 2px; /* Makes the ends slightly rounded */
+    transition: all 0.3s ease;
+}
+
+/* Shadier hover effect for the menu button itself */
+#menu-toggle:hover span {
+    background-color: #1e3d1a; /* Deeper green on hover */
+    transform: translateX(-2px);
+}
+.site-footer {
+    background-color: #2d5a27;
+    color: white;
+    padding: 40px 15px;
+    text-align: center;
+    border-top: 5px solid #f4f1ea; /* Matches your card background */
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: row; /* Horizontal alignment */
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Space between the items */
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Ensures it stacks if the screen is EXTREMELY narrow */
+}
+
+.footer-icon {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column; /* Stack Icon ABOVE Text for a modern app look */
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem; /* Smaller text for horizontal fit */
+    transition: transform 0.2s;
+    min-width: 80px; /* Gives each link a clickable "zone" */
+}
+
+.footer-icon i {
+    font-size: 1.5rem; /* Larger icons since they are the focus */
+}
+
+.footer-icon:active {
+    transform: scale(0.9);
+}
+
+.site-footer p {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    letter-spacing: 1px;
+}
+/* Custom Alert (Snackbar) Styling */
+#custom-alert {
+    visibility: hidden;
+    position: fixed;
+    z-index: 1000002; /* Higher than the modal */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    
+    /* THE RESET: Force height to disappear */
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: fit-content !important;
+    line-height: 1.2 !important; 
+    display: flex !important; /* Use flex to center text inside slimly */
+    align-items: center;
+    justify-content: center;
+
+    /* Shrink-wrap the width */
+    width: auto !important;
+    min-width: 200px !important; 
+    max-width: 80% !important;
+    
+    /* Look & Feel */
+    background-color: #5d8039;
+    color: #fff;
+    text-align: center;
+    border-radius: 50px; 
+    padding: 15px 30px !important; /* This controls the slimness */
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    
+    /* Animation */
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0;
+    pointer-events: none; /* Let clicks pass through if it's stuck */
+}
+
+#custom-alert.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+/* --- STICKY FOOTER FIX --- */
+/* 1. Ensure the browser knows the page is full height */
+html {
+    height: 100%;
+}
+
+/* 2. Turn the body into a flex container */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%; /* Or 100vh */
+    margin: 0;
+}
+
+/* 3. Tell the main content area to GROW and fill empty space */
+/* This is the "Spring" that pushes the footer down */
+main, .container {
+    flex: 1 0 auto;
+}
+
+/* 4. Ensure the footer stays at the bottom and doesn't shrink */
+.site-footer {
+    flex-shrink: 0;
+}
+
+main, .hero-home, #how-it-works {
+    background-color: white !important;
+}
+/* 1. Remove bottom space from gallery */
+.gallery-container {
+    margin-bottom: 0px !important; /* Forces the gallery to touch the bottom */
+}
+
+/* 2. Remove top space from hero section */
+.hero-home {
+    padding-top: 10px !important; /* Adjust this number to your liking (0 to 20px) */
+    margin-top: 0px !important;
+}
+
+/* 3. Ensure the internal container doesn't have a top margin */
+.hero-home .container {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}
+
+/* --- FOOTER ICON & TEXT ALIGNMENT --- */
+.footer-links {
+    display: flex;
+    flex-direction: row;      /* Keeps the three social blocks in a line */
+    justify-content: center;
+    align-items: center;
+    gap: 30px;                /* Space between Instagram, WhatsApp, and FB */
+    margin-bottom: 25px;
+    flex-wrap: wrap;          /* Prevents squishing on mobile */
+}
+
+.footer-icon {
+    display: flex;            /* THE FIX: Turns the link into a flex container */
+    flex-direction: row;      /* Forces icon and span to stay on one line */
+    align-items: center;      /* Vertically centers the icon with the text */
+    gap: 10px;                /* Space between the icon and the username */
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
+
+.footer-icon i {
+    font-size: 1.4rem;        /* Adjusts icon size independently */
+    display: inline-block;
+}
+
+.footer-icon span {
+    white-space: nowrap;      /* Prevents the phone number or handle from breaking */
+}
+
+.footer-icon:hover {
+    opacity: 0.8;
+}
+/* Styles the actual checkbox 'tick' and background */
+.review-scroll-area input[type="checkbox"] {
+    accent-color: #5d8039; /* Use your brand's green */
+    cursor: pointer;
+    transform: scale(1.1); /* Optional: makes it slightly larger and easier to tap */
+}
+
+
+
+
+#pricing-body td {
+    text-align: center;      /* Centers the text horizontally */
+   
+    padding: 18px 15px;      /* Adds the airy spacing from the image */
+    border-bottom: 1px solid #f0f0f0; 
+}
+
+.pricing-table {
+    width: 100%;
+    /* This removes the gaps between cells that often show as white lines */
+    border-collapse: separate; 
+    border-spacing: 0; 
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.pricing-table thead th {
+    background: #5d8039; /* Your brand green */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    
+    /* --- THE FIX: REMOVE THE WHITE LINE --- */
+    border: none !important;
+    outline: none !important;
+    /* -------------------------------------- */
+}
+.pricing-table th {
+    background: #718e53;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    
+    /* --- THE FIX: EQUAL COLUMNS --- */
+    width: 50%; 
+    border: none;
+    /* ------------------------------ */
+}
+
+/* Ensure the table itself takes up the full container width */
+.pricing-table {
+    width: 100%;
+    table-layout: fixed; /* This makes the 50% width strictly enforced */
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* This centers any element with the class 'modal' */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 100000; /* Higher than everything else */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+    
+    /* THE FIX: Centering logic */
+    display: none; /* We change this to 'flex' via JS */
+    align-items: center; 
+    justify-content: center;
+    padding: 20px; /* Prevents touching edges on mobile */
+}
+#custom-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #5d8039;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 200000;
+    transition: 0.5s ease-in-out;
+    opacity: 0;
+}
+
+#custom-alert.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+/* Ensure modals are hidden by default */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 1. The Main Row */
+.header-top {
+    display: flex;
+    align-items: center;       /* This centers everything vertically */
+    justify-content: space-between; 
+    padding: 15px 20px;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;    /* Prevents padding from breaking width */
+}
+
+/* 2. The Text Container */
+.plan-info {
+    flex: 1;                   /* Takes up all middle space */
+    margin-left: 20px;         /* Space after the 'X' */
+    display: flex;
+    flex-direction: column;    /* Keeps 'The Solo' above '1 Day' */
+    justify-content: center;   /* Centers the stack vertically */
+}
+
+/* 3. The Specific Text Reset (CRITICAL) */
+.plan-info h2 {
+    margin: 0 !important;      /* Removes the default gap above the text */
+    padding: 0;
+    line-height: 1;            /* Prevents extra invisible space */
+    font-size: 1.25rem;
+    color: #5d8039;
+}
+
+.plan-info p {
+    margin: 2px 0 0 0 !important; 
+    padding: 0;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+/* 4. The Button */
+.btn-confirm-mini {
+    height: fit-content;       /* Ensures it doesn't stretch to the header height */
+    padding: 10px 25px;
+    border-radius: 50px;       /* Pill shape */
+    background-color: #5d8039;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;       /* Prevents 'Confirm' from wrapping */
+}
+/* 1. Ensure the parent body doesn't create a horizontal scrollbar */
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. Force the menu display to ignore the container's boundaries */
+/* 1. Ensure the container starts AFTER the header */
+.menu-display {
+    width: 100%;
+    padding-top: 100px; /* Increased this to clear the logo/nav */
+    background: white;
+}
+
+/* 2. Control the image size on PC */
+.menu-display picture img {
+    width: 100%;       /* Fill the container width */
+    max-width: 100%;
+    height: auto;      
+    max-height: 85vh;  /* Crucial: Prevents image from being taller than 85% of the screen */
+    object-fit: contain; /* Keeps the whole menu visible without cropping */
+    display: block;
+    margin: 0 auto;    /* Centers it if it's smaller than the screen */
+}
+
+/* 3. Mobile specific adjustment */
+@media (max-width: 768px) {
+    .menu-display {
+        padding-top: 70px; /* Smaller padding for mobile headers */
+    }
+    .menu-display picture img {
+        max-height: none; /* Let the long vertical image scroll naturally on phones */
+    }
+}
+
+
+
+ /* Essential Modal Styles */
+        .auth-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); 
+            z-index: 999999; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .auth-modal-box {
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 420px; 
+            position: relative;
+            animation: popIn 0.3s ease-out;
+            text-align: center;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .sidebar.active { right: 0; }
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #5d8039; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #5d8039; }
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+
+        /* Custom Alert (Snackbar) */
+        #custom-alert {
+            visibility: hidden; min-width: 280px; background-color: #5d8039;
+            color: #fff; text-align: center; border-radius: 12px; padding: 16px;
+            position: fixed; z-index: 1000001; left: 50%; bottom: 30px;
+            transform: translateX(-50%); font-size: 14px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: 'Montserrat', sans-serif;
+        }
+        #custom-alert.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        /* Utility classes for forms */
+        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
+
+        /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
+        /* 1. Ensure the html and body take up the full screen height */
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: #F5F1E8;
+}
+
+/* 2. Set the body to a flex container */
+.checkout-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Minimum height is the full viewport */
+}
+
+/* 3. Tell the main content to GROW and fill the gap */
+.checkout-main {
+    flex: 1 0 auto; /* This pushes the footer down */
+}
+
+/* 4. Ensure the footer stays at the end of the flex stack */
+.site-footer {
+    flex-shrink: 0;
+}
+
+/* --- RESPONSIVE BUILDER WIDTH --- */
+
+/* 1. The Main Wrapper: Full width on mobile, centered & capped on PC */
+.container {
+    width: 95%;           /* Phone: nearly edge-to-edge */
+    max-width: 1200px;    /* PC: don't let it get wider than this */
+    margin: 0 auto;       /* Keep it centered */
+    padding: 10px;        /* Spacing for small screens */
+}
+
+/* 2. The Menu Grid: 2 columns on phone, 4 on PC */
+#menu-grid {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(2, 1fr); /* 2 meals per row on Phone */
+}
+
+/* 3. The Selection Sidebar (The list on the right/bottom) */
+.selection-sidebar {
+    width: 100%;          /* Stacked on top/bottom for Phone */
+}
+
+/* Desktop Specific Adjustments (PC) */
+@media (min-width: 992px) {
+    .container {
+        width: 50%;
+        padding: 40px 0;   /* More breathing room on PC */
+    }
+
+    #menu-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 meals per row on PC */
+    }
+
+    /* If you have a side-by-side layout for Menu vs Selection */
+    .builder-layout-wrapper {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+    }
+
+    .selection-sidebar {
+        width: 350px;      /* Fixed width sidebar on PC */
+        position: sticky;
+        top: 20px;
+    }
+}
+
+/* 4. The Edit Modal: Wider on PC, full screen on Phone */
+.modal-content {
+    width: 90%;
+    max-width: 500px;      /* Limits the size on PC */
+    margin: auto;
+}
+/* --- FIXING THE IMAGE SCALING --- */
+
+.card-img-wrapper {
+    width: 100% !important;   /* Take full width of the card */
+    height: auto !important;  /* Allow height to be defined by ratio, not a fixed pixel */
+    aspect-ratio: 1 / 1;      /* Forces the box to be a perfect square */
+    overflow: hidden;
+    background-color: #f9f9f9; /* Fallback color while loading */
+    border-radius: 12px 12px 0 0;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;        /* This fills the square. Change to 'contain' if you want to see the whole photo with bars */
+    display: block;
+}
+
+/* On PC, if the squares look too big, we can limit the card size */
+@media (min-width: 992px) {
+    .menu-item-card {
+        max-width: 250px; 
+        margin: 0 auto;
+    }
+}
+
+/* --- FIX HEADER OVERLAP ON PC --- */
+
+/* Target the first section after your header (usually <main> or a specific #ID) */
+main {
+    padding-top: 80px; /* Adjust this to match your actual header height */
+}
+
+@media (min-width: 992px) {
+    main {
+        /* On PC, if your header is taller, increase the gap */
+        padding-top: 120px; 
+    }
+    
+    /* If you have a specific builder container, give it a top margin too */
+    .container {
+        margin-top: 20px;
+    }
+}
+.modal, .custom-alert-overlay {
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* The dark backdrop */
+    z-index: 10001;
+    
+    /* These two lines are CRITICAL for the "Click Outside" to work */
+    display: none; /* Changed to 'flex' via JS to show */
+    align-items: center; 
+    justify-content: center;
+}
+.auth-overlay {
+    display: none; 
+    position: fixed; 
+    inset: 0; /* Shortcut for top/left/right/bottom: 0 */
+    background: rgba(0, 0, 0, 0.85); 
+    z-index: 999999;
+    
+    /* Centering logic */
+    align-items: center; 
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+/* --- THE MAGIC FIX --- */
+/* If any script sets this to 'display: block', force it to 'flex' 
+   so the centering rules above actually work */
+.auth-overlay[style*="display: block"] {
+    display: flex !important;
+}
+
+.auth-modal-box {
+    background: white; 
+    padding: 40px; 
+    border-radius: 20px; 
+    width: 90%; 
+    max-width: 420px; 
+    position: relative; 
+    text-align: center;
+    
+    /* Extra safety for PC */
+    margin: auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.auth-modal-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* This centers everything horizontally */
+    justify-content: center; /* This centers everything vertically */
+    text-align: center;
+    /* ... your other styles ... */
+}
+
+/* Ensure buttons inside the modal respect the centering */
+.auth-modal-box button {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+@media (min-width: 1024px) {
+    header, .about-split, .quick-links {
+        /* Ensures headers and sections don't shrink past a certain point */
+        min-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+.header-container {
+    display: flex;
+    justify-content:沟通-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Limits how far out buttons can go */
+    min-width: 1000px; /* Prevents them from moving too close to the logo */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+/* This only affects PC/Laptops */
+@media (min-width: 1024px) {
+    /* 2. Lock the Header so logo and buttons don't move */
+    .header-container,
+    nav {
+        width: auto;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .navbar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* 4. Fix the Footer Grid from image_4a140c.png */
+    .footer-links-wrapper {
+        width: auto;
+        margin: 0 auto;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+.menu-card {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+.app-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0 8px;
+    box-sizing: border-box;
+}
+.app-menu-grid > * {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.app-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 0 6px;
+}
+.app-menu-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}

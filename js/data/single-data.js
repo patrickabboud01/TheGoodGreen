@@ -1,0 +1,476 @@
+const singleMenuData = [
+
+  // --- BREAKFAST ---
+ 
+  
+  {
+    category: "Breakfast",
+    name: "Croissant",
+    protein: 9,
+    Kcal: 400,
+    price: 3.75,
+    image: "images/menu items/croissant1.png",
+    ingredients: "Croissant dough",
+    lockedIngredients: "Croissant dough",
+    choicename1: "Croissant Flavour",
+    choiceitems1: "Chocolate , Zaatar , Plain , Olive"
+  },
+ 
+  {
+    category: "Breakfast",
+    name: "Oatmeal Bowl",
+    protein: 18,
+    Kcal: 450,
+    price: 7.00,
+    image: "images/menu items/oats.png",
+    ingredients: "Oats, milk, dark chocolate, peanut butter, berries, banana",
+    lockedIngredients: "Oats, Milk",
+    choicename1: "Milk type",
+    choiceitems1: "Soy , Almond , Oat",
+  },
+  {
+    category: "Breakfast",
+    name: "Hummus & Crackers",
+    protein: 15,
+    Kcal: 400,
+    price: 6,
+    image: "images/menu items/hummus1.png",
+    ingredients: "Crackers, hummus, cucumber, pumpkin seeds, olives",
+    lockedIngredients: "Crackers, Hummus",
+  },
+  {
+    category: "Breakfast",
+    name: "Scrambled Egg Sandwich",
+    protein: 25,
+    Kcal: 500,
+    price: 7,
+    image: "images/menu items/EggSandwich.jpg",
+    ingredients: "Chickpea flour, pain demie, spices, tomato, lettuce",
+    lockedIngredients: "Chickpea Flour, Pain Demie, Spices",
+  },
+  {
+    category: "Breakfast",
+    name: "Pancakes",
+    protein: 8,
+    Kcal: 400,
+    price: 6,
+    image: "images/menu items/pankakes.png",
+    ingredients: "Vegan pancake mix, banana, berries",
+    lockedIngredients: "Vegan Pancake Mixs",
+    choicename1: "topping",
+    choiceitems1: "Chocolate , Mayple ",
+    choicename2: "milk type",
+    choiceitems2: "Oat , Almond , Soy"
+  },
+  {
+    category: "Breakfast",
+    name: "Avocado Toast",
+    protein: 7,
+    Kcal: 250,
+    price: 9,
+    image: "images/menu items/avocado toast.png",
+    ingredients: "Toast, avocado, mushrooms, herbs, spices",
+    lockedIngredients :"Toast, Avocad"
+  },
+  {
+    category: "Breakfast",
+    name: "Milk & Cornflakes",
+    protein: 15,
+    Kcal: 400,
+    price: 5.00,
+    image: "images/menu items/milk.png",
+    ingredients: "Milk, cornflakes",
+    lockedIngredients : "Milk, Cornflakes",
+    choicename2: "milk type",
+    choiceitems2: "Oat , Almond "
+    
+  },
+
+  // --- MAIN ---
+  {
+    category: "Main",
+    name: "Lahm Baajin 2pcs",
+    protein: 26,
+    Kcal: 600,
+    price: 8.00,
+    image: "images/menu items/lahm.png",
+    ingredients: "Flat bread, soy chunks, pomegranate molasses, tomato, onions, lemon juice, spices",
+    lockedIngredients :"Lemon Juice , Spices"
+  },
+    {
+    category: "Main",
+    name: "Rice & Steamed Veggies with Soy Sauce",
+    protein: 10,
+    Kcal: 380,
+    price: 9.00,
+    image: "images/menu items/veggies with rice.png",
+    ingredients: "Rice, carrots, poatatoes, broccoli, zucchini, soysauce",
+    lockedIngredients :"Rice , SoySauce"
+
+  },
+
+  {
+    category: "Main",
+    name: "Quinoa & Veggie Bowl",
+    protein: 15,
+    Kcal: 400,
+    price: 10.00,
+    image: "images/menu items/quinoa.png",
+    ingredients: "Quinoa, carrots, bell pepper, zucchini, chickpeas",
+    lockedIngredients :"Quinoa"
+
+  },
+  {
+    category: "Main",
+    name: "Falafel Burger Home Made Bun",
+    protein: 21,
+    Kcal: 600,
+    price: 12,
+    image: "images/menu items/burger.png",
+    ingredients: "Bun, falafel patty baked, tahini, lettuce, tomato",
+    lockedIngredients :"Bun,Falafel Patty Baked",
+  },
+   {
+    category: "Main",
+    name: "Quinoa-Bean Burger Home Made Bun",
+    protein: 20,
+    Kcal: 500,
+    price: 9,
+    image: "images/menu items/quionaburger.jpeg",
+    ingredients: "Bun, quinoa, red kidney beans, potato, oats, lettuce, tomato",
+    lockedIngredients :"Bun,Falafel Patty Baked, Red kidney beans , potato ,Oats",
+    choicename1: "Sauce",
+    choiceitems1: "Garlic-Mayo ,  Tahini-Garlic-Mustard"
+  },
+    { 
+        category: "Main", 
+        name: "Kebbeh bl sayniyeh & salad", 
+        protein: 17, 
+        Kcal: 450,
+        price: 11.0,
+        image: "images/menu items/kebbeh 2.png",
+       ingredients: "Borghoul, soy mince, spices, salad, salad dressing",
+       lockedIngredients:"Borghoul , Soy Mince , Spices"
+      },
+  {
+    category: "Main",
+    name: "Lentil Soup",
+    protein: 22,
+    Kcal: 350,
+    price: 6.0,
+    image: "images/menu items/lentille soupe.png",
+    ingredients: "Red lentils, garlic, carrot, potato",
+    lockedIngredients:"Red Lentils"
+  },{
+   category: "Main",
+    name: "Veggie Soup",
+    protein: 6,
+    Kcal: 150,
+    price: 6.0,
+    image: "images/menu items/veggie soup.png",
+    ingredients: "Shayrie, rice, zucchini, carrots, potato, broccoli"
+  },
+  {
+    category: "Main",
+    name: "Veggie Noodles",
+    protein: 12,
+    Kcal: 400,
+    price: 8.0,
+    image: "images/menu items/pasta noodles.png",
+    ingredients: "Noodles, carrots, garlic, bell pepper, cabbage, soy sauce, sesame seeds",
+    lockedIngredients:"Soy Sauce,Noodles"
+  },
+  {
+    category: "Main",
+    name: "Dal Bhat",
+    protein: 19,
+    Kcal: 450,
+    price: 9.00,
+    image: "images/menu items/dal baht.png",
+    ingredients: "Lentils, rice, potato, carrot, zucchini",
+    lockedIngredients : "Lentils, Rice"
+  },
+    { 
+        category: "Main", 
+        name: "Chich Barak", 
+        protein: 16, 
+        Kcal: 440,
+        price: 15,
+        image: "images/menu items/shish barak.jpeg",
+        ingredients: "Vegan laban, garlic, dough, soy fillings, dried herbs", 
+        lockedIngredients:  "Vegan Laban , Garlic, Dough , Soy Fillings ", 
+    },
+  { 
+        category: "Main", 
+        name: "Lentil Bolognese", 
+        protein: 35,
+        Kcal: 600, 
+        price: 10,
+        image: "images/menu items/bolo.jpeg",
+        ingredients: "Lentils, pasta, vegan bologenese sauce, carrots-mushroom sauce", 
+        removable_ingredients: "Lentils;Pasta;Vegan Bologenese sauce;Carrots-Mushroom Sauce", 
+    },
+  {
+    category: "Main",
+    name: "Fattoush",
+    protein: 9,
+    Kcal: 450,
+    price: 5.50,
+    image: "images/menu items/fattoush.png",
+    ingredients: "Fattoush, pomegranate molasses",
+    lockedIngredients :"Fattoush"
+  },
+   {
+    category: "Main",
+    name: "Tabboule",
+    protein: 9,
+    Kcal: 450,
+    price: 5.50,
+    image: "images/menu items/tabboulr baked potatoes.png",
+    ingredients: "Finely chopped parsley, mint, diced tomatoes, onion, soaked fine bulgur wheat",
+    lockedIngredients :"diced tomatoes, onion, soaked fine bulgur wheat"
+  },
+    {
+    category: "Main",
+    name: "Baked Potatoe",
+    protein: 2,
+    Kcal: 200,
+    price: 4.0,
+    image: "images/menu items/potatoewedges.jpg",
+    ingredients: "Potato, spices",
+    lockedIngredients:"Potato"
+  },
+
+  {
+    category: "Main",
+    name: "Pasta salad",
+    protein: 20,
+    Kcal: 600,
+    price: 8.5,
+    image: "images/menu items/pastasalade.jpeg",
+    ingredients: "Pasta, black beans, olives, cucumber, carrots, tomato, corn, dressing",
+    lockedIngredients:"Pasta"
+  },
+
+  {
+    category: "Snacks",
+    name: "Lazy Cake 5pcs",
+    protein: 5,
+    Kcal: 400,
+    price: 6.00,
+    image: "images/menu items/lazy cake.png",
+    ingredients: "Cacao, biscuits, coconut oil, vegan milk, maple syrup",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple Syrup "
+  },
+  
+  {
+    category: "Snacks",
+    name: "Oat Cookies 3pcs",
+    protein: 5,
+    Kcal: 400,
+    price: 4.00,
+    image: "images/menu items/cookies.png",
+    ingredients: "Oats, peanut butter, vegan chocolate, milk",
+    lockedIngredients:"Oats, Milk",
+    choicename1: "Flavour",
+    choiceitems1: "Chocolate , Berries , Plain ",
+  },
+    {
+    category: "Snacks",
+    name: "Brownies",
+    protein: 3.5,
+    Kcal: 120,
+    price: 3.00,
+    image: "images/menu items/Brownies.jpeg",
+    ingredients: "Vegan chocolate, milk, flour ,banana ,sugar ,maple , cacao",
+    lockedIngredients:"",
+    choicename1: "",
+    choiceitems1: "",
+  },
+   
+   /* {
+    category: "Snacks",
+    name: "Lazy Cake 10pcs",
+    protein: 10,
+    Kcal: 800,
+    price: 12.00,
+    image: "images/menu items/lazy cake.png",
+    ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple Syrup",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk, maple syrup"
+  },   */
+  {
+    category: "Snacks",
+    name: "Lazy Cake for 12 prs",
+    protein: 20,
+    Kcal: 1600,
+    price: 24.00,
+    image: "images/menu items/lazy cake.png",
+    ingredients: "Cacao, biscuits, coconut oil, vegan milk, maple syrup",
+    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk , Maple Syrup"
+  },
+  {
+    category: "Snacks",
+    name: "Fruit Salad",
+    protein: 2,
+    Kcal: 130,
+    price: 6.00,
+    image: "images/menu items/saladde de fruit.png",
+    ingredients: "Seasonal Fruits",
+    lockedIngredients:"Seasonal Fruits"
+  },
+  {
+    category: "Snacks",
+    name: "Mixed Nuts",
+    protein: 12,
+    Kcal: 440,
+    price: 4.00,
+    image: "images/menu items/nuts.png",
+    ingredients: "Almonds, pumpkin seeds, walnuts, raisins"
+  },
+  {
+      category: "Snacks",
+    name: "Granolla Oat chocolate bar",
+    protein: 5,
+    Kcal: 170,
+    price: 3.5,
+    image: "images/menu items/bars.jpeg",
+    ingredients: "Almonds, oats, pumpkin seeds, cacao, soy milk, maple syrup"
+  },
+
+
+  // --- PROTEIN ---
+  {
+    category: "Protein",
+    name: "Protein Shake PeanutButter-Caramel (0 sugar)",
+    protein: 35,
+    Kcal: 420,
+    price: 6.00,
+    image: "images/menu items/pbcaaramel protein.jpeg",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend"
+  },
+    {
+    category: "Protein",
+    name: "Protein Shake Mocha (0 sugar)",
+    protein: 35,
+    Kcal: 420,
+    price: 6.00,
+    image: "images/menu items/mocha protein.jpeg",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend"
+  },
+  {
+    category: "Offer",
+    name: "Protein Shake PeanutButter-Caramel (0sugar) + Protein Oat Cookie",
+    protein: 50,
+    Kcal: 600,
+    price: 8.00,
+    image: "images/menu items/protein shake plain.png",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend"
+  },
+  {
+    category: "Offer",
+    name: "Protein Shake Mocha (0sugar) + Protein Oat Cookie",
+    protein: 50,
+    Kcal: 600,
+    price: 8.00,
+    image: "images/menu items/chocolate protein shake.png",
+    ingredients: "Vegan Protein Blend",
+        lockedIngredients :"Vegan Protein Blend"
+
+  },
+  
+  {
+    category: "Protein",
+    name: "Protein Oat Cookie",
+    protein: 15,
+    Kcal: 200,
+    price: 3.00,
+    image: "images/menu items/cookies.png",
+    ingredients: "Vegan Protein Blend",
+    lockedIngredients :"Vegan Protein Blend",
+    choicename1: "Flavour",
+    choiceitems1: "Chocolate , Berries , Plain "
+
+  },
+
+  // --- PASTRY ---
+  {
+    category: "Pastry",
+    name: "Buns 6pcs",
+    protein: 8,
+    Kcal: 250,
+    price: 5.00,
+    image: "images/menu items/bun plain.png",
+    ingredients: "Flour, yeast, salt, olive oil, sugar, water",
+    lockedIngredients: "Flour, Yeast, Salt, Olive Oil, Sugar, Water",
+  },
+  {
+    category: "Pastry",
+    name: "Olive Bread 4pcs",
+    protein: 8,
+    Kcal: 400,
+    price: 8.00,
+    image: "images/menu items/olive bun.png",
+    ingredients: "Flour, yeast, salt, olive oil, olive paste, sugar, water",
+    lockedIngredients : "Flour, Yeast, Salt, Olive Oil, Olive Paste, Sugar, Water",
+  },
+
+     {
+    category: "Drinks",
+    name: "Fresh Orange Juice 300ml ",
+    protein: 1,
+    Kcal: 120,
+    price: 5.00,
+    image: "images/menu items/orange juice.png",
+    ingredients: "Fresh Orange",
+    lockedIngredients:"Fresh Orange"
+  },
+     {
+    category: "Drinks",
+    name: "Fresh Lemonade Juice 300ml ",
+    protein: 0,
+    Kcal: 125,
+    price: 5.00,
+    image: "images/menu items/lemonade.jpeg",
+    ingredients: "Fresh lemon, monk fruit",
+    lockedIngredients:"Fresh Lemon"
+  },
+   {
+    category: "Drinks",
+    name: "Fresh Strawberry-Bananae 300ml ",
+    protein: 2,
+    Kcal: 150,
+    price: 5.00,
+    image: "images/menu items/strawberrybanana.jpeg",
+    ingredients: "Fresh lemon, monk fruit",
+    lockedIngredients:"Fresh Lemon"
+  },
+       {
+    category: "Drinks",
+    name: "Iced Coffee 300ml ",
+    protein: 1,
+    Kcal: 40,
+    price: 5.00,
+    image: "images/menu items/icedcoffee.jpeg",
+    ingredients: "Almond milk, coffee, monk fruit",
+    lockedIngredients:"Almond milk, Coffee , Monk Fruit",
+    choicename1: "Coffee style",
+    choiceitems1: "Decaf , Cafenated",
+  },
+      
+     { category: "Offer",
+    name: "Iced Coffee + Croissant ",
+    protein: 10,
+    Kcal: 440,
+    price: 7.5,
+    image: "images/menu items/croissant & iced coffee offer.jpeg",
+    ingredients: "Almond milk, coffee, monk fruit, croissant vegan dough",
+    lockedIngredients:"Almond milk, Decaf Coffee , Monk Fruit, Croissant vegan dough",
+    choicename1: "Coffee style",
+    choiceitems1: "Decaf , Cafenated",
+    choicename2: "Croissant flavour",
+     choiceitems2: "Zaatar , Plain , Chocolate , Olive",
+  },
+];

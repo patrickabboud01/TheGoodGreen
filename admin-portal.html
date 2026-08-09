@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Green | Admin Kitchen Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/data/single-data.js"></script>
+    <style>
+        :root { 
+            --forest: #2d5a27; --sand: #f4f1ea; --error: #d9534f; 
+            --working: #f39c12; --done: #27ae60; --info: #3498db;
+            --accent-blue: #4338ca;
+        }
+        
+        body { background: var(--sand); padding: 10px; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        
+        .admin-box { 
+            max-width: 1200px; margin: 10px auto; background: white; 
+            padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
+        }
+        
+        .header-flex { 
+            display: flex; flex-direction: column; gap: 10px; 
+            margin-bottom: 20px; border-bottom: 2px solid var(--sand); padding-bottom: 15px; 
+        }
+        @media (min-width: 768px) { .header-flex { flex-direction: row; justify-content: space-between; align-items: center; } }
+
+        .controls { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .search-container { width: 100%; margin-bottom: 10px; }
+        #search-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 1rem; }
+
+        .view-btn { 
+            flex: 1; min-width: 120px; background: var(--forest); color: white; border: none; 
+            padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        }
+        .view-btn.outline { background: white; color: var(--forest); border: 2px solid var(--forest); }
+
+        .status-btn { 
+            width: 100%; padding: 10px; border-radius: 8px; border: none; 
+            font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase;
+        }
+        .status-Pending { background: #e0e0e0; color: #666; }
+        .status-Cooking { background: var(--working); color: white; }
+        .status-Ready { background: var(--info); color: white; }
+        .status-Delivered { background: var(--done); color: white; }
+        .status-Active { background: var(--forest); color: white; }
+        .status-Paused { background: #95a5a6; color: white; }
+
+        table { width: 100%; border-collapse: collapse; }
+        
+        @media (max-width: 768px) {
+            thead { display: none; }
+            tr { 
+                display: block; background: #fff; border: 1px solid #eee; 
+                margin-bottom: 15px; border-radius: 10px; padding: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            }
+            td { 
+                display: flex; justify-content: space-between; align-items: center; 
+                padding: 8px 5px; border: none; font-size: 0.9rem; text-align: right;
+            }
+            td::before { content: attr(data-label); font-weight: bold; color: var(--forest); text-align: left; padding-right: 10px; }
+            .group-header { background: var(--forest) !important; color: white !important; text-align: center; display: block; }
+        }
+
+        @media (min-width: 769px) {
+            th { background: #f8f9fa; color: var(--forest); padding: 15px; text-align: left; border-bottom: 2px solid #eee; font-size: 0.85rem; }
+            td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        }
+
+        .group-header { background: #f0f4f0; font-weight: bold; color: var(--forest); }
+        .id-badge { font-family: monospace; background: #eee; padding: 2px 5px; border-radius: 4px; font-size: 0.8rem; color: #555; }
+        
+        .tag { padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.75rem; border: 1px solid; display: inline-block; margin-bottom: 2px; }
+        .tag-remove { background: #fff5f5; color: var(--error); border-color: #feb2b2; }
+        .tag-choice { background: #eef2ff; color: var(--accent-blue); border-color: #c7d2fe; }
+        .special-note { font-size: 0.75rem; color: #d97706; font-weight: 600; margin-top: 5px; display: block; background: #fffbeb; padding: 4px; border-radius: 4px; }
+
+        /* --- STOCK MANAGEMENT --- */
+        #stock-view, #hours-view { display: none; }
+        .stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .stock-card {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            border: 1px solid #eee; border-radius: 10px; padding: 12px 15px; background: #fff;
+        }
+        .stock-card.is-out { background: #fff5f5; border-color: #feb2b2; }
+        .stock-item-name { font-weight: 700; font-size: 0.85rem; color: #333; }
+        .stock-item-cat { font-size: 0.7rem; color: #999; text-transform: capitalize; }
+        .stock-status-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .stock-status-label.out { color: var(--error); }
+        .stock-status-label.in { color: var(--done); }
+
+        .toggle-switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; cursor: pointer; inset: 0; background: var(--done);
+            border-radius: 26px; transition: 0.2s;
+        }
+        .toggle-slider::before {
+            content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background: white; border-radius: 50%; transition: 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: var(--error); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+        .hours-card { max-width: 420px; background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 20px; }
+        .hours-field { margin-bottom: 15px; }
+        .hours-field label { display: block; font-weight: 700; color: var(--forest); font-size: 0.85rem; margin-bottom: 6px; }
+        .hours-field input, .hours-field select {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.95rem; box-sizing: border-box;
+        }
+        .save-msg { font-size: 0.85rem; font-weight: 600; margin-top: 10px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" style="text-align:center; margin-top:15vh; padding: 20px;">
+        <div style="background:white; padding:30px; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.1); width: 100%; max-width: 350px; display: inline-block;">
+            <h2 style="color:var(--forest);">Kitchen Access</h2>
+            <input type="password" id="pass-code" placeholder="Enter PIN" style="width:100%; padding:15px; border-radius:8px; border:1px solid #ddd; margin-bottom:15px; box-sizing: border-box; font-size: 1.2rem; text-align: center;"><br>
+            <button onclick="checkLogin()" class="view-btn" style="width:100%; font-size: 1.1rem;">Unlock</button>
+        </div>
+    </div>
+
+    <div id="admin-content" class="admin-box" style="display: none;">
+        <div class="header-flex">
+            <h1 style="color: var(--forest); margin: 0; font-size: 1.5rem;">Kitchen Ops</h1>
+            <button onclick="refreshCurrentView()" class="view-btn outline" style="flex: 0; min-width: 80px;">↻</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search ID, Name, or Meal..." oninput="renderFilteredData()">
+        </div>
+
+        <div class="controls">
+            <button id="btn-orders" class="view-btn" onclick="switchView('orders')">Subscriptions</button>
+            <button id="btn-production" class="view-btn outline" onclick="switchView('production')">Production List</button>
+            <button id="btn-stock" class="view-btn outline" onclick="switchView('stock')">Stock</button>
+            <button id="btn-hours" class="view-btn outline" onclick="switchView('hours')">Store Hours</button>
+            <button id="btn-group" class="view-btn outline" onclick="toggleGroup()">Group by User</button>
+            <input type="number" id="day-filter" placeholder="Day #" oninput="refreshCurrentView()" style="width:80px; padding:10px; border-radius:8px; border:1px solid #ddd; display:none;">
+        </div>
+
+        <table id="main-table">
+            <thead id="table-head"></thead>
+            <tbody id="table-body"></tbody>
+        </table>
+
+        <div id="stock-view">
+            <p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Toggle an item to mark it <strong>Out of Stock</strong>. It will show as unavailable on the ordering page immediately.</p>
+            <div id="stock-grid" class="stock-grid"></div>
+        </div>
+
+        <div id="hours-view">
+            <div class="hours-card" style="margin-bottom: 20px;">
+                <h3 style="color:var(--forest); margin-top:0;">Store Status</h3>
+                <div id="store-status-display" style="margin-bottom:15px; font-weight:700;">Loading...</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                    <button class="view-btn outline" style="flex:1; min-width:90px;" onclick="closeStoreFor(30)">30 min</button>
+                    <button class="view-btn outline" style="flex:1; min-width:90px;" onclick="closeStoreFor(60)">1 hour</button>
+                    <button class="view-btn outline" style="flex:1; min-width:90px;" onclick="closeStoreFor(120)">2 hours</button>
+                    <button class="view-btn outline" style="flex:1; min-width:90px;" onclick="closeStoreFor(240)">4 hours</button>
+                </div>
+                <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
+                    <input type="number" id="custom-close-mins" min="1" placeholder="Custom minutes" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                    <button class="view-btn" style="width:auto; padding:10px 16px;" onclick="closeStoreForCustom()">Close</button>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="view-btn" style="flex:1; background:var(--error);" onclick="closeStoreIndefinitely()">Close Until I Reopen</button>
+                    <button class="view-btn" style="flex:1; background:var(--done);" onclick="reopenStore()">Reopen Now</button>
+                </div>
+            </div>
+
+            <div class="hours-card">
+                <h3 style="color:var(--forest); margin-top:0;">Ordering Hours</h3>
+                <p style="color:#777; font-size:0.8rem; margin-top:-8px;">Customers can only pick delivery times inside these windows.</p>
+
+                <p style="font-weight:700; color:var(--forest); font-size:0.8rem; text-transform:uppercase; margin-bottom:8px;">Weekdays (Mon–Fri)</p>
+                <div class="hours-field">
+                    <label>Opening Time</label>
+                    <input type="time" id="settings-weekday-open">
+                </div>
+                <div class="hours-field">
+                    <label>Closing Time</label>
+                    <input type="time" id="settings-weekday-close">
+                </div>
+
+                <p style="font-weight:700; color:var(--forest); font-size:0.8rem; text-transform:uppercase; margin-bottom:8px;">Weekends (Sat–Sun)</p>
+                <div class="hours-field">
+                    <label>Opening Time</label>
+                    <input type="time" id="settings-weekend-open">
+                </div>
+                <div class="hours-field">
+                    <label>Closing Time</label>
+                    <input type="time" id="settings-weekend-close">
+                </div>
+
+                <div class="hours-field">
+                    <label>Time Slot Interval</label>
+                    <select id="settings-interval">
+                        <option value="15">Every 15 minutes</option>
+                        <option value="30">Every 30 minutes</option>
+                        <option value="60">Every 1 hour</option>
+                    </select>
+                </div>
+                <div class="hours-field">
+                    <label>Minimum Notice (minutes)</label>
+                    <input type="number" id="settings-lead-minutes" min="0" step="5" placeholder="e.g. 40">
+                    <small style="color:#777;">Customers can't pick a time sooner than this from right now.</small>
+                </div>
+                <button class="view-btn" style="width:100%;" onclick="saveStoreSettings()">Save Hours</button>
+                <span id="settings-save-msg" class="save-msg"></span>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(sbUrl, sbKey);
+
+    let currentView = 'orders';
+    let isGrouped = false;
+    let rawData = [];
+
+    function checkLogin() {
+        if(document.getElementById('pass-code').value === "1234") {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            refreshCurrentView();
+        } else { alert("Access Denied"); }
+    }
+
+    function switchView(view) {
+        currentView = view;
+        document.getElementById('btn-orders').classList.toggle('outline', view !== 'orders');
+        document.getElementById('btn-production').classList.toggle('outline', view !== 'production');
+        document.getElementById('btn-stock').classList.toggle('outline', view !== 'stock');
+        document.getElementById('btn-hours').classList.toggle('outline', view !== 'hours');
+        document.getElementById('day-filter').style.display = (view === 'production') ? 'block' : 'none';
+
+        const isTableView = (view === 'orders' || view === 'production');
+        document.getElementById('main-table').style.display = isTableView ? 'table' : 'none';
+        document.getElementById('search-input').closest('.search-container').style.display = isTableView ? 'block' : 'none';
+        document.getElementById('btn-group').style.display = isTableView ? 'flex' : 'none';
+        document.getElementById('stock-view').style.display = (view === 'stock') ? 'block' : 'none';
+        document.getElementById('hours-view').style.display = (view === 'hours') ? 'block' : 'none';
+
+        refreshCurrentView();
+    }
+
+    function toggleGroup() {
+        isGrouped = !isGrouped;
+        document.getElementById('btn-group').classList.toggle('outline', !isGrouped);
+        renderFilteredData();
+    }
+
+    async function refreshCurrentView() {
+        if (currentView === 'stock') { await loadStockView(); return; }
+        if (currentView === 'hours') { await loadSettingsView(); return; }
+
+        const body = document.getElementById('table-body');
+        body.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:40px;'>Syncing with Supabase...</td></tr>";
+
+        try {
+            if (currentView === 'orders') {
+                const { data } = await sbClient.from('orders').select('*').order('created_at', {ascending: false});
+                rawData = data || [];
+            } else {
+                const dayVal = document.getElementById('day-filter').value;
+                let query = sbClient.from('order_items').select('*, orders(customer_name, plan_name, id)');
+                if(dayVal) query = query.eq('day_number', dayVal);
+                const { data } = await query.order('day_number', {ascending: true});
+                rawData = data || [];
+            }
+            renderFilteredData();
+        } catch (err) {
+            body.innerHTML = "<tr><td colspan='6'>Connection Error.</td></tr>";
+        }
+    }
+
+    // --- STOCK MANAGEMENT ---
+    let outOfStockSet = new Set();
+
+    async function loadStockView() {
+        const grid = document.getElementById('stock-grid');
+        grid.innerHTML = "<p style='padding:20px; color:#999;'>Loading items...</p>";
+
+        try {
+            const { data, error } = await sbClient.from('out_of_stock').select('item_name');
+            if (error) throw error;
+            outOfStockSet = new Set((data || []).map(r => r.item_name));
+        } catch (err) {
+            grid.innerHTML = "<p style='padding:20px; color:var(--error);'>Could not load stock status. Make sure the 'out_of_stock' table exists in Supabase.</p>";
+            return;
+        }
+
+        if (typeof singleMenuData === 'undefined' || !singleMenuData.length) {
+            grid.innerHTML = "<p style='padding:20px; color:#999;'>No menu items found (js/data/single-data.js not loaded).</p>";
+            return;
+        }
+
+        grid.innerHTML = singleMenuData.map(item => {
+            const isOut = outOfStockSet.has(item.name);
+            return `
+                <div class="stock-card ${isOut ? 'is-out' : ''}" id="stockcard-${cssSafe(item.name)}">
+                    <div>
+                        <div class="stock-item-name">${item.name}</div>
+                        <div class="stock-item-cat">${item.category || ''}</div>
+                        <div class="stock-status-label ${isOut ? 'out' : 'in'}">${isOut ? 'Out of Stock' : 'In Stock'}</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" ${isOut ? 'checked' : ''} onchange="toggleStock('${item.name.replace(/'/g, "\\'")}', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>`;
+        }).join('');
+    }
+
+    function cssSafe(name) {
+        return name.replace(/[^a-zA-Z0-9]/g, '-');
+    }
+
+    async function toggleStock(itemName, markOut) {
+        try {
+            if (markOut) {
+                await sbClient.from('out_of_stock').upsert({ item_name: itemName });
+            } else {
+                await sbClient.from('out_of_stock').delete().eq('item_name', itemName);
+            }
+        } catch (err) {
+            alert('Could not update stock status. Check your connection.');
+        }
+        loadStockView();
+    }
+
+    // --- STORE HOURS ---
+    let currentStoreSettings = null;
+
+    async function loadSettingsView() {
+        const msg = document.getElementById('settings-save-msg');
+        msg.innerText = '';
+        try {
+            const { data, error } = await sbClient.from('store_settings').select('*').eq('id', 1).single();
+            if (error) throw error;
+            currentStoreSettings = data;
+            document.getElementById('settings-weekday-open').value = data.weekday_open || '09:00';
+            document.getElementById('settings-weekday-close').value = data.weekday_close || '21:00';
+            document.getElementById('settings-weekend-open').value = data.weekend_open || '10:00';
+            document.getElementById('settings-weekend-close').value = data.weekend_close || '22:00';
+            document.getElementById('settings-interval').value = data.slot_minutes || 30;
+            document.getElementById('settings-lead-minutes').value = (data.min_lead_minutes ?? 40);
+            renderStoreStatus(data.closed_until);
+        } catch (err) {
+            msg.style.color = 'var(--error)';
+            msg.innerText = "Could not load settings. Make sure the 'store_settings' table exists with a row where id=1, and run the hours-update SQL migration.";
+        }
+    }
+
+    function renderStoreStatus(closedUntil) {
+        const el = document.getElementById('store-status-display');
+        const isClosed = closedUntil && new Date(closedUntil) > new Date();
+        if (isClosed) {
+            const untilDate = new Date(closedUntil);
+            const farFuture = untilDate.getFullYear() >= 2090;
+            el.style.color = 'var(--error)';
+            el.innerHTML = farFuture
+                ? '🔴 Store is CLOSED (until manually reopened)'
+                : `🔴 Store is CLOSED until ${untilDate.toLocaleString()}`;
+        } else {
+            el.style.color = 'var(--done)';
+            el.innerHTML = '🟢 Store is OPEN and accepting orders';
+        }
+    }
+
+    async function saveStoreSettings() {
+        const msg = document.getElementById('settings-save-msg');
+        const weekday_open = document.getElementById('settings-weekday-open').value;
+        const weekday_close = document.getElementById('settings-weekday-close').value;
+        const weekend_open = document.getElementById('settings-weekend-open').value;
+        const weekend_close = document.getElementById('settings-weekend-close').value;
+        const slot_minutes = parseInt(document.getElementById('settings-interval').value);
+        const min_lead_minutes = parseInt(document.getElementById('settings-lead-minutes').value) || 0;
+
+        if (!weekday_open || !weekday_close || !weekend_open || !weekend_close) {
+            msg.style.color = 'var(--error)'; msg.innerText = 'Please set all four times.'; return;
+        }
+
+        try {
+            const { error } = await sbClient.from('store_settings').upsert({
+                id: 1, weekday_open, weekday_close, weekend_open, weekend_close, slot_minutes, min_lead_minutes
+            });
+            if (error) throw error;
+            msg.style.color = 'var(--done)';
+            msg.innerText = 'Saved!';
+        } catch (err) {
+            msg.style.color = 'var(--error)';
+            msg.innerText = 'Save failed. Check your connection.';
+        }
+    }
+
+    // --- TEMPORARY STORE CLOSURE ---
+    async function setClosedUntil(closedUntilIso) {
+        try {
+            const { error } = await sbClient.from('store_settings').update({ closed_until: closedUntilIso }).eq('id', 1);
+            if (error) throw error;
+            renderStoreStatus(closedUntilIso);
+        } catch (err) {
+            alert('Could not update store status. Check your connection.');
+        }
+    }
+
+    function closeStoreFor(minutes) {
+        const until = new Date(Date.now() + minutes * 60000);
+        setClosedUntil(until.toISOString());
+    }
+
+    function closeStoreForCustom() {
+        const mins = parseInt(document.getElementById('custom-close-mins').value);
+        if (!mins || mins <= 0) { alert('Enter a valid number of minutes.'); return; }
+        closeStoreFor(mins);
+    }
+
+    function closeStoreIndefinitely() {
+        if (!confirm("Close the store until you manually reopen it?")) return;
+        const farFuture = new Date('2099-12-31T23:59:00');
+        setClosedUntil(farFuture.toISOString());
+    }
+
+    function reopenStore() {
+        setClosedUntil(null);
+    }
+
+    function renderFilteredData() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        
+        const filtered = rawData.filter(item => {
+            const customerName = (currentView === 'orders' ? item.customer_name : item.orders?.customer_name) || "";
+            const mealName = item.meal_name || "";
+            // Searchable by ID (Shortened or full)
+            const orderId = String(currentView === 'orders' ? item.id : (item.order_id || item.orders?.id)).toLowerCase();
+            
+            return customerName.toLowerCase().includes(searchTerm) || 
+                   mealName.toLowerCase().includes(searchTerm) || 
+                   orderId.includes(searchTerm);
+        });
+
+        const head = document.getElementById('table-head');
+        const body = document.getElementById('table-body');
+        body.innerHTML = "";
+
+        if (currentView === 'orders') {
+            head.innerHTML = `<tr><th>Order ID</th><th>Customer</th><th>Date</th><th>Plan</th><th>Delivery</th><th>Status</th></tr>`;
+        } else {
+            head.innerHTML = `<tr><th>Day</th><th>Meal</th><th>ID</th><th>Customer</th><th>Instructions</th><th>Status</th></tr>`;
+        }
+
+        if (isGrouped) {
+            const grouped = filtered.reduce((acc, item) => {
+                const name = currentView === 'orders' ? item.customer_name : item.orders?.customer_name;
+                if (!acc[name]) acc[name] = [];
+                acc[name].push(item);
+                return acc;
+            }, {});
+
+            for (const name in grouped) {
+                body.innerHTML += `<tr class="group-header"><td colspan="6" style="text-align:center">${name}</td></tr>`;
+                body.innerHTML += grouped[name].map(item => currentView === 'orders' ? orderRow(item) : mealRow(item)).join('');
+            }
+        } else {
+            body.innerHTML = filtered.map(item => currentView === 'orders' ? orderRow(item) : mealRow(item)).join('');
+        }
+    }
+
+    function orderRow(o) {
+        const status = o.status || 'Active';
+        const shortId = String(o.id).split('-')[0]; // Shows first part of UUID
+        let deliveryHtml = o.delivery_date ? `${o.delivery_date}<br><small>${o.delivery_time || ''}</small>` : '<span style="color:#bbb">--</span>';
+        if (o.delivery_zone) {
+            const zoneLabel = o.delivery_zone === 'near' ? 'Near JED' : 'Outside JED';
+            const feeLabel = o.delivery_fee ? ` (+$${Number(o.delivery_fee).toFixed(2)})` : '';
+            deliveryHtml += `<br><span class="tag ${o.delivery_zone === 'near' ? 'tag-choice' : 'tag-remove'}" style="margin-top:4px;">${zoneLabel}${feeLabel}</span>`;
+        }
+        return `<tr>
+            <td data-label="ID"><span class="id-badge">#${shortId}</span></td>
+            <td data-label="Name"><strong>${o.customer_name}</strong></td>
+            <td data-label="Date">${new Date(o.created_at).toLocaleDateString()}</td>
+            <td data-label="Plan">${o.plan_name}</td>
+            <td data-label="Delivery">${deliveryHtml}</td>
+            <td data-label="Status"><button class="status-btn status-${status}" onclick="cycleStatus('orders', '${o.id}', '${status}')">${status}</button></td>
+        </tr>`;
+    }
+
+    function mealRow(m) {
+        const status = m.status || 'Pending';
+        const shortId = String(m.order_id || m.orders?.id || '').split('-')[0];
+        
+        let tags = [];
+        if (m.removed_ingredients) tags.push(`<span class="tag tag-remove">NO ${m.removed_ingredients}</span>`);
+        if (m.choice) tags.push(`<span class="tag tag-choice">${m.choice}</span>`);
+        
+        const noteHtml = m.special_instructions ? `<span class="special-note">📝 ${m.special_instructions}</span>` : '';
+        const tagDisplay = tags.length > 0 ? tags.join(' ') : '<span style="color:#bbb">Standard</span>';
+
+        return `<tr>
+            <td data-label="Day">Day ${m.day_number}</td>
+            <td data-label="Meal"><strong>${m.meal_name}</strong></td>
+            <td data-label="ID"><span class="id-badge">#${shortId}</span></td>
+            <td data-label="Customer">${m.orders?.customer_name || '...'}</td>
+            <td data-label="Instructions">${tagDisplay}${noteHtml}</td>
+            <td data-label="Status"><button class="status-btn status-${status}" onclick="cycleStatus('order_items', '${m.id}', '${status}')">${status}</button></td>
+        </tr>`;
+    }
+
+    async function cycleStatus(table, id, current) {
+        let next;
+        if (table === 'orders') {
+            next = current === 'Active' ? 'Paused' : 'Active';
+        } else {
+            const flow = ['Pending', 'Cooking', 'Ready', 'Delivered'];
+            next = flow[(flow.indexOf(current) + 1) % flow.length];
+        }
+
+        const { data, error } = await sbClient.from(table).update({ status: next }).eq('id', id).select();
+        if (!error) renderFilteredData(); // Instant update
+        refreshCurrentView(); 
+    }
+</script>
+</body>
+</html>

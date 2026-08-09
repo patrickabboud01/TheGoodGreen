@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("O38XtdcMyAkWnvsoU"); 
+        })();
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packages | The Good Green</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- UNIVERSAL NAVIGATION STYLING --- */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .sidebar.active { right: 0; }
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
+        }
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #5d8039; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #5d8039; }
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+
+        /* DESKTOP TRANSFORMATION (PC) */
+        @media (min-width: 769px) {
+            .menu-toggle, .close-sidebar, .user-greeting { display: none !important; }
+            .sidebar {
+                position: static; width: auto; height: auto; background: transparent;
+                box-shadow: none; padding: 0; display: block;
+            }
+            .sidebar-links { display: flex; flex-direction: row; gap: 20px; align-items: center; }
+            .sidebar-links li { margin-bottom: 0; }
+            .auth-btn-sidebar {
+                margin-top: 0; border: none; padding: 8px 20px !important;
+                background-color: white; color: #5d8039 !important; border-radius: 5px;
+            }
+            .navbar .container {
+                display: flex; justify-content: space-between; align-items: center;
+            }
+        }
+
+        /* Pricing Styles */
+        .pricing-table {
+            width: 100%; border-collapse: collapse; background: white;
+            border-radius: 10px; overflow: hidden; margin-top: 15px;
+        }
+        .pricing-table th { background: #5d8039; color: white; padding: 15px; text-align: left; }
+        .pricing-table td { padding: 15px; border-bottom: 1px solid #eee; color: #333; text-align: left; }
+
+        .pricing-table td:has(.plan-feature-list), .feature-column { text-align: center !important; }
+
+        .plan-feature-list {
+            margin: 0 auto; padding: 0; list-style: none; font-size: 0.9rem;
+            color: #666; display: inline-block; text-align: left;
+        }
+        .plan-feature-list li { margin-bottom: 5px; }
+        .price-tag { font-weight: 700; color: #5d8039; }
+        .mb-10 { margin-bottom: 10px; }
+        .card-price-hint { font-size: 1rem; font-weight: 700; color: #5d8039; margin: 8px 0 16px; }
+        .card-price-hint-orange { font-size: 1rem; font-weight: 700; color: #d66f33; margin: 8px 0 16px; }
+        @media (max-width: 640px) {
+            section#plans { padding: 30px 0 !important; }
+            section#plans h2 { margin-bottom: 24px !important; }
+            .plan-card { padding: 28px 18px !important; }
+        }
+
+        .btn-details { padding: 10px 0; display: inline-block; font-size: 0.9rem; }
+        .plan-card.featured-dashed { border: 2px dashed #5d8039; background: #f9fff4; position: relative; }
+
+        /* Refined Footer Styles */
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.8rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
+        .duration-options { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+        .duration-options .btn-outline, .duration-options .btn-primary {
+            width: 100%; max-width: 300px; margin: 0 auto;
+        }
+    </style>
+</head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B4KZQ9CKM1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-B4KZQ9CKM1');
+</script>
+
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                </a>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                <ul class="sidebar-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="single.html">Menu</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section id="plans" class="container" style="padding: 60px 0;">
+        <h2 style="text-align: center; color: #5d8039; margin-bottom: 40px;">Choose Your Plan</h2>
+        <div class="plan-grid">
+
+        <!--    <div class="plan-card">
+                <h3>Quick Order</h3>
+                <p style="color: #888; font-size: 0.9rem;">Order now!</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">Fill your Cart! <small style="font-weight: 400; font-size: 0.8rem;"></small></div>
+                <p class="card-price-hint">Craving Now</p>
+                <a href="single.html" style="text-decoration: none;">
+                    <button class="btn-outline mb-10">Quick Order</button>
+                </a>
+                <button class="btn-details">Every meal is prepared fresh upon order.</button>
+            </div>
+            -->  
+
+
+            <div class="plan-card">
+                <h3>THE SOLO</h3>
+                <p style="color: #888; font-size: 0.9rem;">One Hearty Meal</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">1 Meal <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $8.30 / day</p>
+                <button class="btn-outline mb-10" onclick="openDurationModal('THE SOLO', 1)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal('THE SOLO')">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card">
+                <h3>THE DUO</h3>
+                <p style="color: #888; font-size: 0.9rem;">Lunch & Dinner</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $12.5 / day</p>
+                <button class="btn-outline mb-10" onclick="openDurationModal('THE DUO', 2)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal('THE DUO')">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card featured">
+                <div class="badge" style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%);">Most Popular</div>
+                <h3>THE TRIO</h3>
+                <p style="color: #888; font-size: 0.9rem;">Breakfast, Lunch & Dinner</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">3 Meals <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint-orange">From $14 / day</p>
+                <button class="btn-primary-orange mb-10" onclick="openDurationModal('THE TRIO', 3)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal('THE TRIO')">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card">
+                <h3>THE FULL PLAN</h3>
+                <p style="color: #888; font-size: 0.9rem;">3 Meals + 2 Snacks</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">5 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $16.6 / day</p>
+                <button class="btn-outline mb-10" onclick="openDurationModal('THE FULL PLAN', 5)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal('THE FULL PLAN')">View Details & Prices</button>
+            </div>
+
+            <div class="plan-card">
+                <h3>PROTEIN BOOSTER</h3>
+                <p style="color: #888; font-size: 0.9rem;">Max Protein Focus</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">2 Items <small style="font-weight: 400; font-size: 0.8rem;">/ Day</small></div>
+                <p class="card-price-hint">From $6.25 / day</p>
+                <button class="btn-outline mb-10" onclick="openDurationModal('PROTEIN BOOSTER', 1)">Select Package</button>
+                <button class="btn-details" onclick="openPricingModal('PROTEIN BOOSTER')">View Details & Prices</button>
+            </div>
+
+           <div class="plan-card featured-dashed">
+                <h3 style="color: #5d8039;">NUTRITION PLAN</h3>
+                <p style="color: #888; font-size: 0.9rem;">Custom Kcal & Protein</p>
+                <div style="font-size: 1.4rem; font-weight: 700; margin: 20px 0;">Tailored <small style="font-weight: 400; font-size: 0.8rem;">/ Goal</small></div>
+                <button class="btn-primary mb-10" id="openModalBtn">Request a Quote</button>
+                <p style="font-size: 0.85rem; color: #5d8039; margin: 0;">For specific medical or athletic goals</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="quoteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; padding: 30px; background: white; border-radius: 25px; position: relative; border: none; max-height: 88vh; overflow-y: auto;">
+        <span class="close-btn" style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #ccc;">&times;</span>
+        <h3 style="color: #5d8039; text-align: center; margin-bottom: 10px;">Get Your Quote</h3>
+        <p style="text-align: center; font-size: 0.85rem; color: #666; margin-bottom: 25px;">Enter your targets and we'll reach out on WhatsApp.</p>
+        <form id="quote-form" class="quote-form">
+            <style>
+                .quote-form input {
+                    width: 100%; padding: 12px; margin: 8px 0;
+                    border: 1px solid #f4f1ea; border-radius: 12px;
+                    background: #fafafa; font-family: inherit; box-sizing: border-box;
+                    outline: none; transition: 0.3s;
+                }
+                .quote-form input:focus { border-color: #5d8039; background: #fff; }
+                .submit-btn {
+                    width: 100%; background: #5d8039; color: white; border: none;
+                    padding: 15px; border-radius: 12px; font-weight: 700;
+                    cursor: pointer; margin-top: 15px; transition: 0.3s;
+                }
+                .submit-btn:hover { background: #4a662e; transform: translateY(-2px); }
+            </style>
+            <input type="text" name="user_name" placeholder="Full Name" required>
+            <input type="tel" name="user_phone" placeholder="WhatsApp Number" required>
+            <input type="number" name="kcal_goal" placeholder="Daily Kcal Goal (e.g. 2200)" required>
+            <input type="number" name="protein_goal" placeholder="Protein Goal (Grams)" required>
+            <button type="submit" class="submit-btn">Send Quote Request</button>
+        </form>
+    </div>
+</div>
+
+<div id="durationModal" class="modal">
+    <div class="modal-content" style="position: relative; padding: 40px 20px 20px 20px; max-width: 400px; background: white; border-radius: 25px; max-height: 88vh; overflow-y: auto;">
+        <button onclick="closeModal('durationModal')" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 22px; font-weight: bold; line-height: 1; padding: 5px;">✕</button>
+        <h3 id="selected-plan-title" style="color: #5d8039; margin-bottom: 10px; text-align: center;"></h3>
+        <p style="margin-bottom: 25px; text-align: center; color: #666; font-size: 0.95rem;">How long would you like your plan to last?</p>
+        <div class="duration-options">
+            <button onclick="goToBuilder(5)" class="btn-outline">1 Week (5 Days)</button>
+            <button onclick="goToBuilder(24)" class="btn-primary">Full Month (24 Days)</button>
+        </div>
+        <button onclick="closeModal('durationModal')" style="background: none; border: none; color: #888; cursor: pointer; margin-top: 20px; width: 100%; font-size: 0.9rem; text-decoration: underline; padding: 12px;">Cancel</button>
+    </div>
+</div>
+
+<div id="pricingModal" class="modal">
+    <div class="modal-content" style="max-width: 500px; padding: 25px; background: white; border-radius: 15px; max-height: 88vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+           <h3 id="modal-plan-name" style="color: #5d8039; margin: 0; text-align: center; width: 100%;">Plan Details</h3>
+            <span onclick="closeModal('pricingModal')" style="font-size: 24px; cursor: pointer; color: #ccc;">&times;</span>
+        </div>
+        <div id="modal-plan-description" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></div>
+        <div style="overflow-x: auto;">
+        <table class="pricing-table">
+            <thead><tr><th>Duration</th><th>Price per day</th></tr></thead>
+            <tbody id="pricing-body"></tbody>
+        </table>
+        </div>
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd;">
+            <h4 style="font-size: 0.9rem; margin-bottom: 10px;">What's Included:</h4>
+            <ul id="modal-features" class="plan-feature-list"></ul>
+        </div>
+        <button class="btn-primary" onclick="closeModal('pricingModal'); openDurationModal(currentSelectedPlan, currentItemsPerDay)" style="width: 100%; margin-top: 25px;">Choose This Plan</button>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
+    </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script>
+    function updateAuthUI() {
+        const authBtn = document.getElementById('auth-btn');
+        const greeting = document.getElementById('user-greeting');
+        const userStr = localStorage.getItem('current_user');
+
+        if (userStr && greeting && authBtn) {
+            const user = JSON.parse(userStr);
+            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
+            greeting.innerText = `Hi, ${firstName}`;
+            authBtn.innerText = "Logout";
+            authBtn.style.color = "#d9534f";
+        }
+    }
+
+    function handleAuthAction() {
+        if (localStorage.getItem('current_user')) {
+            localStorage.removeItem('current_user');
+            window.location.href = 'index.html';
+        } else {
+            window.location.href = 'index.html?action=login';
+        }
+    }
+
+    function protectedRedirect(url) {
+        if (!localStorage.getItem('current_user')) {
+            window.location.href = 'index.html?action=login';
+        } else {
+            window.location.href = url;
+        }
+    }
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebar = document.getElementById('close-sidebar');
+
+    if(menuToggle) {
+        menuToggle.onclick = (e) => {
+            e.stopPropagation();
+            sidebar.classList.add('active');
+        };
+    }
+    if(closeSidebar) {
+        closeSidebar.onclick = () => sidebar.classList.remove('active');
+    }
+
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && sidebar && !sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    let currentSelectedPlan = "";
+    let currentItemsPerDay = 0;
+
+    const planDetails = {
+        "THE SOLO": { description: "One high-quality meal daily.", features: ["Lunch or Dinner", "Freshly Prepared"], prices: { "1": "8.5", "5": "8.4", "24": "8.3" }, items: 1 },
+        "THE DUO": { description: "Covers your two main meals.", features: ["Lunch or Dinner & Breakfast", "Freshly Prepared"], prices: { "1": "17", "5": "17", "24": "12.5" }, items: 2 },
+        "THE TRIO": { description: "Total nutrition morning to night.", features: ["Breakfast, Lunch & Dinner", "Freshly Prepared"], prices: { "1": "22", "5": "20", "24": "14" }, items: 3 },
+        "THE FULL PLAN": { description: "3 Meals + 2 Healthy Snacks.", features: ["Full Day Coverage", "Freshly Prepared"], prices: { "1": "25", "5": "22", "24": "16.6" }, items: 5 },
+        "PROTEIN BOOSTER": { description: "Increased lean muscle focus.", features: ["2 Extra Protein Portions", "Clean Sources"], prices: { "1": "10", "5": "8", "24": "6.25" }, items: 2 }
+    };
+
+    function openDurationModal(planName, items) {
+        currentSelectedPlan = planName;
+        currentItemsPerDay = items;
+        document.getElementById('selected-plan-title').innerText = planName;
+        document.getElementById('durationModal').style.display = 'flex';
+    }
+
+    function openPricingModal(planName) {
+        currentSelectedPlan = planName;
+        const data = planDetails[planName];
+        currentItemsPerDay = data.items;
+        document.getElementById('modal-plan-name').innerText = planName;
+        document.getElementById('modal-plan-description').innerText = data.description;
+        const tbody = document.getElementById('pricing-body');
+        tbody.innerHTML = "";
+        const displayOptions = [
+            { key: "24", label: "Full Month (24 Days)" },
+            { key: "5", label: "1 Week (5 Days)" },
+        ];
+        displayOptions.forEach(option => {
+            const price = data.prices[option.key];
+            tbody.innerHTML += `<tr><td>${option.label}</td><td class="price-tag">$${price}</td></tr>`;
+        });
+        document.getElementById('modal-features').innerHTML = data.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
+        document.getElementById('pricingModal').style.display = "flex";
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function goToBuilder(days) {
+        if (days === 24 && !localStorage.getItem('current_user')) {
+            showAlert("For a 24-day plan, please log in first.");
+            setTimeout(() => { window.location.href = "index.html?action=login"; }, 2000);
+            return;
+        }
+        const price = planDetails[currentSelectedPlan].prices[days.toString()];
+        localStorage.setItem('selectedPlanName', currentSelectedPlan);
+        localStorage.setItem('selectedDuration', days);
+        window.location.href = `builder.html?plan=${encodeURIComponent(currentSelectedPlan)}&items=${currentItemsPerDay}&days=${days}&price=${price}`;
+    }
+
+    function showAlert(message) {
+        const alertBox = document.getElementById("custom-alert");
+        alertBox.innerText = message;
+        alertBox.style.display = "block";
+        setTimeout(() => { alertBox.style.display = "none"; }, 3000);
+    }
+
+    const quoteForm = document.getElementById("quote-form");
+    if(quoteForm) {
+        quoteForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerText = "Sending...";
+            submitBtn.disabled = true;
+            emailjs.sendForm('service_ku8gtez', 'template_tlc5mia', this)
+                .then(() => {
+                    document.getElementById("quoteModal").style.display = "none";
+                    showAlert("Quote request sent!");
+                    quoteForm.reset();
+                })
+                .catch(() => showAlert("Error sending request."))
+                .finally(() => {
+                    submitBtn.innerText = "Send Quote Request";
+                    submitBtn.disabled = false;
+                });
+        });
+    }
+
+    const openModalBtn = document.getElementById("openModalBtn");
+    if (openModalBtn) openModalBtn.onclick = () => document.getElementById("quoteModal").style.display = "flex";
+
+    window.addEventListener('click', (event) => {
+        ['quoteModal', 'durationModal', 'pricingModal'].forEach(id => {
+            if (event.target === document.getElementById(id)) document.getElementById(id).style.display = 'none';
+        });
+    });
+
+    window.onload = updateAuthUI;
+</script>
+
+<style>
+#custom-alert {
+    display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #5d8039; color: white; padding: 15px 30px; border-radius: 50px;
+    z-index: 100001; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: 600;
+}
+</style>
+<div id="custom-alert">Message goes here</div>
+</body>
+</html>

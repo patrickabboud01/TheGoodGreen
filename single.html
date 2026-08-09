@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Now | The Good Green</title>
+    <script src="js/data/single-data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+          .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        /* --- BRAND COLORS & BASE --- */
+        :root { 
+            --brand-green: #2d5a27; 
+            --light-green: #5d8039; 
+            --text-dark: #333; 
+            --bg-cream: #f9fbf8;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            background-color: white;
+        }
+
+        @media (min-width: 768px) {
+            html {
+                zoom: 100%;
+            }
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        header {
+            background-color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .main-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        /* --- MENU TOGGLE (HAMBURGER) --- */
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 10001;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: var(--brand-green);
+            transition: 0.3s;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+            z-index: 10000;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar.active {
+            transform: translateX(-280px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 9999;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .sidebar-links li {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .sidebar-links a:hover {
+            color: var(--light-green);
+        }
+
+        .user-greeting {
+            font-weight: 700;
+            color: var(--light-green);
+            margin-bottom: 10px;
+        }
+
+        /* --- CONTENT WRAPPER --- */
+        main.content-wrapper {
+            padding-top: 120px;
+            padding-bottom: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+            min-height: 80vh;
+        }
+
+        @media (max-width: 480px) {
+            main.content-wrapper {
+                padding-top: 100px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+
+        .category-header {
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            color: var(--light-green);
+            border-bottom: 2px solid #e0ddd5;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            margin-top: 35px;
+            text-transform: capitalize;
+        }
+
+        .category-header:first-of-type {
+            margin-top: 0;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 120px;
+        }
+
+        @media (min-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main.content-wrapper {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+
+            .menu-grid {
+                width: 100%;
+                gap: 12px;
+                box-sizing: border-box;
+            }
+        }
+
+        /* --- CARDS & ITEMS --- */
+        .img-container { 
+            width: 100%; 
+            aspect-ratio: 1/1; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            position: relative; 
+            margin-bottom: 15px; 
+        }
+
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .clickable-image { cursor: pointer; transition: transform 0.2s; }
+        .clickable-image:hover { transform: scale(1.05); }
+
+        .price-tag { 
+            position: absolute; 
+            top: 15px; 
+            left: 15px; 
+            background: #5d8039; 
+            color: white; 
+            padding: 5px 12px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .item-name {
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0 0 6px 0;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            color: var(--text-dark);
+        }
+
+        .item-info {
+            padding: 0 12px 10px 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .item-description {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .order-action {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding: 8px 12px 0 12px;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-action .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- COMING SOON CARD --- */
+        .coming-soon-container { display: flex; justify-content: center; align-items: center; min-height: 60vh; width: 100%; }
+        .cs-card { 
+            background: white; 
+            border-radius: 30px; 
+            padding: 60px 40px; 
+            text-align: center; 
+            border: 2px dashed var(--light-green); 
+            max-width: 500px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+
+        /* --- COUNTER BUTTONS --- */
+        .add-btn {
+            background: var(--light-green);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .add-btn:hover {
+            background: var(--brand-green);
+            transform: scale(1.05);
+        }
+
+        .add-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- OUT OF STOCK --- */
+        .menu-card.sold-out .img-container img { filter: grayscale(1); opacity: 0.5; }
+        .menu-card.sold-out { opacity: 0.85; }
+        .out-of-stock-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: #d9534f; color: white; padding: 5px 12px;
+            border-radius: 12px; font-weight: 700; font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .add-btn.sold-out-btn {
+            background: #ccc; color: #777; cursor: not-allowed;
+        }
+        .add-btn.sold-out-btn:hover { background: #ccc; transform: none; }
+
+        .qty-btn {
+            background: white;
+            color: var(--light-green);
+            border: 1.5px solid var(--light-green);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--light-green);
+            color: white;
+        }
+
+        .qty-text {
+            font-weight: 700;
+            color: var(--brand-green);
+            min-width: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal { display: none; position: fixed; z-index: 11000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; overflow: hidden; }
+        .modal-content { background-color: white; border-radius: 20px; width: calc(100% - 40px); max-width: 450px; max-height: 85vh; overflow-y: auto; overflow-x: hidden; padding: 25px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.15); margin: 0 auto; box-sizing: border-box; }
+        .modal-content > * { box-sizing: border-box; max-width: 100%; overflow: hidden; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; width: 100%; }
+        .modal-header h2 { color: #5D8039 !important; font-size: 1.3rem; }
+        .modal-header span { color: #999; cursor: pointer; font-size: 1.8rem; line-height: 1; }
+
+        @media (max-width: 480px) {
+            .modal { padding: 15px; }
+            .modal-content { padding: 12px; width: calc(100% - 30px); max-width: none; }
+            .modal-header { padding-bottom: 10px; margin-bottom: 12px; }
+            .modal-header h2 { font-size: 1rem; margin: 0; }
+            .modal-header span { font-size: 1.3rem; }
+            .cart-item-row { margin-bottom: 10px; padding-bottom: 10px; }
+            .cart-item-row h4 { font-size: 0.85rem; margin: 0; }
+            .cart-item-row p { font-size: 0.75rem; margin: 3px 0 0 0; }
+            .checkout-now-btn { padding: 10px; font-size: 0.85rem; margin-top: 12px; }
+            #cart-summary { margin-top: 12px; padding-top: 10px; }
+            #modal-total { font-size: 0.95rem !important; }
+        }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .cart-item-row h4 { word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; }
+        .cart-item-row p { word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; }
+        .checkout-now-btn { display: block; width: 100%; background: #5D8039; color: white; text-align: center; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: 700; margin-top: 20px; border: none; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+
+        /* --- IMAGE LIGHTBOX MODAL --- */
+        .image-modal { display: none; position: fixed; z-index: 12000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+        .image-modal.active { display: flex; }
+        .image-modal-content { max-width: 90%; max-height: 90vh; position: relative; }
+        .image-modal img { width: 100%; height: auto; border-radius: 15px; }
+        .image-modal-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2.5rem; cursor: pointer; background: rgba(0,0,0,0.5); border: none; padding: 5px 15px; border-radius: 50%; line-height: 1; }
+        .image-modal-close:hover { background: rgba(0,0,0,0.8); }
+
+        /* --- FOOTER & FLOATING BTN --- */
+        .floating-btn {
+            position: fixed;
+            right: 15px;
+            bottom: 15px;
+            background: #D66F3A;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            z-index: 2000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .floating-btn:hover {
+            background: #D66F3A;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .floating-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @media (max-width: 480px) {
+            .floating-btn {
+                right: 10px !important;
+                bottom: 10px !important;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                justify-content: center;
+                padding: 0;
+                font-size: 0.85rem;
+                gap: 6px;
+            }
+
+            .floating-btn span {
+                display: none;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 767px) {
+            .floating-btn {
+                right: 12px;
+                bottom: 12px;
+                padding: 11px 18px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div id="cart-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="margin:0; color:var(--brand-green)">Your Cart</h2>
+            <span style="font-size:1.5rem; cursor:pointer;" onclick="closeCart()">&times;</span>
+        </div>
+        <div id="cart-items-list"></div>
+        <div id="cart-summary" style="margin-top:20px; text-align:right; border-top: 1px solid #eee; padding-top: 15px;">
+            <h3 id="modal-total" style="color: #5D8039; margin: 0; font-size: 1.2rem;">Total: $0.00</h3>
+        </div>
+        <a href="javascript:void(0)" class="checkout-now-btn" onclick="proceedToCheckout()">Proceed to Checkout</a>
+    </div>
+</div>
+
+<div id="empty-cart-modal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <span style="font-size:1.5rem; cursor:pointer; position: absolute; top: 15px; right: 15px;" onclick="closeEmptyCartModal()">&times;</span>
+        <i class="fa-solid fa-cart-shopping" style="font-size: 3rem; color: var(--light-green); margin-bottom: 20px; display: block;"></i>
+        <h2 style="margin:0 0 15px 0; color:var(--brand-green)">Your Cart is Empty</h2>
+        <p style="color: #666; margin-bottom: 25px;">Please add items to your cart before checking out.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <a href="index.html" class="checkout-now-btn" style="background: var(--brand-green); text-decoration: none; margin: 0;">Back to Home</a>
+            <button onclick="closeEmptyCartModal()" style="background: var(--light-green); color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: 700;">Continue Shopping</button>
+        </div>
+    </div>
+</div>
+
+<<div id="cart-recovery-modal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="margin:0 0 15px 0; color:#5D8039">You Have an Old Cart</h2>
+        <p style="color: #666; margin-bottom: 25px;">Would you like to continue with your previous items or start fresh?</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Added font-size: 16px and padding: 15px to match the second button -->
+            <button onclick="continueWithOldCart()" class="checkout-now-btn" style="background: #D66F3A; color: white; text-decoration: none; margin: 0; border: none; border-radius: 50px; cursor: pointer; font-size: 16px; padding: 15px; font-weight: 700;">Continue with Old Cart</button>
+            
+            <!-- Added font-size: 16px -->
+            <button onclick="startFreshCart()" style="background: #5D8039; color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 16px;">Start Fresh</button>
+        </div>
+    </div>
+</div>
+
+<div id="image-modal" class="image-modal" onclick="closeImageModal(event)">
+    <div class="image-modal-content" onclick="event.stopPropagation()">
+        <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
+        <img id="enlarged-image" src="" alt="Enlarged view">
+    </div>
+</div>
+
+<div id="choices-modal" class="modal">
+    <div class="modal-content" style="max-width: 450px; max-height: 85vh; overflow-y: auto;">
+        <div style="position: relative; margin-bottom: 20px;">
+            <h3 id="choices-title" style="color: var(--brand-green); margin: 0; padding-right: 30px;">Select Your Options</h3>
+            <button onclick="closeChoicesModal()" style="position: absolute; top: 0; right: 0; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888;">&times;</button>
+        </div>
+        <div id="choices-container" style="margin-bottom: 20px;">
+        </div>
+        <button onclick="proceedToEditFromChoices()" class="checkout-now-btn" style="margin: 0;">Continue to Customize</button>
+    </div>
+</div>
+
+<div id="edit-item-modal" class="modal">
+    <div class="modal-content" style="max-width: 450px; max-height: 85vh; overflow-y: auto;">
+        <div style="position: relative; margin-bottom: 20px;">
+            <h3 id="edit-item-title" style="color: var(--brand-green); margin: 0; padding-right: 30px;">Edit Item</h3>
+            <button onclick="closeEditItemModal()" style="position: absolute; top: 0; right: 0; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888;">&times;</button>
+        </div>
+        <div id="edit-ingredients-container" style="max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 12px; padding: 15px; margin-bottom: 20px; background: #fafafa;">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 0.9rem; color: #666; margin-bottom: 8px; font-weight: 600;">Special Instructions (Optional)</label>
+            <textarea id="edit-special-instructions"
+                placeholder="e.g. No salt, extra spicy, allergies..."
+                style="width: 100%; height: 80px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-family: inherit; font-size: 0.9rem; resize: none; box-sizing: border-box;"></textarea>
+        </div>
+        <button onclick="saveEditedItem()" class="checkout-now-btn" style="margin: 0;">Save Changes</button>
+    </div>
+</div>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html"><img src="images/longlogo.png" alt="Logo" class="main-logo"></a>
+        <div class="menu-toggle" id="menu-toggle"><span></span><span></span><span></span><span></span></div>
+        
+        <div class="sidebar" id="sidebar">
+            <div id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--brand-green);">&times;</div>
+            <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+            <ul class="sidebar-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="single.html">Meal Plan Menu</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="content-wrapper" id="single-container">
+</main>
+<style>
+    /* --- REPLACE YOUR OLD .footer-icon WITH THIS --- */
+.footer-icon-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* Space between the icon and the text */
+    text-decoration: none;
+    transition: transform 0.2s;
+    min-width: 100px; /* Optional: ensures even spacing */
+}
+
+/* Icons are large and white */
+.footer-icon-block i {
+    color: white;
+    font-size: 1.6rem; /* Adjust size if needed */
+}
+
+/* Handles are small and white */
+.social-handle {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* HOVER EFFECT */
+.footer-icon-block:hover {
+    transform: translateY(-3px);
+}
+</style>
+<footer class="site-footer">
+    <div class="footer-links">
+        
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon-block">
+            <i class="fa-brands fa-instagram"></i>
+            <span class="social-handle">thegoodgreenlb</span>
+        </a>
+
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon-block">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span class="social-handle">+961 81 15 39 17</span>
+        </a>
+
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon-block">
+            <i class="fa-brands fa-facebook-f"></i>
+            <span class="social-handle">thegoodgreen</span>
+        </a>
+
+    </div>
+     <p class="footer-copy">&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+</footer>
+<style>
+            .footer-copy {
+            font-size: 0.65rem; /* Very small and elegant */
+            color: rgba(255, 255, 255, 0.5); /* Dimmed out so it doesn't compete with the links */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+              .footer-copy {
+                font-size: 0.5rem;
+                letter-spacing: 1.5px;
+            }
+</style>
+
+<button class="floating-btn" id="float-cart" onclick="openCart()">
+    <span>View Cart: $0.00</span> <i class="fa-solid fa-cart-shopping"></i>
+</button>
+
+<script>
+    // Master Switch
+    const isComingSoon = false;
+
+    let cart = [];
+    let instanceCounter = 0;
+    let outOfStockSet = new Set();
+    let storeClosedUntil = null;
+
+    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(sbUrl, sbKey);
+
+    async function fetchOutOfStock() {
+        try {
+            const { data, error } = await sbClient.from('out_of_stock').select('item_name');
+            if (error) throw error;
+            outOfStockSet = new Set((data || []).map(r => r.item_name));
+        } catch (e) {
+            outOfStockSet = new Set(); // fail open: don't block ordering if this check fails
+        }
+
+        try {
+            const { data, error } = await sbClient.from('store_settings').select('closed_until').eq('id', 1).single();
+            if (error) throw error;
+            storeClosedUntil = (data.closed_until && new Date(data.closed_until) > new Date()) ? data.closed_until : null;
+        } catch (e) {
+            storeClosedUntil = null; // fail open
+        }
+    }
+
+    function isStoreClosed() {
+        return storeClosedUntil && new Date(storeClosedUntil) > new Date();
+    }
+
+    function closedBannerHtml() {
+        const untilDate = new Date(storeClosedUntil);
+        const farFuture = untilDate.getFullYear() >= 2090;
+        const msg = farFuture
+            ? "We're currently closed and not accepting new orders. Please check back soon!"
+            : `We're currently closed. We'll be back at ${untilDate.toLocaleString()} — you can browse, but ordering will reopen then.`;
+        return `<div style="background:#fff5f5; border:1px solid #feb2b2; color:#d9534f; font-weight:700; text-align:center; padding:16px; border-radius:12px; margin-bottom:20px;">${msg}</div>`;
+    }
+
+    function initPage() {
+        const container = document.getElementById('single-container');
+        const floatBtn = document.getElementById('float-cart');
+
+        // Check for old cart and ask user
+        const savedCart = localStorage.getItem('single_order_cart');
+        if (savedCart) {
+            try {
+                const parsedCart = JSON.parse(savedCart);
+                if (parsedCart.length > 0) {
+                    document.getElementById('cart-recovery-modal').style.display = 'flex';
+                    return;
+                }
+            } catch (e) {
+                localStorage.removeItem('single_order_cart');
+            }
+        }
+
+        loadPageContent();
+    }
+
+    async function loadPageContent() {
+        const container = document.getElementById('single-container');
+        const floatBtn = document.getElementById('float-cart');
+
+        if (isComingSoon) {
+            container.innerHTML = `
+                <div class="coming-soon-container">
+                    <div class="cs-card">
+                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 3.5rem; color: var(--light-green); margin-bottom: 25px; display: block;"></i>
+                        <h1 style="color: var(--brand-green); margin-bottom: 15px;">Single Orders Coming Soon</h1>
+                        <p style="color: #666; line-height: 1.6;">We are perfecting our daily individual menu. Check back soon for plant-powered goodness delivered to your door!</p>
+                    </div>
+                </div>`;
+            floatBtn.classList.add('disabled');
+            floatBtn.innerHTML = `<span>Coming Soon</span> <i class="fa-solid fa-lock"></i>`;
+            floatBtn.onclick = null;
+        } else {
+            await fetchOutOfStock();
+            renderMenu();
+        }
+    }
+
+    // --- CART & MENU LOGIC ---
+    function openCart() {
+        renderCartModal();
+        document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCart() {
+        document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function updateCartTotal() {
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        document.getElementById('float-cart').querySelector('span').innerText = `View Cart: $${total.toFixed(2)}`;
+        document.getElementById('modal-total').innerText = `Total: $${total.toFixed(2)}`;
+        localStorage.setItem('single_order_cart', JSON.stringify(cart));
+    }
+
+    function renderMenu() {
+        const container = document.getElementById('single-container');
+        container.innerHTML = isStoreClosed() ? closedBannerHtml() : '';
+        const groups = singleMenuData.reduce((acc, item) => {
+            if (!acc[item.category]) acc[item.category] = [];
+            acc[item.category].push(item);
+            return acc;
+        }, {});
+
+        for (const cat in groups) {
+            const section = document.createElement('div');
+            section.innerHTML = `<h2 class="category-header">${cat}</h2>`;
+            const grid = document.createElement('div');
+            grid.className = 'menu-grid';
+
+            groups[cat].forEach(item => {
+                const safeName = item.name.replace(/\s+/g, '-');
+                const isSoldOut = outOfStockSet.has(item.name);
+                const badgeHtml = isSoldOut ? `<div class="out-of-stock-badge">Sold Out</div>` : '';
+                const addBtnHtml = isSoldOut
+                    ? `<button class="add-btn sold-out-btn" disabled>Sold Out</button>`
+                    : `<button class="add-btn" onclick="openAddItemModal('${item.name}', ${item.price}, '${item.ingredients || ''}')">Add</button>`;
+                grid.innerHTML += `
+                    <div class="menu-card ${isSoldOut ? 'sold-out' : ''}">
+                        <div class="img-container">
+                            <div class="price-tag">$${item.price.toFixed(2)}</div>
+                            ${badgeHtml}
+                            <img src="${item.image}" alt="${item.name}" class="clickable-image" onclick="openImageModal('${item.image}', event)">
+                        </div>
+                        <div class="item-info">
+                            <h3 class="item-name">${item.name}</h3>
+                            <p class="item-description">${item.ingredients || ''}</p>
+                            <div class="order-action">
+                                <span style="font-size:0.65rem; color:#999; flex-shrink: 1; min-width: 0;">${item.Kcal} Kcal | ${item.protein}g Protein</span>
+                                ${addBtnHtml}
+                            </div>
+                           
+                        </div>
+                    </div>`;
+            });
+            section.appendChild(grid);
+            container.appendChild(section);
+            groups[cat].forEach(item => { if (!outOfStockSet.has(item.name)) updateControls(item.name, item.price); });
+        }
+        updateCartTotal();
+    }
+
+    function renderCartModal() {
+        const list = document.getElementById('cart-items-list');
+        list.innerHTML = '';
+        if (cart.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#999;">Your cart is empty.</p>';
+            return;
+        }
+        cart.forEach((item) => {
+            const instrDisplay = item.specialInstructions ? `<div style="font-size:0.75rem; color:#999; font-style:italic; margin-top:5px;">📝 ${item.specialInstructions}</div>` : '';
+            const removedIngrDisplay = item.removedIngredients.length > 0 ? `<div style="font-size:0.75rem; color:#d9534f; margin-top:3px;">❌ No: ${item.removedIngredients.join(', ')}</div>` : '';
+
+            let choicesDisplay = '';
+            if (item.choices && Object.keys(item.choices).length > 0) {
+                choicesDisplay = '<div style="font-size:0.75rem; color:#5d8039; margin-top:5px; font-weight:600;">✓ Choices: ';
+                choicesDisplay += Object.values(item.choices).join(', ');
+                choicesDisplay += '</div>';
+            }
+
+            list.innerHTML += `
+                <div class="cart-item-row" style="flex-direction: column; align-items: flex-start;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="flex:1;">
+                            <h4 style="margin:0; text-transform:uppercase;">${item.name}</h4>
+                            <p style="margin:5px 0; color:var(--light-green); font-weight:700;">$${item.price.toFixed(2)}</p>
+                            ${choicesDisplay}
+                            ${removedIngrDisplay}
+                            ${instrDisplay}
+                        </div>
+                        <button onclick="removeFromCart(${item.instanceId}); renderCartModal();" style="color:red; background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: space-between; gap: 10px; align-items: center;">
+                        <button onclick="openEditItemModal(${item.instanceId})" style="background: none; border: none; color: #5D8039; cursor: pointer; font-weight: 600; font-size: 0.75rem; text-decoration: underline; padding: 0; transition: opacity 0.2s;">Edit</button>
+                        <div class="qty-controls" style="gap: 5px;">
+                            <button class="qty-btn" onclick="updateItemQty(${item.instanceId}, -1); renderCartModal();">-</button>
+                            <span class="qty-text">${item.qty}</span>
+                            <button class="qty-btn" onclick="updateItemQty(${item.instanceId}, 1); renderCartModal();">+</button>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function addToCart(name, price) {
+        const itemData = singleMenuData.find(i => i.name === name);
+        cart.push({
+            instanceId: ++instanceCounter,
+            name,
+            price,
+            qty: 1,
+            removedIngredients: [],
+            specialInstructions: '',
+            ingredients: itemData?.ingredients || '',
+            choices: {}
+        });
+        updateControls(name, price);
+        updateCartTotal();
+    }
+
+    function removeFromCart(instanceId) {
+        cart = cart.filter(i => i.instanceId !== instanceId);
+        updateCartTotal();
+    }
+
+    function updateControls(name, price) {
+        const safeName = name.replace(/\s+/g, '-');
+        const div = document.getElementById(`controls-${safeName}`);
+        if (!div) return;
+        const totalQty = cart.filter(i => i.name === name).reduce((sum, item) => sum + item.qty, 0);
+        if (totalQty > 0) {
+            div.innerHTML = `
+                <span class="qty-text">${totalQty}x</span>
+                <button class="add-btn" onclick="addToCart('${name}', ${price})">Add More</button>`;
+        } else {
+            div.innerHTML = `<button class="add-btn" onclick="addToCart('${name}', ${price})">Add</button>`;
+        }
+    }
+
+    function proceedToCheckout() {
+        if (cart.length === 0) {
+            closeCart();
+            document.getElementById('empty-cart-modal').style.display = 'flex';
+        } else if (isStoreClosed()) {
+            closeCart();
+            alert("We're currently closed and can't accept new orders right now. Please check back later.");
+        } else {
+            window.location.href = 'checkout.html';
+        }
+    }
+
+    function closeEmptyCartModal() {
+        document.getElementById('empty-cart-modal').style.display = 'none';
+    }
+
+    function continueWithOldCart() {
+        const savedCart = localStorage.getItem('single_order_cart');
+        if (savedCart) {
+            try {
+                cart = JSON.parse(savedCart);
+                instanceCounter = Math.max(...cart.map(i => i.instanceId), 0);
+            } catch (e) {
+                cart = [];
+                instanceCounter = 0;
+            }
+        }
+        document.getElementById('cart-recovery-modal').style.display = 'none';
+        loadPageContent();
+    }
+
+    function startFreshCart() {
+        localStorage.removeItem('single_order_cart');
+        cart = [];
+        instanceCounter = 0;
+        document.getElementById('cart-recovery-modal').style.display = 'none';
+        loadPageContent();
+    }
+
+    // --- IMAGE LIGHTBOX FUNCTIONS ---
+    function openImageModal(imageSrc, event) {
+        event.stopPropagation();
+        const modal = document.getElementById('image-modal');
+        const img = document.getElementById('enlarged-image');
+        img.src = imageSrc;
+        modal.classList.add('active');
+    }
+
+    function closeImageModal(event) {
+        if (event) event.stopPropagation();
+        const modal = document.getElementById('image-modal');
+        modal.classList.remove('active');
+    }
+
+    function updateItemQty(instanceId, change) {
+        const item = cart.find(i => i.instanceId === instanceId);
+        if (item) {
+            item.qty += change;
+            if (item.qty <= 0) removeFromCart(instanceId);
+        }
+        updateCartTotal();
+    }
+
+    // --- EDIT ITEM & CHOICES FUNCTIONS ---
+    let currentEditingInstanceId = null;
+    let isAddingNewItem = false;
+    let pendingNewItemData = {};
+    let pendingSelectedChoices = {};
+
+    function openAddItemModal(itemName, itemPrice, itemIngredients) {
+        if (outOfStockSet.has(itemName)) {
+            alert('Sorry, this item just went out of stock.');
+            renderMenu();
+            return;
+        }
+        const itemData = singleMenuData.find(i => i.name === itemName);
+
+        // Check if item has choices
+        if (itemData && (itemData.choicename1 || itemData.choicename2 || itemData.choicename3)) {
+            isAddingNewItem = true;
+            currentEditingInstanceId = null;
+            pendingNewItemData = {
+                name: itemName,
+                price: itemPrice,
+                ingredients: itemIngredients,
+                removedIngredients: [],
+                specialInstructions: ''
+            };
+            pendingSelectedChoices = {};
+            showChoicesModal(itemName, itemData);
+        } else {
+            // No choices, go directly to edit modal
+            isAddingNewItem = true;
+            currentEditingInstanceId = null;
+            pendingNewItemData = {
+                name: itemName,
+                price: itemPrice,
+                ingredients: itemIngredients,
+                removedIngredients: [],
+                specialInstructions: '',
+                choices: {}
+            };
+            openEditModal();
+        }
+    }
+
+    function showChoicesModal(itemName, itemData) {
+        document.getElementById('choices-title').innerText = `${itemName} - Select Your Options`;
+        const container = document.getElementById('choices-container');
+        container.innerHTML = '';
+
+        let choiceCount = 0;
+        for (let i = 1; i <= 3; i++) {
+            const choiceNameKey = `choicename${i}`;
+            const choiceItemsKey = `choiceitems${i}`;
+
+            if (itemData[choiceNameKey] && itemData[choiceItemsKey]) {
+                choiceCount++;
+                const choiceName = itemData[choiceNameKey];
+                const choiceItems = itemData[choiceItemsKey].split(',').map(item => item.trim());
+
+                container.innerHTML += `
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 0.9rem; color: #666; margin-bottom: 12px; font-weight: 600;">${choiceName}</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            ${choiceItems.map((item, idx) => `
+                                <label style="display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="choice-${i}" value="${item}" style="width: 18px; height: 18px; cursor: pointer; accent-color: #5d8039;">
+                                    <span style="font-size: 0.95rem;">${item}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        if (choiceCount === 0) {
+            container.innerHTML = '<p style="color:#999; text-align: center;">No choices available for this item.</p>';
+        }
+
+        document.getElementById('choices-modal').style.display = 'flex';
+    }
+
+    function proceedToEditFromChoices() {
+        for (let i = 1; i <= 3; i++) {
+            const selectedRadio = document.querySelector(`input[name="choice-${i}"]:checked`);
+            if (selectedRadio) {
+                pendingSelectedChoices[`choice${i}`] = selectedRadio.value;
+            }
+        }
+        pendingNewItemData.choices = pendingSelectedChoices;
+        closeChoicesModal();
+        openEditModal();
+    }
+
+    function closeChoicesModal() {
+        document.getElementById('choices-modal').style.display = 'none';
+    }
+
+    function openEditModal() {
+        document.getElementById('edit-item-title').innerText = `Customize ${pendingNewItemData.name}`;
+        document.getElementById('edit-special-instructions').value = '';
+
+        const ingredientsContainer = document.getElementById('edit-ingredients-container');
+        ingredientsContainer.innerHTML = '';
+
+        if (pendingNewItemData.ingredients) {
+            const ingredientsList = pendingNewItemData.ingredients.split(',').map(i => i.trim()).filter(i => i);
+            const itemData = singleMenuData.find(i => i.name === pendingNewItemData.name);
+            const lockedIngredientsStr = itemData?.lockedIngredients || '';
+            const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
+            ingredientsList.forEach(ingredient => {
+                const isLocked = lockedList.includes(ingredient);
+                const lockIcon = isLocked ? ' 🔒' : '';
+                const disabledAttr = isLocked ? 'disabled' : '';
+                const cursorStyle = isLocked ? 'cursor: not-allowed; opacity: 0.6;' : 'cursor: pointer;';
+                const labelStyle = isLocked ? 'background-color: #f5f5f5; ' : '';
+
+                ingredientsContainer.innerHTML += `
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; ${cursorStyle} ${labelStyle}">
+                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" ${disabledAttr} checked onchange="toggleNewItemIngredient('${ingredient}')">
+                        <span style="font-size: 0.95rem;">${ingredient}${lockIcon}</span>
+                    </label>`;
+            });
+        } else {
+            ingredientsContainer.innerHTML = '<p style="color:#999; text-align: center;">No customizable ingredients for this item.</p>';
+        }
+
+        document.getElementById('edit-item-modal').style.display = 'flex';
+    }
+
+    function openEditItemModal(instanceId) {
+        isAddingNewItem = false;
+        currentEditingInstanceId = instanceId;
+        const item = cart.find(i => i.instanceId === instanceId);
+
+        document.getElementById('edit-item-title').innerText = `Edit ${item.name}`;
+        document.getElementById('edit-special-instructions').value = item.specialInstructions || '';
+
+        const ingredientsContainer = document.getElementById('edit-ingredients-container');
+        ingredientsContainer.innerHTML = '';
+
+        if (item.ingredients) {
+            const ingredientsList = item.ingredients.split(',').map(i => i.trim()).filter(i => i);
+            const itemData = singleMenuData.find(i => i.name === item.name);
+            const lockedIngredientsStr = itemData?.lockedIngredients || '';
+            const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
+            ingredientsList.forEach(ingredient => {
+                const isRemoved = item.removedIngredients.includes(ingredient);
+                const isLocked = lockedList.includes(ingredient);
+                const lockIcon = isLocked ? ' 🔒' : '';
+                const disabledAttr = isLocked ? 'disabled' : '';
+                const cursorStyle = isLocked ? 'cursor: not-allowed; opacity: 0.6;' : 'cursor: pointer;';
+                const labelStyle = isLocked ? 'background-color: #f5f5f5; ' : '';
+
+                ingredientsContainer.innerHTML += `
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #f0f0f0; ${cursorStyle} ${labelStyle}">
+                        <input type="checkbox" class="ingredient-checkbox" data-ingredient="${ingredient}" style="width:18px; height:18px; accent-color: #5d8039;" ${disabledAttr} ${isRemoved ? '' : 'checked'} onchange="toggleEditIngredient('${ingredient}')">
+                        <span style="font-size: 0.95rem;">${ingredient}${lockIcon}</span>
+                    </label>`;
+            });
+        } else {
+            ingredientsContainer.innerHTML = '<p style="color:#999; text-align: center;">No customizable ingredients for this item.</p>';
+        }
+
+        document.getElementById('edit-item-modal').style.display = 'flex';
+    }
+
+    function closeEditItemModal() {
+        document.getElementById('edit-item-modal').style.display = 'none';
+        currentEditingInstanceId = null;
+    }
+
+    function toggleNewItemIngredient(ingredient) {
+        const itemData = singleMenuData.find(i => i.name === pendingNewItemData.name);
+        const lockedIngredientsStr = itemData?.lockedIngredients || '';
+        const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
+        if (lockedList.includes(ingredient)) {
+            return;
+        }
+
+        if (pendingNewItemData.removedIngredients.includes(ingredient)) {
+            pendingNewItemData.removedIngredients = pendingNewItemData.removedIngredients.filter(i => i !== ingredient);
+        } else {
+            pendingNewItemData.removedIngredients.push(ingredient);
+        }
+    }
+
+    function toggleEditIngredient(ingredient) {
+        const item = cart.find(i => i.instanceId === currentEditingInstanceId);
+        if (!item) return;
+
+        const itemData = singleMenuData.find(i => i.name === item.name);
+        const lockedIngredientsStr = itemData?.lockedIngredients || '';
+        const lockedList = lockedIngredientsStr.split(',').map(i => i.trim()).filter(i => i);
+
+        if (lockedList.includes(ingredient)) {
+            return;
+        }
+
+        if (item.removedIngredients.includes(ingredient)) {
+            item.removedIngredients = item.removedIngredients.filter(i => i !== ingredient);
+        } else {
+            item.removedIngredients.push(ingredient);
+        }
+    }
+
+    function saveEditedItem() {
+        if (isAddingNewItem) {
+            pendingNewItemData.specialInstructions = document.getElementById('edit-special-instructions').value;
+            cart.push({
+                instanceId: ++instanceCounter,
+                name: pendingNewItemData.name,
+                price: pendingNewItemData.price,
+                qty: 1,
+                removedIngredients: pendingNewItemData.removedIngredients,
+                specialInstructions: pendingNewItemData.specialInstructions,
+                ingredients: pendingNewItemData.ingredients,
+                choices: pendingNewItemData.choices || {}
+            });
+            updateControls(pendingNewItemData.name, pendingNewItemData.price);
+        } else {
+            const item = cart.find(i => i.instanceId === currentEditingInstanceId);
+            if (item) {
+                item.specialInstructions = document.getElementById('edit-special-instructions').value;
+                renderCartModal();
+            }
+        }
+        updateCartTotal();
+        closeEditItemModal();
+    }
+
+    // --- SIDEBAR & GLOBAL ---
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const closeBtn = document.getElementById('close-sidebar');
+
+    toggle.onclick = (e) => { 
+        e.stopPropagation();
+        sidebar.classList.add('active'); 
+       // overlay.style.display = 'block'; 
+    };
+
+    const hideSidebar = () => { 
+        sidebar.classList.remove('active'); 
+        overlay.style.display = 'none'; 
+    };
+
+    overlay.onclick = hideSidebar;
+    closeBtn.onclick = hideSidebar;
+
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('float-cart');
+        const footer = document.querySelector('.site-footer');
+        if(!footer) return;
+
+        if (window.innerWidth <= 480) {
+            btn.style.bottom = '';
+            btn.style.right = '';
+            return;
+        }
+
+        const footerRect = footer.getBoundingClientRect();
+        btn.style.bottom = (footerRect.top < window.innerHeight) ? (window.innerHeight - footerRect.top + 20) + "px" : "30px";
+    });
+
+    window.onclick = (event) => {
+        if (event.target == document.getElementById('cart-modal')) closeCart();
+        if (event.target == document.getElementById('choices-modal')) closeChoicesModal();
+        if (event.target == document.getElementById('edit-item-modal')) closeEditItemModal();
+    };
+
+    function protectedRedirect(url) {
+        if (localStorage.getItem('current_user')) window.location.href = url;
+        else alert("Please log in to access this page.");
+    }
+    // Close sidebar when clicking outside of it
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const toggle = document.getElementById('menu-toggle');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    // Check if the sidebar is currently open
+    if (sidebar.classList.contains('active')) {
+        
+        // If the click happened OUTSIDE the sidebar AND OUTSIDE the toggle button
+        if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+            sidebar.classList.remove('active');
+            
+            // Also hide the overlay if you are using one
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+    }
+});
+
+    window.onload = initPage;
+</script>
+</body>
+</html>

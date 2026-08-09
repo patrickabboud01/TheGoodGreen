@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Good Green | Checkout</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        /* --- 1. AUTH MODAL & OVERLAY STYLES --- */
+        .auth-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); 
+            z-index: 999999; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-modal-box {
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 420px; 
+            position: relative;
+            animation: popIn 0.3s ease-out;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #888;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .form-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; margin-bottom: 10px; }
+
+        /* --- 2. CUSTOM ALERT MODAL STYLES --- */
+        .custom-alert-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); 
+            z-index: 10000; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .custom-alert-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .alert-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .btn-cancel {
+            background: #eee;
+            color: #444;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-confirm-discard {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* --- SIDEBAR REFINEMENTS --- */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+            background: white; transition: 0.3s; z-index: 100000; padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .sidebar.active { right: 0; }
+        
+        .user-greeting {
+            padding: 30px 0 15px; margin-bottom: 15px;
+            border-bottom: 1px solid #f4f1ea;
+            font-weight: 700; color: #5d8039; font-size: 1rem;
+        }
+
+        .sidebar-links { list-style: none; padding: 0; margin: 0; }
+        .sidebar-links li { margin-bottom: 10px; }
+        .sidebar-links li a {
+            font-weight: 400; color: #444; padding: 8px 0;
+            display: block; text-decoration: none; transition: 0.2s;
+        }
+        .sidebar-links li a:hover { color: #5d8039; }
+
+        .auth-btn-sidebar {
+            margin-top: 20px; border-top: 1px solid #eee;
+            padding-top: 15px; display: block; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+        
+        .site-footer {
+            background-color:#5d8039; color: white; padding: 40px 15px;
+            text-align: center; border-top: 5px solid #f4f1ea;
+        }
+        .footer-links {
+            display: flex; flex-direction: row; justify-content: center;
+            align-items: center; gap: 30px; margin-bottom: 25px;
+        }
+        .footer-icon {
+            color: white; text-decoration: none; display: flex;
+            flex-direction: column; align-items: center; gap: 8px;
+            font-size: 0.75rem; transition: transform 0.2s; min-width: 70px;
+        }
+        .footer-icon i { font-size: 1.6rem; }
+        .site-footer p {
+            font-size: 0.7rem; opacity: 0.6; margin: 0; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1); letter-spacing: 1.5px;
+        }
+
+        .checkout-main {
+            padding-top: 100px;
+            min-height: 80vh;
+        }
+
+        /* NEW: Summary List Styles */
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .summary-list li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            html, body {
+                background: white;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .checkout-main {
+                padding-top: 140px;
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+            .checkout-card {
+                width: 100%;
+                max-width: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="checkout-body">
+
+<div id="auth-modal" class="auth-overlay">
+    <div class="auth-modal-box">
+        <button onclick="closeAuthModal()" class="close-btn">&times;</button>
+        <img src="images/longlogo.png" alt="Logo" style="height: 40px; margin: 0 auto 20px auto; display: block;">
+        <h2 style="color: #5d8039; margin-bottom: 10px;">Welcome!</h2>
+        <p style="margin-bottom: 25px; color: #666;">How would you like to proceed?</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
+            <button onclick="openEntryModal('login')" class="btn-primary" style="width:100%; max-width: 300px;">Log In</button>
+            <button onclick="closeAuthModal()" class="btn-outline" style="width:100%; max-width: 300px; border:1px solid #ccc;">Continue as Guest</button>
+            <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-weight:700; cursor:pointer; margin-top:10px; width: 100%; text-align: center;">
+                Create an account now
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="entry-modal" class="auth-overlay">
+    <div class="auth-modal-box">
+        <button onclick="closeEntryModal()" class="close-btn">&times;</button>
+        <div id="login-form-area" style="width: 100%;">
+            <h2 style="color: #5d8039; margin-bottom: 20px;">Log In</h2>
+            <div class="form-group">
+                <input type="email" id="login-email" class="form-input" placeholder="Email Address">
+                <input type="password" id="login-password" class="form-input" placeholder="Password">
+                <button onclick="handleLogin()" class="btn-primary" style="width:100%;">Enter Kitchen</button>
+                <button onclick="openEntryModal('signup')" style="background:none; border:none; color: #2d5a27; font-size: 0.85rem; cursor:pointer; margin-top:10px;">
+                    Don't have an account? <strong>Create one</strong>
+                </button>
+            </div>
+        </div>
+
+        <div id="signup-form-area" style="display:none; width: 100%;">
+            <h2 style="color: #5d8039; margin-bottom: 15px;">Sign Up</h2>
+            <div class="form-group">
+                <input type="text" id="reg-name" class="form-input" placeholder="Full Name">
+                <input type="email" id="reg-email" class="form-input" placeholder="Email">
+                <input type="tel" id="reg-phone" class="form-input" placeholder="Phone Number">
+                <textarea id="reg-address" class="form-input" placeholder="Delivery Address" rows="2"></textarea>
+                <input type="password" id="reg-password" class="form-input" placeholder="Password">
+                <button onclick="handleSignup()" class="btn-primary" style="width:100%;">Create Account</button>
+                <button onclick="openEntryModal('login')" style="background:none; border:none; color: #5d8039; font-size: 0.85rem; cursor:pointer; margin-top:10px;">
+                    Already have an account? <strong>Log In</strong>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="custom-alert" class="custom-alert-overlay">
+    <div class="custom-alert-box">
+        <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+        <h3 style="color: #5d8039; margin-bottom: 10px;">Discard Progress?</h3>
+        <p style="color: #666; font-size: 0.9rem; line-height: 1.4;">Are you sure you want to leave? Your meal selections will not be saved.</p>
+        <div class="alert-btns">
+            <button class="btn-cancel" onclick="closeCustomAlert()">Stay Here</button>
+            <button class="btn-confirm-discard" id="confirm-redirect-btn">Discard</button>
+        </div>
+    </div>
+</div>
+
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="images/longlogo.png" alt="Logo" class="main-logo">
+                </a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="sidebar" id="sidebar">
+                <div class="close-sidebar" id="close-sidebar" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #2d5a27;">&times;</div>
+                <div id="user-greeting" class="user-greeting">Hi, Guest</div>
+                <ul class="sidebar-links">
+                    <li><a href="index.html" style="color: #5d8039; font-weight: 700;">Home</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('plan-status.html')">Continue your plan</a></li>
+                    <li><a href="javascript:void(0)" onclick="protectedRedirect('user-account.html')">My Account</a></li>
+                    <li><a href="packages.html">Packages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="#" id="auth-btn" class="auth-btn-sidebar" onclick="handleAuthAction()">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="checkout-main">
+    <div class="checkout-header"><h1>Finalize Your Order</h1></div>
+    <section id="order-details" class="checkout-card summary-card"></section>
+
+    <div class="checkout-card" style="margin-bottom: 20px;">
+       <div class="form-group" id="promo-container">
+         <label>Promo Code</label>
+         <div class="promo-flex-wrapper">
+         <input type="text" id="promo_code" placeholder="Enter code">
+         <p></p>
+          <button type="button" id="apply-promo" class="btn-primary">Apply</button>
+      </div>
+    <small id="promo-msg" style="display: block; margin-top: 5px; font-weight: 600;"></small>
+</div>
+    </div>
+
+    <div class="checkout-card">
+        <form id="checkout-form">
+            <div class="form-group"><label>Full Name</label><input type="text" id="user_name" required></div>
+            <div class="form-group"><label>Phone Number</label><input type="tel" id="user_phone" required></div>
+            <div class="form-group"><label>Delivery Address</label><textarea id="user_address" rows="3" required></textarea></div>
+
+            <div class="form-group">
+                <label>Delivery Zone</label>
+                <div id="zone-options" style="display:flex; flex-direction:column; gap:10px;">
+                    <label class="zone-option" for="zone-near">
+                        <input type="radio" name="delivery_zone" id="zone-near" value="near" required>
+                        <span><strong>Near Jal El Dib</strong> <span style="color:#5d8039; font-weight:700;">+$2.00</span></span>
+                    </label>
+                    <label class="zone-option" for="zone-outside">
+                        <input type="radio" name="delivery_zone" id="zone-outside" value="outside" required>
+                        <span><strong>Outside Jal El Dib (5KM +)</strong> <span style="color:#5d8039; font-weight:700;">+$5.00</span></span>
+                    </label>
+                </div>
+                <small id="zone-disclaimer" style="display:none; color:#d97706; background:#fffbeb; padding:8px 10px; border-radius:8px; margin-top:8px; line-height:1.4;">
+                    ⚠️ Deliveries outside the Jal El Dib area are handled by a third-party delivery service, which may affect delivery time.
+                </small>
+                <div id="delivery-fee-line" style="display:flex; justify-content:space-between; font-weight:700; margin-top:10px; padding-top:10px; border-top:1px solid #eee;">
+                    <span>Grand Total (incl. delivery):</span><span id="grand-total-display">$0.00</span>
+                </div>
+            </div>
+
+            <div id="delivery-time-section" style="display:none;">
+                <div class="form-group">
+                    <label>Delivery Date</label>
+                    <input type="date" id="delivery_date" class="form-input" style="margin-bottom:0;">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Time</label>
+                    <select id="delivery_time" class="form-input" style="margin-bottom:0;">
+                        <option value="">Select a date first</option>
+                    </select>
+                    <small id="delivery-hours-msg" style="color:#888;"></small>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; padding: 18px;">Confirm Order</button>
+        </form>
+    </div>
+</main>
+
+<style>
+    .zone-option {
+        display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+        border: 1px solid #ddd; border-radius: 10px; cursor: pointer; transition: 0.2s;
+    }
+    .zone-option:has(input:checked) { border-color: #5d8039; background: #f4f8f1; }
+    .zone-option input { width: 18px; height: 18px; accent-color: #5d8039; cursor: pointer; }
+</style>
+
+<script>
+    // --- GLOBAL SCOPE VARIABLES ---
+    let durationKey = "1";
+    let finalPrice = 0;
+    let discountAmount = 0;
+    let pendingUrl = "";
+    let isSingleOrder = false;
+    let finalName = ""; // Track plan name for order submission
+    let deliveryFee = 0;
+    let storeSettings = { weekday_open: '09:00', weekday_close: '21:00', weekend_open: '10:00', weekend_close: '22:00', slot_minutes: 30, min_lead_minutes: 40, closed_until: null };
+
+    (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
+    const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
+    const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGNneGJ1cGFkZmFib3Rwd3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MDEyNjUsImV4cCI6MjA4ODk3NzI2NX0.rXFsN9k0XYCPFf4BejbwkHvmuhvIid921jYeZmsUU6g';
+    const sbClient = supabase.createClient(sbUrl, sbKey);
+
+    const planPriceBook = {
+        "THE SOLO": { "1": 8.5, "6": 42, "24": 200 },
+        "THE DUO": { "1": 17, "6": 85, "24": 300 },
+        "THE TRIO": { "1": 22, "6": 100, "24": 340 },
+        "THE FULL PLAN": { "1": 25, "6": 110, "24": 400 }
+    };
+
+    // --- AUTH LOGIC ---
+    function openEntryModal(mode) {
+        document.getElementById('auth-modal').style.display = 'none';
+        document.getElementById('entry-modal').style.display = 'flex';
+        document.getElementById('login-form-area').style.display = (mode === 'login') ? 'block' : 'none';
+        document.getElementById('signup-form-area').style.display = (mode === 'signup') ? 'block' : 'none';
+    }
+
+    function closeAuthModal() {
+        document.getElementById('auth-modal').style.display = 'none';
+        sessionStorage.setItem('auth_choice_made', 'true');
+    }
+
+    function closeEntryModal() {
+        document.getElementById('entry-modal').style.display = 'none';
+    }
+
+    async function handleLogin() {
+        const e = document.getElementById('login-email').value;
+        const p = document.getElementById('login-password').value;
+        const { data, error } = await sbClient.from('profiles').select('*').eq('email', e).eq('password', p).single();
+        if (error || !data) return alert("Invalid credentials.");
+        localStorage.setItem('current_user', JSON.stringify(data));
+        sessionStorage.setItem('auth_choice_made', 'true');
+        location.reload();
+    }
+
+    async function handleSignup() {
+        const n = document.getElementById('reg-name').value;
+        const e = document.getElementById('reg-email').value;
+        const p = document.getElementById('reg-password').value;
+        if(!e || !p || !n) return alert("Missing fields!");
+        const { data, error } = await sbClient.from('profiles').insert([{
+            full_name: n, email: e, password: p,
+            phone_number: document.getElementById('reg-phone').value,
+            address: document.getElementById('reg-address').value
+        }]).select();
+        if (error) {
+            if (error.code === 'PGRST116' || error.message?.includes('duplicate') || error.message?.includes('Duplicate')) {
+                return alert("This email is already registered.");
+            }
+            return alert("Signup failed.");
+        }
+        localStorage.setItem('current_user', JSON.stringify(data[0]));
+        sessionStorage.setItem('auth_choice_made', 'true');
+        location.reload();
+    }
+
+    function triggerCustomAlert(url) {
+        pendingUrl = url;
+        document.getElementById('custom-alert').style.display = 'flex';
+        document.getElementById('sidebar').classList.remove('active');
+    }
+
+    function closeCustomAlert() {
+        document.getElementById('custom-alert').style.display = 'none';
+        pendingUrl = "";
+    }
+
+    document.getElementById('confirm-redirect-btn').onclick = function() {
+        if (pendingUrl) window.location.href = pendingUrl;
+    };
+
+    function updateAuthUI() {
+        const authBtn = document.getElementById('auth-btn');
+        const greeting = document.getElementById('user-greeting');
+        const userStr = localStorage.getItem('current_user');
+
+        if (userStr && greeting && authBtn) {
+            const user = JSON.parse(userStr);
+            const firstName = user.full_name ? user.full_name.split(' ')[0] : 'User';
+            greeting.innerText = `Hi, ${firstName}`;
+            authBtn.innerText = "Logout";
+            authBtn.style.color = "#d9534f";
+        } else if (greeting && authBtn) {
+            greeting.innerText = "Hi, Guest";
+            authBtn.innerText = "Login / Sign Up";
+            authBtn.style.color = "#5d8039";
+        }
+    }
+
+    function handleAuthAction() {
+        const user = localStorage.getItem('current_user');
+        if (user) {
+            if (confirm("Are you sure you want to log out? Your order progress will be lost.")) {
+                localStorage.removeItem('current_user');
+                sessionStorage.removeItem('auth_choice_made');
+                localStorage.removeItem('finalOrder');
+                localStorage.removeItem('single_order_cart');
+                window.location.href = 'index.html';
+            }
+        } else {
+            openEntryModal('login');
+        }
+    }
+
+    async function setupDeliveryTimePicker() {
+        const dateInput = document.getElementById('delivery_date');
+        const msg = document.getElementById('delivery-hours-msg');
+
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.min = `${yyyy}-${mm}-${dd}`;
+        if (!dateInput.value) dateInput.value = dateInput.min;
+
+        updateHoursMessage();
+        populateTimeSlots();
+        dateInput.addEventListener('change', function() {
+            updateHoursMessage();
+            populateTimeSlots();
+        });
+    }
+
+    function isWeekendDate(dateStr) {
+        // Parse as local date (avoid UTC shift from new Date('YYYY-MM-DD'))
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const day = new Date(y, m - 1, d).getDay(); // 0 = Sun, 6 = Sat
+        return day === 0 || day === 6;
+    }
+
+    function hoursForDate(dateStr) {
+        return isWeekendDate(dateStr)
+            ? { open: storeSettings.weekend_open, close: storeSettings.weekend_close }
+            : { open: storeSettings.weekday_open, close: storeSettings.weekday_close };
+    }
+
+    function formatTime(t) {
+        if (!t) return '';
+        const [h, m] = t.split(':').map(Number);
+        const period = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+    }
+
+    function updateHoursMessage() {
+        const dateInput = document.getElementById('delivery_date');
+        const msg = document.getElementById('delivery-hours-msg');
+        if (!dateInput.value) return;
+        const { open, close } = hoursForDate(dateInput.value);
+        const label = isWeekendDate(dateInput.value) ? 'Weekend' : 'Weekday';
+        const leadMinutes = Number.isFinite(storeSettings.min_lead_minutes) ? storeSettings.min_lead_minutes : 40;
+        msg.innerText = `${label} delivery window: ${formatTime(open)} – ${formatTime(close)}. Orders need at least ${leadMinutes} minutes' notice.`;
+    }
+
+    function populateTimeSlots() {
+        const dateInput = document.getElementById('delivery_date');
+        const timeSelect = document.getElementById('delivery_time');
+        const { open, close } = hoursForDate(dateInput.value);
+        const [openH, openM] = (open || '09:00').split(':').map(Number);
+        const [closeH, closeM] = (close || '21:00').split(':').map(Number);
+        const slotMinutes = parseInt(storeSettings.slot_minutes) || 30;
+
+        const isToday = dateInput.value === dateInput.min;
+        const leadMinutes = Number.isFinite(storeSettings.min_lead_minutes) ? storeSettings.min_lead_minutes : 40;
+        const cutoff = new Date(Date.now() + leadMinutes * 60000);
+
+        let slots = [];
+        let cursor = new Date(); cursor.setHours(openH, openM, 0, 0);
+        const end = new Date(); end.setHours(closeH, closeM, 0, 0);
+
+        while (cursor < end) {
+            if (!isToday || cursor > cutoff) {
+                const hh = String(cursor.getHours()).padStart(2, '0');
+                const mm = String(cursor.getMinutes()).padStart(2, '0');
+                slots.push(`${hh}:${mm}`);
+            }
+            cursor = new Date(cursor.getTime() + slotMinutes * 60000);
+        }
+
+        timeSelect.innerHTML = slots.length > 0
+            ? slots.map(s => `<option value="${s}">${formatTime(s)}</option>`).join('')
+            : `<option value="">No slots available that day</option>`;
+    }
+
+    // --- STORE CLOSURE CHECK ---
+    let storeIsClosed = false;
+
+    function showClosedBanner(closedUntil) {
+        storeIsClosed = true;
+        const main = document.querySelector('.checkout-main');
+        const banner = document.createElement('div');
+        banner.className = 'checkout-card';
+        banner.style.cssText = 'background:#fff5f5; border:1px solid #feb2b2; color:#d9534f; font-weight:700; text-align:center; padding:18px;';
+        const untilDate = closedUntil ? new Date(closedUntil) : null;
+        const farFuture = untilDate && untilDate.getFullYear() >= 2090;
+        banner.innerText = farFuture
+            ? "We're currently closed and not accepting new orders. Please check back soon!"
+            : `We're currently closed. We'll be back at ${untilDate.toLocaleString()} — please check back then.`;
+        main.insertBefore(banner, main.firstChild.nextSibling);
+
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        submitBtn.innerText = "Store Closed";
+    }
+
+    async function fetchStoreSettings() {
+        try {
+            const { data, error } = await sbClient.from('store_settings').select('*').eq('id', 1).single();
+            if (error) throw error;
+            storeSettings = data;
+        } catch (err) {
+            // Fall back to the defaults declared above if settings aren't set up yet.
+        }
+    }
+
+    async function checkStoreClosure() {
+        if (storeSettings.closed_until && new Date(storeSettings.closed_until) > new Date()) {
+            showClosedBanner(storeSettings.closed_until);
+        }
+    }
+
+    function updateGrandTotalDisplay() {
+        const base = Math.max(finalPrice - discountAmount, 0);
+        const grand = base + deliveryFee;
+        const el = document.getElementById('grand-total-display');
+        if (el) el.innerText = `$${grand.toFixed(2)}`;
+    }
+
+    function setupDeliveryZonePicker() {
+        const disclaimer = document.getElementById('zone-disclaimer');
+        document.querySelectorAll('input[name="delivery_zone"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                deliveryFee = this.value === 'near' ? 2 : 5;
+                disclaimer.style.display = this.value === 'outside' ? 'block' : 'none';
+                updateGrandTotalDisplay();
+            });
+        });
+        updateGrandTotalDisplay();
+    }
+
+    window.onload = async function() {
+        updateAuthUI();
+        await fetchStoreSettings();
+        await checkStoreClosure();
+        
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        if(toggle && sidebar && closeBtn) {
+            toggle.onclick = (e) => { e.stopPropagation(); sidebar.classList.add('active'); };
+            closeBtn.onclick = () => sidebar.classList.remove('active');
+            document.onclick = (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            };
+        }
+
+        const user = JSON.parse(localStorage.getItem('current_user') || '{}');
+        const rawOrder = localStorage.getItem('finalOrder');
+        const singleOrderCart = JSON.parse(localStorage.getItem('single_order_cart') || '[]');
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSubscriptionRefill = urlParams.get('isSub') === 'true';
+
+        // REDIRECT IF BOTH ARE EMPTY
+        if (!rawOrder && singleOrderCart.length === 0) { 
+            window.location.href = "builder.html"; 
+            return; 
+        }
+
+        let profile = null;
+        if (user.email) {
+            const { data } = await sbClient.from('profiles').select('*').eq('email', user.email).single();
+            profile = data;
+        }
+
+        // --- RENDER LOGIC: SINGLE MENU VS PLAN ---
+        if (singleOrderCart.length > 0) {
+            isSingleOrder = true;
+            document.getElementById('delivery-time-section').style.display = 'block';
+            document.getElementById('delivery_date').required = true;
+            document.getElementById('delivery_time').required = true;
+            await setupDeliveryTimePicker();
+            let itemsHtml = '<ul class="summary-list">';
+            singleOrderCart.forEach(item => {
+                let subtotal = item.price * item.qty;
+                finalPrice += subtotal;
+                const removedDisplay = item.removedIngredients && item.removedIngredients.length > 0 ? `<br><small style="color:#d9534f;">❌ No: ${item.removedIngredients.join(', ')}</small>` : '';
+                const instrDisplay = item.specialInstructions ? `<br><small style="color:#888; font-style:italic;">📝 ${item.specialInstructions}</small>` : '';
+                itemsHtml += `<li style="flex-direction: column; align-items: flex-start; gap: 5px;"><span>${item.qty}x ${item.name}${removedDisplay}${instrDisplay}</span> <span>$${subtotal.toFixed(2)}</span></li>`;
+            });
+            itemsHtml += '</ul>';
+
+            document.getElementById('order-details').innerHTML = `
+                <div class="checkout-badge">Single Order</div>
+                <h2>Order Summary</h2>
+                ${itemsHtml}
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #eee; padding-top: 15px;">
+                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(2)}</span>
+                </div>`;
+        } else {
+            // ORIGINAL MEAL PLAN LOGIC
+            const fullState = JSON.parse(rawOrder);
+            let dayKeys = Object.keys(fullState).filter(day => fullState[day].length > 0);
+            let totalMeals = 0;
+            dayKeys.forEach(d => totalMeals += fullState[d].length);
+            const mealsPerDay = totalMeals / (dayKeys.length || 1);
+            finalName = mealsPerDay > 3.5 ? "THE FULL PLAN" : mealsPerDay > 2.5 ? "THE TRIO" : mealsPerDay > 1.5 ? "THE DUO" : "THE SOLO";
+
+            let requestedDays = parseInt(urlParams.get('days')) || dayKeys.length;
+            durationKey = requestedDays >= 24 ? "24" : (requestedDays >= 2 ? "6" : "1");
+            finalPrice = planPriceBook[finalName][durationKey];
+
+            if (isSubscriptionRefill && profile?.plan24days) {
+                document.getElementById('order-details').innerHTML = `
+                    <div class="checkout-badge">Subscription Refill</div>
+                    <h2>${profile.active_package_name}</h2>
+                    <p>Week ${profile["24planweek"] + 1} Selection</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Due Today:</span><span style="font-size: 2rem; color: #5d8039;">$0.00</span>
+                    </div>`;
+                document.getElementById('submit-btn').innerText = `Confirm Week ${profile["24planweek"] + 1}`;
+                finalPrice = 0; 
+            } else {
+                document.getElementById('order-details').innerHTML = `
+                    <div class="checkout-badge">${durationKey}-Day Plan</div>
+                    <h2>${finalName}</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(1)}</span>
+                    </div>`;
+            }
+        }
+
+        setupDeliveryZonePicker();
+
+        // AUTO-FILL USER DATA
+        if (user.full_name) {
+            document.getElementById('user_name').value = user.full_name;
+            document.getElementById('user_phone').value = user.phone_number || '';
+            document.getElementById('user_address').value = user.address || '';
+        }
+
+        // --- PROMO CODE LOGIC ---
+        document.getElementById('apply-promo').onclick = async function() {
+            const code = document.getElementById('promo_code').value.trim().toUpperCase();
+            const msg = document.getElementById('promo-msg');
+            
+            if (!user.email) {
+                msg.style.color = "red"; msg.innerText = "Please login to use a promo code.";
+                setTimeout(() => openEntryModal('login'), 800);
+                return;
+            }
+            if (durationKey === "24") {
+                msg.style.color = "red"; msg.innerText = "Promo codes are not valid for 24-day plans.";
+                return;
+            }
+
+            const { count } = await sbClient.from('orders').select('*', { count: 'exact', head: true }).eq('customer_phone', user.phone_number);
+            if (count > 0) {
+                msg.style.color = "red"; msg.innerText = "This code is for new customers only.";
+                return;
+            }
+
+            if (code === "TGG20") {
+                discountAmount = Math.round(finalPrice * 0.20 * 10) / 10;
+                msg.style.color = "#5d8039";
+                msg.innerText = `Success! $${discountAmount.toFixed(1)} discount applied.`;
+                document.getElementById('display-price').innerText = `$${(finalPrice - discountAmount).toFixed(1)}`;
+            } else {
+                msg.style.color = "red"; msg.innerText = "Invalid promo code.";
+                discountAmount = 0;
+                document.getElementById('display-price').innerText = `$${finalPrice.toFixed(1)}`;
+            }
+            updateGrandTotalDisplay();
+        };
+
+        // --- FORM SUBMIT LOGIC ---
+        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (storeIsClosed) {
+                alert("We're currently closed and can't accept new orders right now.");
+                return;
+            }
+            const btn = document.getElementById('submit-btn');
+
+            const zoneRadio = document.querySelector('input[name="delivery_zone"]:checked');
+            if (!zoneRadio) {
+                alert("Please select whether the delivery is near or outside Jal El Dib.");
+                return;
+            }
+            const deliveryZone = zoneRadio.value; // 'near' or 'outside'
+
+            btn.disabled = true; 
+            btn.innerText = "Processing...";
+
+            try {
+                const actualPaidPrice = (isSubscriptionRefill ? 0 : (finalPrice - discountAmount)) + deliveryFee;
+                let orderPlanName = "";
+
+                if (isSingleOrder) {
+                    orderPlanName = "Single Menu Items";
+                } else {
+                    orderPlanName = isSubscriptionRefill ? `${profile.active_package_name} - Week ${profile["24planweek"]+1}` : `${finalName} (${durationKey} Day)`;
+                }
+
+                let deliveryDate = null, deliveryTime = null;
+                if (isSingleOrder) {
+                    deliveryDate = document.getElementById('delivery_date').value;
+                    deliveryTime = document.getElementById('delivery_time').value;
+                    if (!deliveryDate || !deliveryTime) {
+                        alert("Please choose a delivery date and time.");
+                        btn.disabled = false;
+                        btn.innerText = "Confirm Order";
+                        return;
+                    }
+                }
+
+                const { data: orderData, error: orderError } = await sbClient.from('orders').insert([{
+                    customer_name: document.getElementById('user_name').value,
+                    customer_phone: document.getElementById('user_phone').value,
+                    customer_address: document.getElementById('user_address').value,
+                    plan_name: orderPlanName,
+                    total_price: parseFloat(actualPaidPrice.toFixed(2)),
+                    delivery_date: deliveryDate,
+                    delivery_time: deliveryTime,
+                    delivery_zone: deliveryZone,
+                    delivery_fee: deliveryFee
+                }]).select();
+
+                if (orderError) throw orderError;
+                const orderId = orderData[0].id;
+                const itemsToInsert = [];
+
+                if (isSingleOrder) {
+                    singleOrderCart.forEach(item => {
+                        let specialInstr = item.specialInstructions || '';
+                        if (item.choices && Object.keys(item.choices).length > 0) {
+                            const choicesStr = Object.values(item.choices).join(', ');
+                            specialInstr = specialInstr ? `${choicesStr} || ${specialInstr}` : choicesStr;
+                        }
+                        itemsToInsert.push({
+                            order_id: orderId,
+                            day_number: 1,
+                            meal_name: item.name,
+                            choice: `Qty: ${item.qty}`,
+                            removed_ingredients: item.removedIngredients?.join(', ') || '',
+                            special_instructions: specialInstr || 'Single Menu Order'
+                        });
+                    });
+                } else {
+                    const fullState = JSON.parse(rawOrder);
+                    Object.keys(fullState).forEach(day => {
+                        fullState[day].forEach(m => {
+                            itemsToInsert.push({
+                                order_id: orderId,
+                                day_number: parseInt(day),
+                                meal_name: m.name,
+                                choice: m.selectedChoices?.join(', ') || '', 
+                                removed_ingredients: m.removedIngredients?.join(', ') || '',
+                                special_instructions: m.instructions || m.specialInstructions || ""
+                            });
+                        });
+                    });
+                }
+
+                const { error: itemsError } = await sbClient.from('order_items').insert(itemsToInsert);
+                if (itemsError) throw itemsError;
+
+                // Update 24-day subscription progress if applicable
+                if (!isSingleOrder && (isSubscriptionRefill || durationKey === "24")) {
+                    let curWeek = isSubscriptionRefill ? (profile["24planweek"] || 0) : 0;
+                    let nextWeek = curWeek + 1;
+                    let stillActive = nextWeek < 4;
+                    await sbClient.from('profiles').update({
+                        "plan24days": stillActive,
+                        "24planweek": stillActive ? nextWeek : 0,
+                        "active_package_name": stillActive ? (profile?.active_package_name || finalName) : null
+                    }).eq('email', user.email);
+                }
+
+                // EmailJS Logic
+                let itemsDetailsHtml = '';
+                itemsToInsert.forEach(item => {
+                    itemsDetailsHtml += `<tr><td>${item.meal_name}</td><td>${item.choice}</td>`;
+                    if (item.removed_ingredients) itemsDetailsHtml += `<td>❌ No: ${item.removed_ingredients}</td>`;
+                    if (item.special_instructions && item.special_instructions !== 'Single Menu Order') itemsDetailsHtml += `<td>📝 ${item.special_instructions}</td>`;
+                    itemsDetailsHtml += `</tr>`;
+                });
+
+                const emailData = {
+                    customer_name: document.getElementById('user_name').value,
+                    customer_phone: document.getElementById('user_phone').value,
+                    customer_address: document.getElementById('user_address').value,
+                    plan_name: orderPlanName,
+                    original_price: finalPrice.toFixed(2),
+                    discount_amount: discountAmount > 0 ? discountAmount.toFixed(2) : "0.00",
+                    total_price: actualPaidPrice.toFixed(2),
+                    order_id: orderId,
+                    items_details: itemsDetailsHtml,
+                    delivery_date: deliveryDate || '',
+                    delivery_time: deliveryTime ? formatTime(deliveryTime) : '',
+                    delivery_zone: deliveryZone === 'near' ? 'Near Jal El Dib' : 'Outside Jal El Dib',
+                    delivery_fee: deliveryFee.toFixed(2)
+                };
+                console.log("Email data being sent:", emailData);
+                await emailjs.send("service_rfcp52l", "template_oglmmp8", emailData);
+
+                // CLEAR BOTH CARTS ON SUCCESS
+                localStorage.removeItem('finalOrder');
+                localStorage.removeItem('single_order_cart');
+                window.location.href = "thanks.html";
+
+            } catch (err) { 
+                console.error("Checkout Error:", err);
+                alert("Error: " + err.message); 
+                btn.disabled = false; 
+                btn.innerText = "Confirm Order";
+            }
+        });
+    };
+</script>
+
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="https://instagram.com/thegoodgreen.lb" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-instagram"></i><span>thegoodgreenlb</span>
+        </a>
+        <a href="https://wa.me/96181153917" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-whatsapp"></i><span>+961 81 15 39 17</span>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61584124693260" target="_blank" class="footer-icon">
+            <i class="fa-brands fa-facebook-f"></i><span>thegoodgreen</span>
+        </a>
+    </div>
+    <p>&copy; 2026 THE GOOD GREEN. ALL RIGHTS RESERVED.</p>
+</footer>
+</body>
+</html>
