@@ -330,16 +330,7 @@ const singleMenuData = [
     ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple Syrup",
     lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk, maple syrup"
   },  
-  {
-    category: "Snacks",
-    name: "Lazy Cake for 12 prs",
-    protein: 20,
-    Kcal: 1600,
-    price: 24.00,
-    image: "images/menu items/lazy cake.png",
-    ingredients: "Cacao, biscuits, coconut oil, vegan milk, maple syrup",
-    lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk , Maple Syrup"
-  },
+
   {
     category: "Snacks",
     name: "Fruit Salad",
