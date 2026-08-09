@@ -288,7 +288,7 @@ const singleMenuData = [
     category: "Snacks",
     name: "Lazy Cake 5pcs",
     protein: 5,
-    Kcal: 400,
+    Kcal: 266,
     price: 6.00,
     image: "images/menu items/lazy cake.png",
     ingredients: "Cacao, biscuits, coconut oil, vegan milk, maple syrup",
@@ -320,16 +320,16 @@ const singleMenuData = [
     choiceitems1: "",
   },
    
-   /* {
+    {
     category: "Snacks",
-    name: "Lazy Cake 10pcs",
-    protein: 10,
-    Kcal: 800,
-    price: 12.00,
+    name: "Lazy Cake for 12 ppl",
+    protein: 30,
+    Kcal: 1600,
+    price: 20.00,
     image: "images/menu items/lazy cake.png",
     ingredients: "Cacao, Biscuits, Coconut Oil, Vegan Milk, Maple Syrup",
     lockedIngredients:"Cacao, Biscuits, Coconut Oil, Vegan Milk, maple syrup"
-  },   */
+  },  
   {
     category: "Snacks",
     name: "Lazy Cake for 12 prs",

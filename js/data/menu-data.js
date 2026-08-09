@@ -252,7 +252,7 @@ const rawMenuData = [
         category: "snack", 
         name: "Lazy Cake", 
         protein: 5, 
-        Kcal: 400,
+        Kcal: 266,
         image: "images/menu items/lazy cake.png",
         fixed_ingredients: "Cacao;Biscuits,Coconut Oil, Vgean Milk , Maple syrup", 
         removable_ingredients: "", 
