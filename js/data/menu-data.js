@@ -12,7 +12,7 @@ const rawMenuData = [
         choice_options: "Oat;Soy;Almond",
         choice_type: "single",
         choice_title_2: "Step 2: Extra Topping", 
-        choice_options_2: "Extra Berries;Banana;None / Skip",
+        choice_options_2: "Banana;None / Skip",
         choice_type_2: "multiple" 
     },
     
@@ -286,7 +286,7 @@ const rawMenuData = [
         image: "images/menu items/cookies.png",
         fixed_ingredients: "Banana;Oats;Chocolate Flakes", 
         removable_ingredients: "Peanut Butter", 
-        choice_title: "Flavour", choice_options: "Chocolate;Plain;Berries", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
+        choice_title: "Flavour", choice_options: "Chocolate;Plain", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
    
     { 
@@ -340,7 +340,7 @@ const rawMenuData = [
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
         choice_title: "Cookie Flavor", 
-        choice_options: "Plain;Chocolate;Berries",
+        choice_options: "Plain;Chocolate",
         choice_type: "single"
     },
   { 
@@ -352,7 +352,7 @@ const rawMenuData = [
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
         choice_title: "Cookie Flavor", 
-        choice_options: "Plain;Chocolate;Berries",
+        choice_options: "Plain;Chocolate",
         choice_type: "single"
     }, 
      { 
@@ -364,7 +364,7 @@ const rawMenuData = [
         fixed_ingredients: "Vegan Protein Blend", 
         removable_ingredients: "", 
         choice_title: "Cookie Flavor", 
-        choice_options: "Plain;Chocolate;Berries",
+        choice_options: "Plain;Chocolate",
         choice_type: "single"
     },
      { 

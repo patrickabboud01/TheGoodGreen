@@ -5,7 +5,7 @@ const singleMenuData = [
   
   {
     category: "Breakfast",
-    name: "Croissant",
+    name: "Croissant Chcolate",
     protein: 9,
     Kcal: 400,
     price: 3.75,
@@ -13,7 +13,39 @@ const singleMenuData = [
     ingredients: "Croissant dough",
     lockedIngredients: "Croissant dough",
     choicename1: "Croissant Flavour",
-    choiceitems1: "Chocolate , Zaatar , Plain , Olive"
+  },
+    {
+    category: "Breakfast",
+    name: "Croissant Zaatar",
+    protein: 9,
+    Kcal: 400,
+    price: 3.75,
+    image: "images/menu items/croissant1.png",
+    ingredients: "Croissant dough",
+    lockedIngredients: "Croissant dough",
+    choicename1: "Croissant Flavour",
+  },
+    {
+    category: "Breakfast",
+    name: "Croissant Plain",
+    protein: 9,
+    Kcal: 400,
+    price: 3.75,
+    image: "images/menu items/croissant1.png",
+    ingredients: "Croissant dough",
+    lockedIngredients: "Croissant dough",
+    choicename1: "Croissant Flavour",
+  },
+    {
+    category: "Breakfast",
+    name: "Croissant Zeitoun",
+    protein: 9,
+    Kcal: 400,
+    price: 3.75,
+    image: "images/menu items/croissant1.png",
+    ingredients: "Croissant dough",
+    lockedIngredients: "Croissant dough",
+    choicename1: "Croissant Flavour",
   },
  
   {
@@ -23,7 +55,7 @@ const singleMenuData = [
     Kcal: 450,
     price: 7.00,
     image: "images/menu items/oats.png",
-    ingredients: "Oats, milk, dark chocolate, peanut butter, berries, banana",
+    ingredients: "Oats, milk, dark chocolate, peanut butter, banana",
     lockedIngredients: "Oats, Milk",
     choicename1: "Milk type",
     choiceitems1: "Soy , Almond , Oat",
@@ -55,7 +87,7 @@ const singleMenuData = [
     Kcal: 400,
     price: 6,
     image: "images/menu items/pankakes.png",
-    ingredients: "Vegan pancake mix, banana, berries",
+    ingredients: "Vegan pancake mix, banana",
     lockedIngredients: "Vegan Pancake Mixs",
     choicename1: "topping",
     choiceitems1: "Chocolate , Mayple ",
@@ -273,7 +305,7 @@ const singleMenuData = [
     ingredients: "Oats, peanut butter, vegan chocolate, milk",
     lockedIngredients:"Oats, Milk",
     choicename1: "Flavour",
-    choiceitems1: "Chocolate , Berries , Plain ",
+    choiceitems1: "Chocolate , Plain ",
   },
     {
     category: "Snacks",
@@ -391,7 +423,7 @@ const singleMenuData = [
     ingredients: "Vegan Protein Blend",
     lockedIngredients :"Vegan Protein Blend",
     choicename1: "Flavour",
-    choiceitems1: "Chocolate , Berries , Plain "
+    choiceitems1: "Chocolate , Plain "
 
   },
 
@@ -461,7 +493,7 @@ const singleMenuData = [
   },
       
      { category: "Offer",
-    name: "Iced Coffee + Croissant ",
+    name: "Iced Coffee + Croissant Chocolate ",
     protein: 10,
     Kcal: 440,
     price: 7.5,
@@ -469,8 +501,39 @@ const singleMenuData = [
     ingredients: "Almond milk, coffee, monk fruit, croissant vegan dough",
     lockedIngredients:"Almond milk, Decaf Coffee , Monk Fruit, Croissant vegan dough",
     choicename1: "Coffee style",
-    choiceitems1: "Decaf , Cafenated",
-    choicename2: "Croissant flavour",
-     choiceitems2: "Zaatar , Plain , Chocolate , Olive",
+    choiceitems1: "Decaf , Cafenated"
+  },
+       { category: "Offer",
+    name: "Iced Coffee + Croissant Zaatar ",
+    protein: 10,
+    Kcal: 440,
+    price: 7.5,
+    image: "images/menu items/croissant & iced coffee offer.jpeg",
+    ingredients: "Almond milk, coffee, monk fruit, croissant vegan dough",
+    lockedIngredients:"Almond milk, Decaf Coffee , Monk Fruit, Croissant vegan dough",
+    choicename1: "Coffee style",
+    choiceitems1: "Decaf , Cafenated"
+  },
+       { category: "Offer",
+    name: "Iced Coffee + Croissant Plain ",
+    protein: 10,
+    Kcal: 440,
+    price: 7.5,
+    image: "images/menu items/croissant & iced coffee offer.jpeg",
+    ingredients: "Almond milk, coffee, monk fruit, croissant vegan dough",
+    lockedIngredients:"Almond milk, Decaf Coffee , Monk Fruit, Croissant vegan dough",
+    choicename1: "Coffee style",
+    choiceitems1: "Decaf , Cafenated"
+  },
+       { category: "Offer",
+    name: "Iced Coffee + Croissant Zeitoun ",
+    protein: 10,
+    Kcal: 440,
+    price: 7.5,
+    image: "images/menu items/croissant & iced coffee offer.jpeg",
+    ingredients: "Almond milk, coffee, monk fruit, croissant vegan dough",
+    lockedIngredients:"Almond milk, Decaf Coffee , Monk Fruit, Croissant vegan dough",
+    choicename1: "Coffee style",
+    choiceitems1: "Decaf , Cafenated"
   },
 ];
