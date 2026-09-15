@@ -148,7 +148,6 @@
             min-height: 80vh;
         }
 
-        /* NEW: Summary List Styles */
         .summary-list {
             list-style: none;
             padding: 0;
@@ -163,6 +162,36 @@
             font-size: 0.9rem;
             color: #555;
         }
+
+        /* PROMO FLEX CONTAINER & BUTTON SIZING FIX */
+        .promo-flex-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+        .promo-flex-wrapper input {
+            flex: 1;
+            min-width: 0; /* Prevents overflow in flexbox */
+            margin-bottom: 0 !important;
+        }
+        #apply-promo {
+            display: none;
+            white-space: nowrap;
+            width: auto !important;
+            min-width: auto !important;
+            padding: 10px 18px !important;
+            margin: 0 !important;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .zone-option {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+            border: 1px solid #ddd; border-radius: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .zone-option:has(input:checked) { border-color: #5d8039; background: #f4f8f1; }
+        .zone-option input { width: 18px; height: 18px; accent-color: #5d8039; cursor: pointer; }
 
         @media (max-width: 768px) {
             html, body {
@@ -280,23 +309,11 @@
     <div class="checkout-header"><h1>Finalize Your Order</h1></div>
     <section id="order-details" class="checkout-card summary-card"></section>
 
-    <div class="checkout-card" style="margin-bottom: 20px;">
-       <div class="form-group" id="promo-container">
-         <label>Promo Code</label>
-         <div class="promo-flex-wrapper">
-         <input type="text" id="promo_code" placeholder="Enter code">
-         <p></p>
-          <button type="button" id="apply-promo" class="btn-primary">Apply</button>
-      </div>
-    <small id="promo-msg" style="display: block; margin-top: 5px; font-weight: 600;"></small>
-</div>
-    </div>
-
     <div class="checkout-card">
         <form id="checkout-form">
-            <div class="form-group"><label>Full Name</label><input type="text" id="user_name" required></div>
-            <div class="form-group"><label>Phone Number</label><input type="tel" id="user_phone" required></div>
-            <div class="form-group"><label>Delivery Address</label><textarea id="user_address" rows="3" required></textarea></div>
+            <div class="form-group"><label>Full Name</label><input type="text" id="user_name" class="form-input" required></div>
+            <div class="form-group"><label>Phone Number</label><input type="tel" id="user_phone" class="form-input" required></div>
+            <div class="form-group"><label>Delivery Address</label><textarea id="user_address" class="form-input" rows="3" required></textarea></div>
 
             <div class="form-group">
                 <label>Delivery Zone</label>
@@ -329,21 +346,22 @@
                         <option value="">Select a date first</option>
                     </select>
                 </div>
+                <small id="delivery-hours-msg" style="display: block; margin-top: 5px; color: #666; font-size: 0.8rem;"></small>
             </div>
 
-            <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; padding: 18px;">Confirm Order</button>
+            <div class="form-group" id="promo-container" style="margin-top: 10px;">
+                <label>Promo Code</label>
+                <div class="promo-flex-wrapper">
+                    <input type="text" id="promo_code" class="form-input" placeholder="Enter code">
+                    <button type="button" id="apply-promo" class="btn-primary">Apply</button>
+                </div>
+                <small id="promo-msg" style="display: block; margin-top: 5px; font-weight: 600;"></small>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; padding: 18px; margin-top: 15px;">Confirm Order</button>
         </form>
     </div>
 </main>
-
-<style>
-    .zone-option {
-        display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-        border: 1px solid #ddd; border-radius: 10px; cursor: pointer; transition: 0.2s;
-    }
-    .zone-option:has(input:checked) { border-color: #5d8039; background: #f4f8f1; }
-    .zone-option input { width: 18px; height: 18px; accent-color: #5d8039; cursor: pointer; }
-</style>
 
 <script>
     // --- GLOBAL SCOPE VARIABLES ---
@@ -352,7 +370,7 @@
     let discountAmount = 0;
     let pendingUrl = "";
     let isSingleOrder = false;
-    let finalName = ""; // Track plan name for order submission
+    let finalName = ""; 
     let deliveryFee = 0;
     let storeSettings = { weekday_open: '09:00', weekday_close: '21:00', weekend_open: '10:00', weekend_close: '22:00', slot_minutes: 30, min_lead_minutes: 40, closed_until: null };
 
@@ -466,31 +484,37 @@
 
     async function setupDeliveryTimePicker() {
         const dateInput = document.getElementById('delivery_date');
-        const msg = document.getElementById('delivery-hours-msg');
 
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
-        dateInput.min = `${yyyy}-${mm}-${dd}`;
-        if (!dateInput.value) dateInput.value = dateInput.min;
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        dateInput.min = todayStr;
+        if (!dateInput.value) dateInput.value = todayStr;
 
         updateHoursMessage();
         populateTimeSlots();
-        dateInput.addEventListener('change', function() {
+
+        dateInput.addEventListener('change', () => {
+            updateHoursMessage();
+            populateTimeSlots();
+        });
+        dateInput.addEventListener('input', () => {
             updateHoursMessage();
             populateTimeSlots();
         });
     }
 
     function isWeekendDate(dateStr) {
-        // Parse as local date (avoid UTC shift from new Date('YYYY-MM-DD'))
         const [y, m, d] = dateStr.split('-').map(Number);
-        const day = new Date(y, m - 1, d).getDay(); // 0 = Sun, 6 = Sat
+        const day = new Date(y, m - 1, d).getDay();
         return day === 0 || day === 6;
     }
 
     function hoursForDate(dateStr) {
+        if (!dateStr) return { open: storeSettings.weekday_open, close: storeSettings.weekday_close };
         return isWeekendDate(dateStr)
             ? { open: storeSettings.weekend_open, close: storeSettings.weekend_close }
             : { open: storeSettings.weekday_open, close: storeSettings.weekday_close };
@@ -507,7 +531,9 @@
     function updateHoursMessage() {
         const dateInput = document.getElementById('delivery_date');
         const msg = document.getElementById('delivery-hours-msg');
-        if (!dateInput.value) return;
+        
+        if (!msg || !dateInput || !dateInput.value) return;
+
         const { open, close } = hoursForDate(dateInput.value);
         const label = isWeekendDate(dateInput.value) ? 'Weekend' : 'Weekday';
         const leadMinutes = Number.isFinite(storeSettings.min_lead_minutes) ? storeSettings.min_lead_minutes : 40;
@@ -517,12 +543,24 @@
     function populateTimeSlots() {
         const dateInput = document.getElementById('delivery_date');
         const timeSelect = document.getElementById('delivery_time');
+
+        if (!dateInput || !dateInput.value) {
+            timeSelect.innerHTML = `<option value="">Select a date first</option>`;
+            return;
+        }
+
         const { open, close } = hoursForDate(dateInput.value);
         const [openH, openM] = (open || '09:00').split(':').map(Number);
         const [closeH, closeM] = (close || '21:00').split(':').map(Number);
         const slotMinutes = parseInt(storeSettings.slot_minutes) || 30;
 
-        const isToday = dateInput.value === dateInput.min;
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        const isToday = dateInput.value === todayStr;
         const leadMinutes = Number.isFinite(storeSettings.min_lead_minutes) ? storeSettings.min_lead_minutes : 40;
         const cutoff = new Date(Date.now() + leadMinutes * 60000);
 
@@ -539,9 +577,11 @@
             cursor = new Date(cursor.getTime() + slotMinutes * 60000);
         }
 
-        timeSelect.innerHTML = slots.length > 0
-            ? slots.map(s => `<option value="${s}">${formatTime(s)}</option>`).join('')
-            : `<option value="">No slots available that day</option>`;
+        if (slots.length > 0) {
+            timeSelect.innerHTML = slots.map(s => `<option value="${s}">${formatTime(s)}</option>`).join('');
+        } else {
+            timeSelect.innerHTML = `<option value="">No slots left today</option>`;
+        }
     }
 
     // --- STORE CLOSURE CHECK ---
@@ -572,7 +612,7 @@
             if (error) throw error;
             storeSettings = data;
         } catch (err) {
-            // Fall back to the defaults declared above if settings aren't set up yet.
+            // Fall back to defaults
         }
     }
 
@@ -587,6 +627,12 @@
         const grand = base + deliveryFee;
         const el = document.getElementById('grand-total-display');
         if (el) el.innerText = `$${grand.toFixed(2)}`;
+        
+        // Dynamic update for upper section total
+        const topDisplay = document.getElementById('display-price');
+        if (topDisplay) {
+            topDisplay.innerText = `$${grand.toFixed(2)}`;
+        }
     }
 
     function setupDeliveryZonePicker() {
@@ -626,7 +672,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const isSubscriptionRefill = urlParams.get('isSub') === 'true';
 
-        // REDIRECT IF BOTH ARE EMPTY
         if (!rawOrder && singleOrderCart.length === 0) { 
             window.location.href = "builder.html"; 
             return; 
@@ -660,10 +705,9 @@
                 <h2>Order Summary</h2>
                 ${itemsHtml}
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #eee; padding-top: 15px;">
-                    <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(2)}</span>
+                    <span>Total (incl. delivery):</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(2)}</span>
                 </div>`;
         } else {
-            // ORIGINAL MEAL PLAN LOGIC
             const fullState = JSON.parse(rawOrder);
             let dayKeys = Object.keys(fullState).filter(day => fullState[day].length > 0);
             let totalMeals = 0;
@@ -681,7 +725,7 @@
                     <h2>${profile.active_package_name}</h2>
                     <p>Week ${profile["24planweek"] + 1} Selection</p>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Due Today:</span><span style="font-size: 2rem; color: #5d8039;">$0.00</span>
+                        <span>Due Today (incl. delivery):</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$0.00</span>
                     </div>`;
                 document.getElementById('submit-btn').innerText = `Confirm Week ${profile["24planweek"] + 1}`;
                 finalPrice = 0; 
@@ -690,7 +734,7 @@
                     <div class="checkout-badge">${durationKey}-Day Plan</div>
                     <h2>${finalName}</h2>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Total:</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(1)}</span>
+                        <span>Total (incl. delivery):</span><span id="display-price" style="font-size: 2rem; color: #5d8039;">$${finalPrice.toFixed(2)}</span>
                     </div>`;
             }
         }
@@ -704,9 +748,20 @@
             document.getElementById('user_address').value = user.address || '';
         }
 
-        // --- PROMO CODE LOGIC ---
-        document.getElementById('apply-promo').onclick = async function() {
-            const code = document.getElementById('promo_code').value.trim().toUpperCase();
+        // --- PROMO CODE DYNAMIC TOGGLE & LOGIC ---
+        const promoInput = document.getElementById('promo_code');
+        const applyBtn = document.getElementById('apply-promo');
+
+        promoInput.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                applyBtn.style.display = 'inline-block';
+            } else {
+                applyBtn.style.display = 'none';
+            }
+        });
+
+        applyBtn.onclick = async function() {
+            const code = promoInput.value.trim().toUpperCase();
             const msg = document.getElementById('promo-msg');
             
             if (!user.email) {
@@ -729,11 +784,9 @@
                 discountAmount = Math.round(finalPrice * 0.20 * 10) / 10;
                 msg.style.color = "#5d8039";
                 msg.innerText = `Success! $${discountAmount.toFixed(1)} discount applied.`;
-                document.getElementById('display-price').innerText = `$${(finalPrice - discountAmount).toFixed(1)}`;
             } else {
                 msg.style.color = "red"; msg.innerText = "Invalid promo code.";
                 discountAmount = 0;
-                document.getElementById('display-price').innerText = `$${finalPrice.toFixed(1)}`;
             }
             updateGrandTotalDisplay();
         };
@@ -752,7 +805,7 @@
                 alert("Please select whether the delivery is near or outside Jal El Dib.");
                 return;
             }
-            const deliveryZone = zoneRadio.value; // 'near' or 'outside'
+            const deliveryZone = zoneRadio.value;
 
             btn.disabled = true; 
             btn.innerText = "Processing...";
@@ -830,7 +883,6 @@
                 const { error: itemsError } = await sbClient.from('order_items').insert(itemsToInsert);
                 if (itemsError) throw itemsError;
 
-                // Update 24-day subscription progress if applicable
                 if (!isSingleOrder && (isSubscriptionRefill || durationKey === "24")) {
                     let curWeek = isSubscriptionRefill ? (profile["24planweek"] || 0) : 0;
                     let nextWeek = curWeek + 1;
@@ -842,7 +894,6 @@
                     }).eq('email', user.email);
                 }
 
-                // EmailJS Logic
                 let itemsDetailsHtml = '';
                 itemsToInsert.forEach(item => {
                     itemsDetailsHtml += `<tr><td>${item.meal_name}</td><td>${item.choice}</td>`;
@@ -866,10 +917,8 @@
                     delivery_zone: deliveryZone === 'near' ? 'Near Jal El Dib' : 'Outside Jal El Dib',
                     delivery_fee: deliveryFee.toFixed(2)
                 };
-                console.log("Email data being sent:", emailData);
                 await emailjs.send("service_rfcp52l", "template_oglmmp8", emailData);
 
-                // CLEAR BOTH CARTS ON SUCCESS
                 localStorage.removeItem('finalOrder');
                 localStorage.removeItem('single_order_cart');
                 window.location.href = "thanks.html";
