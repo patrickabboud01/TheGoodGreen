@@ -472,7 +472,7 @@
         else if (tab === 'orders') refreshData();
     }
 
-    /* QUICK CLOSURE / STORE HOURS LOGIC (SUPABASE SYNCED) */
+    /* QUICK CLOSURE / STORE HOURS LOGIC */
     function pauseStore(durationKey) {
         const now = new Date();
         let reopenTime = new Date();
@@ -482,13 +482,11 @@
         } else if (durationKey === '2h') {
             reopenTime.setHours(now.getHours() + 2);
         } else if (durationKey === 'today') {
+            // Set reopen time to midnight tonight
             reopenTime.setHours(23, 59, 59, 999);
         }
 
-        saveClosureState(
-            reopenTime.toISOString(), 
-            durationKey === 'today' ? 'Closed for the rest of today' : `Paused until ${reopenTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
-        );
+        saveClosureState(reopenTime.toISOString(), durationKey === 'today' ? 'Closed for the rest of today' : `Paused until ${reopenTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`);
     }
 
     function pauseCustomMinutes() {
@@ -503,106 +501,64 @@
         saveClosureState(reopenTime.toISOString(), `Paused for ${mins} minute(s)`);
     }
 
-    async function saveClosureState(reopenIso, reason) {
+    function saveClosureState(reopenIso, reason) {
         const state = {
             isClosed: true,
             reopenAt: reopenIso,
             reason: reason
         };
-
-        try {
-            const { error } = await sbClient
-                .from('store_settings')
-                .upsert({ 
-                    setting_key: 'store_closure', 
-                    value: state, 
-                    updated_at: new Date().toISOString() 
-                });
-
-            if (error) throw error;
-            checkStoreClosureStatus();
-        } catch (err) {
-            console.error('Save error:', err);
-            alert('Failed to save store pause state to database.');
-        }
+        localStorage.setItem('goodgreen_store_closure', JSON.stringify(state));
+        checkStoreClosureStatus();
     }
 
-    async function reopenStoreNow() {
-        const state = {
-            isClosed: false,
-            reopenAt: null,
-            reason: ''
-        };
-
-        try {
-            const { error } = await sbClient
-                .from('store_settings')
-                .upsert({ 
-                    setting_key: 'store_closure', 
-                    value: state, 
-                    updated_at: new Date().toISOString() 
-                });
-
-            if (error) throw error;
-            if (closureTimerInterval) clearInterval(closureTimerInterval);
-            checkStoreClosureStatus();
-        } catch (err) {
-            console.error('Reopen error:', err);
-            alert('Failed to reopen store in database.');
-        }
+    function reopenStoreNow() {
+        localStorage.removeItem('goodgreen_store_closure');
+        if (closureTimerInterval) clearInterval(closureTimerInterval);
+        checkStoreClosureStatus();
     }
 
-    async function checkStoreClosureStatus() {
+    function checkStoreClosureStatus() {
+        const rawState = localStorage.getItem('goodgreen_store_closure');
         const banner = document.getElementById('store-status-banner');
         const titleText = document.getElementById('status-title-text');
         const subText = document.getElementById('status-subtitle-text');
         const reopenControl = document.getElementById('reopen-control');
 
-        try {
-            const { data, error } = await sbClient
-                .from('store_settings')
-                .select('value')
-                .eq('setting_key', 'store_closure')
-                .single();
-
-            if (error || !data || !data.value || !data.value.isClosed) {
-                banner.className = "quick-closure-banner";
-                titleText.style.color = "#27ae60";
-                titleText.innerText = "Store Status: OPEN";
-                subText.innerText = "Store is taking orders normally according to regular schedule.";
-                reopenControl.style.display = "none";
-                if (closureTimerInterval) clearInterval(closureTimerInterval);
-                return;
-            }
-
-            const state = data.value;
-            const reopenAt = new Date(state.reopenAt);
-            const now = new Date();
-
-            if (now >= reopenAt) {
-                await reopenStoreNow();
-                return;
-            }
-
-            banner.className = "quick-closure-banner closed";
-            titleText.style.color = "#d9534f";
-            titleText.innerText = "Store Status: CLOSED / PAUSED";
-            reopenControl.style.display = "block";
-
-            updateCountdownDisplay(reopenAt, state.reason);
-
+        if (!rawState) {
+            banner.className = "quick-closure-banner";
+            titleText.style.color = "#27ae60";
+            titleText.innerText = "Store Status: OPEN";
+            subText.innerText = "Store is taking orders normally according to regular schedule.";
+            reopenControl.style.display = "none";
             if (closureTimerInterval) clearInterval(closureTimerInterval);
-            closureTimerInterval = setInterval(() => {
-                if (new Date() >= reopenAt) {
-                    reopenStoreNow();
-                } else {
-                    updateCountdownDisplay(reopenAt, state.reason);
-                }
-            }, 1000);
-
-        } catch (err) {
-            console.error('Error fetching closure status:', err);
+            return;
         }
+
+        const state = JSON.parse(rawState);
+        const reopenAt = new Date(state.reopenAt);
+        const now = new Date();
+
+        if (now >= reopenAt) {
+            // Automatically reopen if duration passed
+            reopenStoreNow();
+            return;
+        }
+
+        banner.className = "quick-closure-banner closed";
+        titleText.style.color = "#d9534f";
+        titleText.innerText = "Store Status: CLOSED / PAUSED";
+        reopenControl.style.display = "block";
+
+        updateCountdownDisplay(reopenAt, state.reason);
+
+        if (closureTimerInterval) clearInterval(closureTimerInterval);
+        closureTimerInterval = setInterval(() => {
+            if (new Date() >= reopenAt) {
+                reopenStoreNow();
+            } else {
+                updateCountdownDisplay(reopenAt, state.reason);
+            }
+        }, 1000);
     }
 
     function updateCountdownDisplay(reopenAt, reason) {
