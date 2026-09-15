@@ -318,8 +318,8 @@
             <div class="form-group">
                 <label>Delivery Zone</label>
                 <div id="zone-options" style="display:flex; flex-direction:column; gap:10px;">
-                    <label class="zone-option" for="zone-near">
-                        <input type="radio" name="delivery_zone" id="zone-near" value="near" required>
+                    <label class="zone-option" for="zone-pickup">
+                        <input type="radio" name="delivery_zone" id="zone-pickup" value="pickup" required>
                         <span><strong>Take Away / Pickup</strong> <span style="color:#5d8039; font-weight:700;">+$0.00</span></span>
                     </label>
                     <label class="zone-option" for="zone-near">
@@ -376,7 +376,7 @@
     let isSingleOrder = false;
     let finalName = ""; 
     let deliveryFee = 0;
-    let storeSettings = { weekday_open: '09:00', weekday_close: '21:00', weekend_open: '10:00', weekend_close: '22:00', slot_minutes: 30, min_lead_minutes: 40, closed_until: null };
+    let storeSettings = { weekday_open: '09:00', weekday_close: '21:00', weekend_open: '10:00', weekend_close: '22:00', slot_minutes: 30, min_lead_minutes: 40 };
 
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
@@ -588,41 +588,68 @@
         }
     }
 
-    // --- STORE CLOSURE CHECK ---
+    // --- LIVE STORE CLOSURE CHECK (SUPABASE) ---
     let storeIsClosed = false;
 
-    function showClosedBanner(closedUntil) {
+    function showClosedBanner(reason, reopenAtIso) {
         storeIsClosed = true;
-        const main = document.querySelector('.checkout-main');
-        const banner = document.createElement('div');
-        banner.className = 'checkout-card';
-        banner.style.cssText = 'background:#fff5f5; border:1px solid #feb2b2; color:#d9534f; font-weight:700; text-align:center; padding:18px;';
-        const untilDate = closedUntil ? new Date(closedUntil) : null;
-        const farFuture = untilDate && untilDate.getFullYear() >= 2090;
-        banner.innerText = farFuture
-            ? "We're currently closed and not accepting new orders. Please check back soon!"
-            : `We're currently closed. We'll be back at ${untilDate.toLocaleString()} — please check back then.`;
-        main.insertBefore(banner, main.firstChild.nextSibling);
+        let banner = document.getElementById('store-closure-banner');
+        if (!banner) {
+            const main = document.querySelector('.checkout-main');
+            banner = document.createElement('div');
+            banner.id = 'store-closure-banner';
+            banner.className = 'checkout-card';
+            banner.style.cssText = 'background:#fff5f5; border:1px solid #feb2b2; color:#d9534f; font-weight:700; text-align:center; padding:18px; margin-bottom: 20px;';
+            main.insertBefore(banner, main.firstChild.nextSibling);
+        }
+
+        const reopenAt = reopenAtIso ? new Date(reopenAtIso) : null;
+        const reopenTimeStr = reopenAt ? reopenAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        banner.innerText = `We are currently paused (${reason || 'Kitchen Paused'}). Reopening around ${reopenTimeStr}.`;
 
         const submitBtn = document.getElementById('submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.5';
-        submitBtn.innerText = "Store Closed";
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            submitBtn.innerText = "Kitchen Paused";
+        }
     }
 
-    async function fetchStoreSettings() {
-        try {
-            const { data, error } = await sbClient.from('store_settings').select('*').eq('id', 1).single();
-            if (error) throw error;
-            storeSettings = data;
-        } catch (err) {
-            // Fall back to defaults
+    function removeClosedBanner() {
+        storeIsClosed = false;
+        const banner = document.getElementById('store-closure-banner');
+        if (banner) banner.remove();
+
+        const submitBtn = document.getElementById('submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.innerText = "Confirm Order";
         }
     }
 
     async function checkStoreClosure() {
-        if (storeSettings.closed_until && new Date(storeSettings.closed_until) > new Date()) {
-            showClosedBanner(storeSettings.closed_until);
+        try {
+            const { data, error } = await sbClient
+                .from('store_settings')
+                .select('value')
+                .eq('setting_key', 'store_closure')
+                .single();
+
+            if (error || !data || !data.value || !data.value.isClosed) {
+                removeClosedBanner();
+                return;
+            }
+
+            const state = data.value;
+            const reopenAt = new Date(state.reopenAt);
+            if (new Date() >= reopenAt) {
+                removeClosedBanner();
+            } else {
+                showClosedBanner(state.reason, state.reopenAt);
+            }
+        } catch (err) {
+            console.error("Error fetching closure state:", err);
         }
     }
 
@@ -632,7 +659,6 @@
         const el = document.getElementById('grand-total-display');
         if (el) el.innerText = `$${grand.toFixed(2)}`;
         
-        // Dynamic update for upper section total
         const topDisplay = document.getElementById('display-price');
         if (topDisplay) {
             topDisplay.innerText = `$${grand.toFixed(2)}`;
@@ -643,7 +669,10 @@
         const disclaimer = document.getElementById('zone-disclaimer');
         document.querySelectorAll('input[name="delivery_zone"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                deliveryFee = this.value === 'near' ? 2 : 5;
+                if (this.value === 'pickup') deliveryFee = 0;
+                else if (this.value === 'near') deliveryFee = 2;
+                else deliveryFee = 5;
+
                 disclaimer.style.display = this.value === 'outside' ? 'block' : 'none';
                 updateGrandTotalDisplay();
             });
@@ -653,7 +682,6 @@
 
     window.onload = async function() {
         updateAuthUI();
-        await fetchStoreSettings();
         await checkStoreClosure();
         
         const toggle = document.getElementById('menu-toggle');
@@ -798,15 +826,18 @@
         // --- FORM SUBMIT LOGIC ---
         document.getElementById('checkout-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Guard against orders while paused
+            await checkStoreClosure();
             if (storeIsClosed) {
-                alert("We're currently closed and can't accept new orders right now.");
+                alert("We're currently closed or taking a quick break. Please try again soon.");
                 return;
             }
-            const btn = document.getElementById('submit-btn');
 
+            const btn = document.getElementById('submit-btn');
             const zoneRadio = document.querySelector('input[name="delivery_zone"]:checked');
             if (!zoneRadio) {
-                alert("Please select whether the delivery is near or outside Jal El Dib.");
+                alert("Please select your delivery zone / pickup option.");
                 return;
             }
             const deliveryZone = zoneRadio.value;
@@ -918,7 +949,7 @@
                     items_details: itemsDetailsHtml,
                     delivery_date: deliveryDate || '',
                     delivery_time: deliveryTime ? formatTime(deliveryTime) : '',
-                    delivery_zone: deliveryZone === 'near' ? 'Near Jal El Dib' : 'Outside Jal El Dib',
+                    delivery_zone: deliveryZone === 'pickup' ? 'Take Away / Pickup' : (deliveryZone === 'near' ? 'Near Jal El Dib' : 'Outside Jal El Dib'),
                     delivery_fee: deliveryFee.toFixed(2)
                 };
                 await emailjs.send("service_rfcp52l", "template_oglmmp8", emailData);
