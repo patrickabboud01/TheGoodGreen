@@ -95,6 +95,28 @@
             font-weight: 700;
         }
 
+        /* --- STORE CLOSED MODAL --- */
+        .closed-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100001;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .closed-modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+
         /* --- SIDEBAR REFINEMENTS --- */
         .sidebar {
             position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
@@ -277,6 +299,18 @@
     </div>
 </div>
 
+<div id="closed-modal" class="closed-modal-overlay">
+    <div class="closed-modal-box">
+        <div style="font-size: 2rem; margin-bottom: 10px;">🕒</div>
+        <h3 style="color: #d9534f; margin-bottom: 10px;">We're Closed Right Now</h3>
+        <p id="closed-modal-msg" style="color: #666; font-size: 0.9rem; line-height: 1.4;"></p>
+        <div class="alert-btns">
+            <button class="btn-cancel" onclick="dismissClosedModal(false)">Close</button>
+            <button class="btn-primary" style="flex:1; border-radius:10px;" onclick="dismissClosedModal(true)">Order for Later</button>
+        </div>
+    </div>
+</div>
+
 <header>
     <nav class="navbar">
         <div class="container">
@@ -318,8 +352,8 @@
             <div class="form-group">
                 <label>Delivery Zone</label>
                 <div id="zone-options" style="display:flex; flex-direction:column; gap:10px;">
-                    <label class="zone-option" for="zone-near">
-                        <input type="radio" name="delivery_zone" id="zone-near" value="near" required>
+                    <label class="zone-option" for="zone-takeaway">
+                        <input type="radio" name="delivery_zone" id="zone-takeaway" value="takeaway" required>
                         <span><strong>Take Away / Pickup</strong> <span style="color:#5d8039; font-weight:700;">+$0.00</span></span>
                     </label>
                     <label class="zone-option" for="zone-near">
@@ -376,7 +410,8 @@
     let isSingleOrder = false;
     let finalName = ""; 
     let deliveryFee = 0;
-    let storeSettings = { weekday_open: '09:00', weekday_close: '21:00', weekend_open: '10:00', weekend_close: '22:00', slot_minutes: 30, min_lead_minutes: 40, closed_until: null };
+    let storeSettings = { weekday_open: '09:00', weekday_close: '21:00', weekend_open: '10:00', weekend_close: '22:00', slot_minutes: 30, min_lead_minutes: 40 };
+    let storeStatus = { is_closed: false, reopen_at: null, reason: 'EMPTY' };
 
     (function() { emailjs.init("O38XtdcMyAkWnvsoU"); })();
     const sbUrl = 'https://dehcgxbupadfabotpwvg.supabase.co';
@@ -488,6 +523,7 @@
 
     async function setupDeliveryTimePicker() {
         const dateInput = document.getElementById('delivery_date');
+        document.getElementById('delivery-time-section').dataset.wired = 'true';
 
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -495,8 +531,21 @@
         const dd = String(today.getDate()).padStart(2, '0');
         const todayStr = `${yyyy}-${mm}-${dd}`;
 
-        dateInput.min = todayStr;
-        if (!dateInput.value) dateInput.value = todayStr;
+        // If the store is closed indefinitely (no known reopen time), don't let people
+        // pick today at all — push the minimum selectable date to tomorrow.
+        if (storeIsClosed && !storeReopenAt) {
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tYyyy = tomorrow.getFullYear();
+            const tMm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            const tDd = String(tomorrow.getDate()).padStart(2, '0');
+            const tomorrowStr = `${tYyyy}-${tMm}-${tDd}`;
+            dateInput.min = tomorrowStr;
+            if (!dateInput.value || dateInput.value === todayStr) dateInput.value = tomorrowStr;
+        } else {
+            dateInput.min = todayStr;
+            if (!dateInput.value) dateInput.value = todayStr;
+        }
 
         updateHoursMessage();
         populateTimeSlots();
@@ -566,14 +615,26 @@
 
         const isToday = dateInput.value === todayStr;
         const leadMinutes = Number.isFinite(storeSettings.min_lead_minutes) ? storeSettings.min_lead_minutes : 40;
-        const cutoff = new Date(Date.now() + leadMinutes * 60000);
+        // Slot generation is always time-of-day only (not tied to the selected calendar
+        // date), so any cutoff also has to be expressed as a "today at HH:MM" Date to
+        // compare on the same footing as `cursor` below.
+        let cutoff = isToday ? new Date(Date.now() + leadMinutes * 60000) : null;
+
+        // If we're currently closed with a known reopen time that falls on this
+        // selected date, don't offer slots before the store is actually back open.
+        const reopenDateStr = storeReopenAt ? storeReopenAt.toISOString().slice(0, 10) : null;
+        if (storeIsClosed && storeReopenAt && dateInput.value === reopenDateStr) {
+            const reopenTimeToday = new Date();
+            reopenTimeToday.setHours(storeReopenAt.getHours(), storeReopenAt.getMinutes(), 0, 0);
+            cutoff = (!cutoff || reopenTimeToday > cutoff) ? reopenTimeToday : cutoff;
+        }
 
         let slots = [];
         let cursor = new Date(); cursor.setHours(openH, openM, 0, 0);
         const end = new Date(); end.setHours(closeH, closeM, 0, 0);
 
         while (cursor < end) {
-            if (!isToday || cursor > cutoff) {
+            if (!cutoff || cursor > cutoff) {
                 const hh = String(cursor.getHours()).padStart(2, '0');
                 const mm = String(cursor.getMinutes()).padStart(2, '0');
                 slots.push(`${hh}:${mm}`);
@@ -588,26 +649,53 @@
         }
     }
 
-    // --- STORE CLOSURE CHECK ---
+    // --- STORE CLOSURE CHECK (Supabase `store_status` + `store_settings`) ---
     let storeIsClosed = false;
+    let storeReopenAt = null;
 
-    function showClosedBanner(closedUntil) {
-        storeIsClosed = true;
+    function showClosedBanner() {
         const main = document.querySelector('.checkout-main');
         const banner = document.createElement('div');
+        banner.id = 'closed-inline-banner';
         banner.className = 'checkout-card';
         banner.style.cssText = 'background:#fff5f5; border:1px solid #feb2b2; color:#d9534f; font-weight:700; text-align:center; padding:18px;';
-        const untilDate = closedUntil ? new Date(closedUntil) : null;
-        const farFuture = untilDate && untilDate.getFullYear() >= 2090;
-        banner.innerText = farFuture
-            ? "We're currently closed and not accepting new orders. Please check back soon!"
-            : `We're currently closed. We'll be back at ${untilDate.toLocaleString()} — please check back then.`;
+        banner.innerText = storeReopenAt
+            ? `We're currently closed. Expected back around ${storeReopenAt.toLocaleString()}. Pick a delivery time below and we'll have it ready.`
+            : "We're currently closed and not taking orders right now. You can still place an order for later below.";
         main.insertBefore(banner, main.firstChild.nextSibling);
+    }
 
-        const submitBtn = document.getElementById('submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.5';
-        submitBtn.innerText = "Store Closed";
+    function showClosedModal() {
+        const modal = document.getElementById('closed-modal');
+        const msg = document.getElementById('closed-modal-msg');
+        const reasonText = (storeStatus.reason && storeStatus.reason !== 'EMPTY') ? storeStatus.reason : "We're currently closed";
+        msg.innerText = storeReopenAt
+            ? `${reasonText}. We expect to reopen around ${storeReopenAt.toLocaleString()}. You can still place an order — just pick a delivery time after we reopen.`
+            : `${reasonText}. No reopening time has been set yet, but you can still place an order for a later date.`;
+        modal.style.display = 'flex';
+    }
+
+    function dismissClosedModal(scheduleLater) {
+        document.getElementById('closed-modal').style.display = 'none';
+        if (scheduleLater) {
+            forceScheduledDelivery();
+        }
+    }
+
+    // Reveals & requires the date/time picker even for plan orders, so a closed store
+    // still lets people order for later instead of blocking checkout outright.
+    function forceScheduledDelivery() {
+        const section = document.getElementById('delivery-time-section');
+        section.style.display = 'block';
+        document.getElementById('delivery_date').required = true;
+        document.getElementById('delivery_time').required = true;
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!section.dataset.wired) {
+            setupDeliveryTimePicker();
+        } else {
+            updateHoursMessage();
+            populateTimeSlots();
+        }
     }
 
     async function fetchStoreSettings() {
@@ -616,14 +704,37 @@
             if (error) throw error;
             storeSettings = data;
         } catch (err) {
-            // Fall back to defaults
+            console.error("Couldn't load store_settings from Supabase — falling back to hardcoded default hours. Reason:", err.message);
+        }
+    }
+
+    async function fetchStoreStatus() {
+        try {
+            const { data, error } = await sbClient.from('store_status').select('*').eq('id', 1).single();
+            if (error) throw error;
+            storeStatus = data;
+        } catch (err) {
+            // Fall back to defaults (assume open) if the table/row isn't reachable
+            storeStatus = { is_closed: false, reopen_at: null, reason: 'EMPTY' };
         }
     }
 
     async function checkStoreClosure() {
-        if (storeSettings.closed_until && new Date(storeSettings.closed_until) > new Date()) {
-            showClosedBanner(storeSettings.closed_until);
+        const reopenAt = storeStatus.reopen_at ? new Date(storeStatus.reopen_at) : null;
+
+        // Self-heal: if the reopen time has already passed, treat the store as open
+        // (and opportunistically flip the flag back so the next visitor doesn't hit this).
+        if (storeStatus.is_closed && reopenAt && reopenAt <= new Date()) {
+            sbClient.from('store_status').update({ is_closed: false, reopen_at: null, reason: 'EMPTY', updated_at: new Date().toISOString() }).eq('id', 1);
+            storeStatus.is_closed = false;
         }
+
+        if (!storeStatus.is_closed) return;
+
+        storeIsClosed = true;
+        storeReopenAt = reopenAt;
+        showClosedBanner();
+        showClosedModal();
     }
 
     function updateGrandTotalDisplay() {
@@ -639,21 +750,27 @@
         }
     }
 
-    function setupDeliveryZonePicker() {
-        const disclaimer = document.getElementById('zone-disclaimer');
-        document.querySelectorAll('input[name="delivery_zone"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                deliveryFee = this.value === 'near' ? 2 : 5;
-                disclaimer.style.display = this.value === 'outside' ? 'block' : 'none';
-                updateGrandTotalDisplay();
-            });
+   function setupDeliveryZonePicker() {
+    const disclaimer = document.getElementById('zone-disclaimer');
+    document.querySelectorAll('input[name="delivery_zone"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'takeaway') {
+                deliveryFee = 0;
+            } else if (this.value === 'near') {
+                deliveryFee = 2;
+            } else {
+                deliveryFee = 5;
+            }
+            disclaimer.style.display = this.value === 'outside' ? 'block' : 'none';
+            updateGrandTotalDisplay();
         });
-        updateGrandTotalDisplay();
-    }
-
+    });
+    updateGrandTotalDisplay();
+}
     window.onload = async function() {
         updateAuthUI();
         await fetchStoreSettings();
+        await fetchStoreStatus();
         await checkStoreClosure();
         
         const toggle = document.getElementById('menu-toggle');
@@ -798,10 +915,6 @@
         // --- FORM SUBMIT LOGIC ---
         document.getElementById('checkout-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (storeIsClosed) {
-                alert("We're currently closed and can't accept new orders right now.");
-                return;
-            }
             const btn = document.getElementById('submit-btn');
 
             const zoneRadio = document.querySelector('input[name="delivery_zone"]:checked');
@@ -825,14 +938,31 @@
                 }
 
                 let deliveryDate = null, deliveryTime = null;
-                if (isSingleOrder) {
+                const needsSchedule = isSingleOrder || storeIsClosed;
+                if (needsSchedule) {
+                    const section = document.getElementById('delivery-time-section');
+                    if (section.style.display === 'none') forceScheduledDelivery();
+
                     deliveryDate = document.getElementById('delivery_date').value;
                     deliveryTime = document.getElementById('delivery_time').value;
                     if (!deliveryDate || !deliveryTime) {
-                        alert("Please choose a delivery date and time.");
+                        alert(storeIsClosed
+                            ? "We're currently closed — please choose a delivery date and time for later."
+                            : "Please choose a delivery date and time.");
                         btn.disabled = false;
                         btn.innerText = "Confirm Order";
                         return;
+                    }
+                    if (storeIsClosed && storeReopenAt) {
+                        const [h, m] = deliveryTime.split(':').map(Number);
+                        const chosen = new Date(`${deliveryDate}T00:00:00`);
+                        chosen.setHours(h, m, 0, 0);
+                        if (chosen < storeReopenAt) {
+                            alert(`We're still closed at that time. Please pick a time after we reopen (around ${storeReopenAt.toLocaleString()}).`);
+                            btn.disabled = false;
+                            btn.innerText = "Confirm Order";
+                            return;
+                        }
                     }
                 }
 

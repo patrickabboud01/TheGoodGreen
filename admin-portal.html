@@ -417,15 +417,16 @@
                     <h3 class="panel-title">Regular Schedule</h3>
                     <div class="form-group">
                         <label>WEEKDAYS (MON–FRI)</label>
-                        <input type="time" value="18:00">
-                        <input type="time" value="23:00" style="margin-top:6px;">
+                        <input type="time" id="weekday-open" value="18:00">
+                        <input type="time" id="weekday-close" value="23:00" style="margin-top:6px;">
                     </div>
                     <div class="form-group">
                         <label>WEEKENDS (SAT–SUN)</label>
-                        <input type="time" value="11:00">
-                        <input type="time" value="23:00" style="margin-top:6px;">
+                        <input type="time" id="weekend-open" value="11:00">
+                        <input type="time" id="weekend-close" value="23:00" style="margin-top:6px;">
                     </div>
-                    <button style="background:var(--forest); color:white; border:none; padding:10px; border-radius:6px; font-weight:700; width:100%; cursor:pointer;" onclick="alert('Regular hours saved!')">Save Schedule</button>
+                    <button id="save-schedule-btn" style="background:var(--forest); color:white; border:none; padding:10px; border-radius:6px; font-weight:700; width:100%; cursor:pointer;" onclick="saveRegularSchedule()">Save Schedule</button>
+                    <small id="schedule-save-msg" style="display:block; margin-top:8px; font-size:0.8rem; color:#666;"></small>
                 </div>
 
             </div>
@@ -468,12 +469,12 @@
         });
 
         if (tab === 'stock') loadStockView();
-        else if (tab === 'hours') checkStoreClosureStatus();
+        else if (tab === 'hours') { loadRegularSchedule(); checkStoreClosureStatus(); }
         else if (tab === 'orders') refreshData();
     }
 
-    /* QUICK CLOSURE / STORE HOURS LOGIC */
-    function pauseStore(durationKey) {
+    /* QUICK CLOSURE / STORE HOURS LOGIC (backed by Supabase `store_status` + `store_settings`) */
+    async function pauseStore(durationKey) {
         const now = new Date();
         let reopenTime = new Date();
 
@@ -486,10 +487,10 @@
             reopenTime.setHours(23, 59, 59, 999);
         }
 
-        saveClosureState(reopenTime.toISOString(), durationKey === 'today' ? 'Closed for the rest of today' : `Paused until ${reopenTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`);
+        await saveClosureState(reopenTime.toISOString(), durationKey === 'today' ? 'Closed for the rest of today' : `Paused until ${reopenTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`);
     }
 
-    function pauseCustomMinutes() {
+    async function pauseCustomMinutes() {
         const mins = parseInt(document.getElementById('custom-minutes').value, 10);
         if (!mins || mins <= 0) {
             alert("Please enter a valid number of minutes.");
@@ -498,33 +499,61 @@
 
         const reopenTime = new Date();
         reopenTime.setMinutes(reopenTime.getMinutes() + mins);
-        saveClosureState(reopenTime.toISOString(), `Paused for ${mins} minute(s)`);
+        await saveClosureState(reopenTime.toISOString(), `Paused for ${mins} minute(s)`);
     }
 
-    function saveClosureState(reopenIso, reason) {
-        const state = {
-            isClosed: true,
-            reopenAt: reopenIso,
-            reason: reason
-        };
-        localStorage.setItem('goodgreen_store_closure', JSON.stringify(state));
+    async function saveClosureState(reopenIso, reason) {
+        try {
+            const { data, error } = await sbClient.from('store_status').upsert({
+                id: 1,
+                is_closed: true,
+                reopen_at: reopenIso,
+                reason: reason,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'id' }).select();
+            if (error) throw error;
+            if (!data || data.length === 0) throw new Error("No row returned — check RLS policies allow upsert on store_status.");
+        } catch (err) {
+            alert('Failed to update store status: ' + err.message);
+        }
         checkStoreClosureStatus();
     }
 
-    function reopenStoreNow() {
-        localStorage.removeItem('goodgreen_store_closure');
+    async function reopenStoreNow() {
+        try {
+            const { data, error } = await sbClient.from('store_status').upsert({
+                id: 1,
+                is_closed: false,
+                reopen_at: null,
+                reason: 'EMPTY',
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'id' }).select();
+            if (error) throw error;
+            if (!data || data.length === 0) throw new Error("No row returned — check RLS policies allow upsert on store_status.");
+        } catch (err) {
+            alert('Failed to reopen store: ' + err.message);
+        }
         if (closureTimerInterval) clearInterval(closureTimerInterval);
         checkStoreClosureStatus();
     }
 
-    function checkStoreClosureStatus() {
-        const rawState = localStorage.getItem('goodgreen_store_closure');
+    async function checkStoreClosureStatus() {
         const banner = document.getElementById('store-status-banner');
         const titleText = document.getElementById('status-title-text');
         const subText = document.getElementById('status-subtitle-text');
         const reopenControl = document.getElementById('reopen-control');
 
-        if (!rawState) {
+        let row;
+        try {
+            const { data, error } = await sbClient.from('store_status').select('*').eq('id', 1).single();
+            if (error) throw error;
+            row = data;
+        } catch (err) {
+            subText.innerText = "Couldn't load store status from Supabase.";
+            return;
+        }
+
+        if (!row.is_closed) {
             banner.className = "quick-closure-banner";
             titleText.style.color = "#27ae60";
             titleText.innerText = "Store Status: OPEN";
@@ -534,13 +563,12 @@
             return;
         }
 
-        const state = JSON.parse(rawState);
-        const reopenAt = new Date(state.reopenAt);
+        const reopenAt = row.reopen_at ? new Date(row.reopen_at) : null;
         const now = new Date();
 
-        if (now >= reopenAt) {
+        if (reopenAt && now >= reopenAt) {
             // Automatically reopen if duration passed
-            reopenStoreNow();
+            await reopenStoreNow();
             return;
         }
 
@@ -549,25 +577,78 @@
         titleText.innerText = "Store Status: CLOSED / PAUSED";
         reopenControl.style.display = "block";
 
-        updateCountdownDisplay(reopenAt, state.reason);
+        updateCountdownDisplay(reopenAt, row.reason);
 
         if (closureTimerInterval) clearInterval(closureTimerInterval);
         closureTimerInterval = setInterval(() => {
-            if (new Date() >= reopenAt) {
+            if (reopenAt && new Date() >= reopenAt) {
                 reopenStoreNow();
             } else {
-                updateCountdownDisplay(reopenAt, state.reason);
+                updateCountdownDisplay(reopenAt, row.reason);
             }
         }, 1000);
     }
 
     function updateCountdownDisplay(reopenAt, reason) {
         const subText = document.getElementById('status-subtitle-text');
+        const cleanReason = (reason && reason !== 'EMPTY') ? reason : 'Store paused';
+        if (!reopenAt) {
+            subText.innerText = `${cleanReason}. No automatic reopen time set — reopen manually when ready.`;
+            return;
+        }
         const diffMs = reopenAt - new Date();
         const minsLeft = Math.floor(diffMs / 60000);
         const secsLeft = Math.floor((diffMs % 60000) / 1000);
 
-        subText.innerText = `${reason}. Auto-reopening in ${minsLeft}m ${secsLeft}s.`;
+        subText.innerText = `${cleanReason}. Auto-reopening in ${minsLeft}m ${secsLeft}s.`;
+    }
+
+    /* REGULAR SCHEDULE LOGIC (Supabase `store_settings`) */
+    async function loadRegularSchedule() {
+        try {
+            const { data, error } = await sbClient.from('store_settings').select('*').eq('id', 1).single();
+            if (error) throw error;
+            document.getElementById('weekday-open').value = data.weekday_open || '18:00';
+            document.getElementById('weekday-close').value = data.weekday_close || '23:00';
+            document.getElementById('weekend-open').value = data.weekend_open || '11:00';
+            document.getElementById('weekend-close').value = data.weekend_close || '23:00';
+        } catch (err) {
+            document.getElementById('schedule-save-msg').innerText = "Couldn't load saved schedule — showing defaults.";
+        }
+    }
+
+    async function saveRegularSchedule() {
+        const msg = document.getElementById('schedule-save-msg');
+        const weekdayOpen = document.getElementById('weekday-open').value;
+        const weekdayClose = document.getElementById('weekday-close').value;
+        const weekendOpen = document.getElementById('weekend-open').value;
+        const weekendClose = document.getElementById('weekend-close').value;
+
+        if (!weekdayOpen || !weekdayClose || !weekendOpen || !weekendClose) {
+            msg.style.color = "#d9534f";
+            msg.innerText = "Please fill in all four times before saving.";
+            return;
+        }
+
+        msg.style.color = "#666";
+        msg.innerText = "Saving...";
+
+        try {
+            const { data, error } = await sbClient.from('store_settings').upsert({
+                id: 1,
+                weekday_open: weekdayOpen,
+                weekday_close: weekdayClose,
+                weekend_open: weekendOpen,
+                weekend_close: weekendClose
+            }, { onConflict: 'id' }).select();
+            if (error) throw error;
+            if (!data || data.length === 0) throw new Error("Save didn't return a row — check RLS policies allow upsert on store_settings.");
+            msg.style.color = "#27ae60";
+            msg.innerText = "Regular hours saved! Checkout will only offer times in this window.";
+        } catch (err) {
+            msg.style.color = "#d9534f";
+            msg.innerText = "Failed to save: " + err.message;
+        }
     }
 
     /* DATA SYNC & RENDERING */
