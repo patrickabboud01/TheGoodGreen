@@ -818,24 +818,51 @@
             alert('Failed to update order status.');
         }
     }
-
-    function loadStockView() {
-        const grid = document.getElementById('stock-grid');
-        grid.innerHTML = "";
-        if (typeof singleMenuData !== 'undefined' && singleMenuData.length > 0) {
-            grid.innerHTML = singleMenuData.map((item) => `
-                <div class="stock-card">
-                    <div><strong>${item.name}</strong></div>
-                    <label class="toggle-switch">
-                        <input type="checkbox">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            `).join('');
-        } else {
-            grid.innerHTML = "<p style='color:#777;'>No menu items loaded from single-data.js.</p>";
-        }
+async function loadStockView() {
+    const grid = document.getElementById('stock-grid');
+    if (typeof singleMenuData === 'undefined' || !singleMenuData.length) {
+        grid.innerHTML = "<p style='color:#777;'>No menu items loaded from single-data.js.</p>";
+        return;
     }
+
+    let soldOut = new Set();
+    try {
+        const { data, error } = await sbClient.from('out_of_stock').select('item_name');
+        if (error) throw error;
+        soldOut = new Set((data || []).map(r => r.item_name));
+    } catch (err) {
+        alert('Could not load stock status: ' + err.message);
+    }
+
+    grid.innerHTML = singleMenuData.map((item, i) => `
+        <div class="stock-card">
+            <div><strong>${item.name}</strong></div>
+            <label class="toggle-switch">
+                <input type="checkbox" data-idx="${i}" ${soldOut.has(item.name.trim()) ? 'checked' : ''}
+                       onchange="toggleStock(this)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    `).join('');
+}
+
+async function toggleStock(checkbox) {
+    const name = singleMenuData[checkbox.dataset.idx].name.trim();
+    try {
+        if (checkbox.checked) {
+            const { error } = await sbClient.from('out_of_stock')
+                .upsert({ item_name: name }, { onConflict: 'item_name' });
+            if (error) throw error;
+        } else {
+            const { error } = await sbClient.from('out_of_stock')
+                .delete().eq('item_name', name);
+            if (error) throw error;
+        }
+    } catch (err) {
+        checkbox.checked = !checkbox.checked;
+        alert('Failed to update stock: ' + err.message);
+    }
+}
 </script>
 </body>
 </html>
