@@ -527,15 +527,15 @@ const singleMenuData = [
     choicename1: "Coffee style",
     choiceitems1: "Decaf , Cafenated"
   },
-  //       { category: "Christmas",
-  // name: "Bbûche de Noël 32cm",
-  //  protein: X,
-  //  Kcal: X,
-  //  price: 45.00,
-  //  image: "images/menu items/buche.webp",
-  //  ingredients: "cacao powder , flour , coconut oil , coconut milk , natural oil , salt , sugar , vanilla extract",
-  //  lockedIngredients:"cacao powder , flour , coconut oil , coconut milk , natural oil , salt , sugar , vanilla extract",
-  //  choicename1: "",
-  //  choiceitems1: ""
-  //},
+         { category: "Offer",
+   name: "Bûche de Noël 32cm",
+    protein: X,
+    Kcal: X,
+    price: 45.00,
+    image: "images/menu items/buche.webp",
+    ingredients: "cacao powder , flour , coconut oil , coconut milk , natural oil , salt , sugar , vanilla extract",
+    lockedIngredients:"cacao powder , flour , coconut oil , coconut milk , natural oil , salt , sugar , vanilla extract",
+    choicename1: "",
+    choiceitems1: ""
+  },
 ];
