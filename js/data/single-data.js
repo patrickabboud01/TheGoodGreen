@@ -528,4 +528,16 @@ const singleMenuData = [
     choiceitems1: "Decaf , Cafenated"
   },
 
+{
+    category: "Christmas",
+    name: "Bûche de Noë 30 cm",
+    protein: 0,
+    Kcal: 0,
+    price: 45.00,
+    image: "images/menu items/Buche.webp",
+    ingredients: "Buche",
+    lockedIngredients: "Buche",
+    choicename1: "",
+    choiceitems1: " "
+  }
 ];
