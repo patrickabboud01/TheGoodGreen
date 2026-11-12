@@ -99,16 +99,7 @@ const rawMenuData = [
         removable_ingredients: "", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
-     { 
-        category: "dinner", 
-        name: "Veggie Noodles", 
-        protein: 12,
-        Kcal: 400, 
-        image: "images/menu items/pasta noodles.webp",
-        fixed_ingredients: "Noodles", 
-        removable_ingredients: "Carrots;Garlic;BellPepper;Cabbage;Soy Sauce; Seaseme Seeds", 
-        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
+
     { 
         category: "lunch", 
         name: "Rice & Steamed Veggies with Soy Sauce", 
@@ -191,16 +182,7 @@ const rawMenuData = [
         removable_ingredients: "potato;carrot;zucchini;Chilly sauce", 
         choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
     },
-      { 
-        category: "dinner", 
-        name: "Lentil Bolognese", 
-        protein: 35,
-        Kcal: 600, 
-        image: "images/menu items/bolo.webp",
-        fixed_ingredients: "Lentils;Pasta;Vegan Bologenese sauce;Carrots-Mushroom Sauce", 
-        removable_ingredients: "", 
-        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
+      
    
     { 
         category: "dinner", 
@@ -268,16 +250,7 @@ const rawMenuData = [
     fixed_ingredients: "Vegan chocolate, milk, flour ,banana ,sugar ,maple , cacao",
      removable_ingredients: "", 
   },
-    { 
-        category: "snack", 
-        name: "Fruit Salad", 
-        protein: 2,
-        Kcal: 130, 
-        image: "images/menu items/saladde de fruit.webp",
-        fixed_ingredients: "Fresh Seasonal Fruits", 
-        removable_ingredients: "", 
-        choice_title: "", choice_options: "", choice_type: "", choice_title_2: "", choice_options_2: "", choice_type_2: "" 
-    },
+
     { 
         category: "snack", 
         name: "Oat Cookie", 
@@ -413,4 +386,33 @@ const rawMenuData = [
     image: "images/menu items/icedcoffee.webp",
      fixed_ingredients: "Almond milk, Coffee , Monk fruit",
   },
+  {        category: "Main", 
+        name: "Hotdog", 
+        protein: 22,
+        Kcal: 320, 
+        price: 11,
+        image: "images/menu items/hotdog.webp",
+        fixed_ingredients: "Tofu , Gluten , Soysauce , mustard , ketchup , bun , chips", 
+        removable_ingredients: "chips;mustard;ketchup", 
+    },
+         { 
+        category: "Main", 
+        name: "Lasagna", 
+        protein: 16,
+        Kcal: 350, 
+        price: 13,
+        image: "images/menu items/Lasagna.webp",
+        fixed_ingredients: "Lasagna sheets , Mushroom-veggie sauce , Rosemary , Soy based cheese , oregano", 
+        removable_ingredients: "", 
+    },
+             { 
+        category: "Main", 
+        name: "Burrito", 
+        protein: 25,
+        Kcal: 500, 
+        price: 11,
+        image: "images/menu items/buritto.webp",
+        fixed_ingredients: "Burrito wrap , wallnut-veggie fillings , vegan Mayonaise , Vegan cheese , Guacamole , Lettuce , Tomato , Onion", 
+        removable_ingredients: "Guacamole;Vegan Mayonaise;Vegan Cheese", 
+    },
 ];
