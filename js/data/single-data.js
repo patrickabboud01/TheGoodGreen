@@ -258,7 +258,7 @@ const singleMenuData = [
         protein: 16,
         Kcal: 350, 
         price: 13,
-        image: "images/menu items/Lasagna.webp",
+        image: "images/menu items/lasagna.webp",
         ingredients: "Lasagna sheets , Mushroom-veggie sauce , Rosemary , Soy based cheese , oregano", 
         removable_ingredients: "", 
     },
