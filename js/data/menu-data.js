@@ -347,7 +347,7 @@ const rawMenuData = [
     protein: 10,
     Kcal: 280,
     price: 9.00,
-    image: "images/menu items/Vegan chicken shawarma.jpeg",
+    image: "images/Vegan chiken shawarma.jpeg",
     fixed_ingredients: "Seitan, Tofu, Lebanese Bread",
     removable_ingredients : "Garlic;Fries"
   },

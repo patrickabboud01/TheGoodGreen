@@ -239,9 +239,9 @@ const singleMenuData = [
     protein: 10,
     Kcal: 280,
     price: 9.00,
-    image: "images/Vegan chicken shawarma.jpeg",
-    ingredients: "Seitan, Tofu, Garlic, French fries, Lebanese Bread",
-    lockedIngredients : "Garlic, Fries"
+    image: "images/Vegan chiken shawarma.jpeg",
+    lockedIngredients: "Seitan, Tofu, Lebanese Bread",
+    ingredients : "Garlic, Fries"
   },
 
     { 
