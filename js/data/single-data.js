@@ -1,7 +1,18 @@
 const singleMenuData = [
 
   // --- BREAKFAST ---
- 
+ {
+    category: "Christmas",
+    name: "Bûche de Noë 30 cm",
+    protein: 0,
+    Kcal: 0,
+    price: 45.00,
+    image: "images/menu items/buche.webp",
+    ingredients: "Buche",
+    lockedIngredients: "Buche",
+    choicename1: "",
+    choiceitems1: " "
+  },
   
   {
     category: "Breakfast",
@@ -228,7 +239,7 @@ const singleMenuData = [
     protein: 10,
     Kcal: 280,
     price: 9.00,
-    image: "images/menu items/Vegan chicken shawarma.jpeg",
+    image: "images/images/Vegan chicken shawarma.jpeg",
     ingredients: "Seitan, Tofu, Garlic, French fries, Lebanese Bread",
     lockedIngredients : "Garlic, Fries"
   },
@@ -569,18 +580,7 @@ const singleMenuData = [
     choiceitems1: "Decaf , Cafenated"
   },
 
-{
-    category: "Christmas",
-    name: "Bûche de Noë 30 cm",
-    protein: 0,
-    Kcal: 0,
-    price: 45.00,
-    image: "images/menu items/buche.webp",
-    ingredients: "Buche",
-    lockedIngredients: "Buche",
-    choicename1: "",
-    choiceitems1: " "
-  },
+
 
   {
     category: "Drinks",
@@ -588,7 +588,7 @@ const singleMenuData = [
     protein: 0,
     Kcal: 0,
     price: 2.00,
-    image: "images/menu items/pepsi.jpg",
+    image: "images/images/pepsi.jpg",
     ingredients: "",
     lockedIngredients: "",
     choicename1: "",
@@ -601,7 +601,7 @@ const singleMenuData = [
     protein: 0,
     Kcal: 0,
     price: 2.00,
-    image: "images/menu items/7up.jpg",
+    image: "images/images/7up.jpg",
     ingredients: "",
     lockedIngredients: "",
     choicename1: "",
@@ -614,7 +614,7 @@ const singleMenuData = [
     protein: 0,
     Kcal: 0,
     price: 2.00,
-    image: "images/menu items/7up diet.jpg",
+    image: "images/images/7up diet.jpg",
     ingredients: "",
     lockedIngredients: "",
     choicename1: "",
@@ -627,7 +627,7 @@ const singleMenuData = [
     protein: 0,
     Kcal: 0,
     price: 2.00,
-    image: "images/menu items/icetea peach.jpg",
+    image: "images/images/icetea peach.jpg",
     ingredients: "",
     lockedIngredients: "",
     choicename1: "",
