@@ -580,5 +580,58 @@ const singleMenuData = [
     lockedIngredients: "Buche",
     choicename1: "",
     choiceitems1: " "
+  },
+
+  {
+    category: "Drinks",
+    name: "Pepsi",
+    protein: 0,
+    Kcal: 0,
+    price: 2.00,
+    image: "images/menu items/pepsi.jpg",
+    ingredients: "",
+    lockedIngredients: "",
+    choicename1: "",
+    choiceitems1: " "
+  },
+
+  {
+    category: "Drinks",
+    name: "7up",
+    protein: 0,
+    Kcal: 0,
+    price: 2.00,
+    image: "images/menu items/7up.jpg",
+    ingredients: "",
+    lockedIngredients: "",
+    choicename1: "",
+    choiceitems1: " "
+  },
+
+  {
+    category: "Drinks",
+    name: "7up diet",
+    protein: 0,
+    Kcal: 0,
+    price: 2.00,
+    image: "images/menu items/7up diet.jpg",
+    ingredients: "",
+    lockedIngredients: "",
+    choicename1: "",
+    choiceitems1: " "
+  },
+
+  {
+    category: "Drinks",
+    name: "icetea Peach",
+    protein: 0,
+    Kcal: 0,
+    price: 2.00,
+    image: "images/menu items/icetea peach.jpg",
+    ingredients: "",
+    lockedIngredients: "",
+    choicename1: "",
+    choiceitems1: " "
   }
+
 ];
