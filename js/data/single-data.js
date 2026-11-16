@@ -222,6 +222,17 @@ const singleMenuData = [
     ingredients: "Lentils, rice, potato, carrot, zucchini",
     lockedIngredients : "Lentils, Rice"
   },
+    {
+    category: "Main",
+    name: "Vegan Chicken Shawarma",
+    protein: 10,
+    Kcal: 280,
+    price: 9.00,
+    image: "images/menu items/Vegan chicken shawarma.jpeg",
+    ingredients: "Seitan, Tofu, Garlic, French fries, Lebanese Bread",
+    lockedIngredients : "Garlic, Fries"
+  },
+
     { 
         category: "Main", 
         name: "Chich Barak", 

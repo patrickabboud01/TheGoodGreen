@@ -340,6 +340,17 @@ const rawMenuData = [
         choice_options: "Plain;Chocolate",
         choice_type: "single"
     },
+      
+    {
+    category: "Main",
+    name: "Vegan Chicken Shawarma",
+    protein: 10,
+    Kcal: 280,
+    price: 9.00,
+    image: "images/menu items/Vegan chicken shawarma.jpeg",
+    fixed_ingredients: "Seitan, Tofu, Lebanese Bread",
+    removable_ingredients : "Garlic;Fries"
+  },
      { 
         category: "snack", 
         name: "Fresh Orange Juice", 
